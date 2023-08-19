@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build && ./copy-static-build-files.sh",
+    "build-examples": "tsc && vite build -c vite.config.examples.ts",
     "preview": "vite preview",
     "test": "vitest --",
     "coverage": "vitest run --coverage",

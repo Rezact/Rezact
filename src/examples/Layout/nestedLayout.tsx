@@ -16,7 +16,7 @@ export function MyLayout({ Component, pageProps }: any) {
           <a href="/hello-world">Hello World</a>
         </li>
         <li>
-          <a href="/hello-world-multiple">Hello World</a>
+          <a href="/hello-world-multiple">Hello World Multiple</a>
         </li>
         <li>
           <a href="/nested">Nested Children</a>

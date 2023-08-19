@@ -1,4 +1,4 @@
-// import { xCreateElement, xFragment } from "rezact";
+import "./currentStyle.css";
 
 export function Page() {
   let rowId = 1;
