@@ -10,6 +10,9 @@ export function MyLayout({ Component, pageProps }: any) {
           <a href="/">Home</a>
         </li>
         <li>
+          <a href="/benchmark">Benchmark</a>
+        </li>
+        <li>
           <a href="/hello-world">Hello World</a>
         </li>
         <li>

@@ -45,7 +45,7 @@ export default defineConfig(({ command, mode, ssrBuild }) => {
       emptyOutDir: true,
       target: "esnext",
       modulePreload: {
-        polyfill: true,
+        polyfill: false,
       },
       minify: false,
     },

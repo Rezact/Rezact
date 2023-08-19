@@ -1,8 +1,11 @@
-export const createElement = document.createElement.bind(document);
-export const createTextNode = document.createTextNode.bind(document);
-export const createComment = document.createComment.bind(document);
-export const createDocumentFragment =
-  document.createDocumentFragment.bind(document);
+let createElement, createTextNode, createComment, createDocumentFragment;
+if (typeof window === "object") {
+  createElement = document.createElement.bind(document);
+  createTextNode = document.createTextNode.bind(document);
+  createComment = document.createComment.bind(document);
+  createDocumentFragment = document.createDocumentFragment.bind(document);
+}
+export { createElement, createTextNode, createComment, createDocumentFragment };
 export const isArray = Array.isArray;
 
 export let createComponent = (tagName, attributes = null) =>

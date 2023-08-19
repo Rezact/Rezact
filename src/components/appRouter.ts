@@ -28,6 +28,10 @@ const router = new TrieRouter({
 });
 
 router.addRoute("/", () => import("src/components/HomePage"));
+router.addRoute(
+  "/benchmark",
+  () => import("src/examples/BenchmarkRezact/Benchmark")
+);
 router.addRoute("/counter", () => import("src/examples/CounterRezact/Counter"));
 router.addRoute(
   "/counter-multiple",
