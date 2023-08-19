@@ -1,4 +1,4 @@
-import { xCreateElement, xFragment } from "src/lib/rezact/rezact";
+// import { xCreateElement, xFragment } from "rezact";
 
 export function Page() {
   let rowId = 1;

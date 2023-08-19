@@ -406,7 +406,8 @@ function rezact(): PluginOption {
       if (supportedFileTypes.find((sf) => id.includes(sf)) === undefined)
         return;
       if (id.includes("node_modules")) return;
-      if (id.includes("rezact.ts")) return;
+      if (id.includes("rezact/index.ts")) return;
+      if (id.includes("rezact/mdx.ts")) return;
       if (id.includes("signals.ts")) return;
       if (id.includes("mapState.ts")) return;
       src = _src;
@@ -422,24 +423,24 @@ function rezact(): PluginOption {
         sourceType: "module",
       });
       compileRezact(ast);
+      if (src.includes("xCreateElement")) importsUsed.xCreateElement = true;
+      if (src.includes("xFragment")) importsUsed.xFragment = true;
       const importsUsedArr = Object.keys(importsUsed);
       if (importsUsedArr.length > 0)
         magicString.prepend(
-          `import {${importsUsedArr.join(",")}} from "src/lib/rezact/rezact"\n`
+          `import {${importsUsedArr.join(",")}} from "rezact"\n`
         );
 
       const signalsUsedArr = Object.keys(signalsUsed);
       if (signalsUsedArr.length > 0)
         magicString.prepend(
-          `import {${signalsUsedArr.join(",")}} from "src/lib/rezact/signals"\n`
+          `import {${signalsUsedArr.join(",")}} from "rezact/signals"\n`
         );
 
       const mapStateUsedArr = Object.keys(mapStateUsed);
       if (mapStateUsedArr.length > 0)
         magicString.prepend(
-          `import {${mapStateUsedArr.join(
-            ","
-          )}} from "src/lib/rezact/mapState"\n`
+          `import {${mapStateUsedArr.join(",")}} from "rezact/mapState"\n`
         );
 
       if (lastImport)

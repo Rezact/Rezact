@@ -27,10 +27,12 @@
 
     "baseUrl": "./",
     "paths": {
-      "src/*": ["./src/*"]
+      "src/*": ["./src/*"],
+      "rezact": ["src/lib/rezact/index.ts"],
+      "rezact/*": ["./src/lib/rezact/*"]
     },
 
     "esModuleInterop": true
   },
-  "include": ["src"]
+  "include": ["src", "src/lib/rezact/rezact.d.ts"]
 }

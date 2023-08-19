@@ -1,5 +1,5 @@
 import { MyLayout } from "src/examples/Layout/nestedLayout";
-import { xCreateElement, xFragment } from "../lib/rezact/rezact";
+// import { xCreateElement, xFragment } from "rezact";
 
 let $name = "test";
 let $arr: any = [`apple`, "orange", "banana"];

@@ -5,7 +5,7 @@ import {
   waitForElementToBeRemoved,
 } from "@testing-library/dom";
 import userEvent from "@testing-library/user-event";
-import { render } from "src/lib/rezact/rezact";
+import { render } from "rezact";
 import { Page } from "./HomePage";
 
 const user = userEvent.setup();

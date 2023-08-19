@@ -9,7 +9,7 @@ import {
   createDocumentFragment,
   createElement,
   isArray,
-} from "./rezact";
+} from ".";
 
 export class MapState extends BaseState {
   constructor(st: any) {

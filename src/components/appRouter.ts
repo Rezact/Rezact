@@ -1,5 +1,5 @@
-import { render } from "src/lib/rezact/rezact";
-import { TrieRouter } from "src/lib/rezact/rezact-router";
+import { render } from "rezact";
+import { TrieRouter } from "rezact/router";
 
 const app = document.getElementById("app");
 

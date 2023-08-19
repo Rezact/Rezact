@@ -1,4 +1,4 @@
-import { xCreateElement, xFragment } from "src/lib/rezact/rezact";
+// import { xCreateElement, xFragment } from "rezact";
 import { MyLayout } from "../Layout/nestedLayout";
 
 export default function (props) {

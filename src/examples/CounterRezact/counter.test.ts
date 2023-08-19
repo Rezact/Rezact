@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { screen, waitFor } from "@testing-library/dom";
-import { render } from "src/lib/rezact/rezact";
+import { render } from "rezact";
 import { Page } from "./Counter";
 
 describe("counter suite name", () => {

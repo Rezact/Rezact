@@ -8,7 +8,7 @@ import {
   createComment,
   createElement,
   createTextNode,
-} from "./rezact";
+} from ".";
 
 let batchSubs = [];
 let batchUnsubs = [];

@@ -2,8 +2,8 @@ import { defineConfig } from "vite";
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
 import Inspect from "vite-plugin-inspect";
-import { rezact } from "./src/lib/rezact/rezact-plugin";
-import { rezact_mdx } from "./src/lib/rezact/rezact-mdx-plugin";
+import { rezact } from "./src/lib/rezact/vite-plugin";
+import { rezact_mdx } from "./src/lib/rezact/vite-mdx-plugin";
 import remarkFrontmatter from "remark-frontmatter";
 import remarkMdxFrontmatter from "remark-mdx-frontmatter";
 import rehypeHighlight from "rehype-highlight";
@@ -23,15 +23,31 @@ export default defineConfig(({ command, mode, ssrBuild }) => {
     resolve: {
       alias: {
         src: "/src",
+        rezact: "/src/lib/rezact",
       },
     },
     build: {
-      emptyOutDir: false,
+      lib: {
+        // Could also be a dictionary or array of multiple entry points
+        entry: [
+          resolve(__dirname, "src/lib/rezact/mapState.ts"),
+          resolve(__dirname, "src/lib/rezact/vite-mdx-plugin.ts"),
+          resolve(__dirname, "src/lib/rezact/mdx.ts"),
+          resolve(__dirname, "src/lib/rezact/vite-plugin.ts"),
+          resolve(__dirname, "src/lib/rezact/router.ts"),
+          resolve(__dirname, "src/lib/rezact/index.ts"),
+          resolve(__dirname, "src/lib/rezact/signals.ts"),
+        ],
+        name: "Rezact",
+        // the proper extensions will be added
+        // fileName: "rezact",
+      },
+      emptyOutDir: true,
       target: "esnext",
       modulePreload: {
-        polyfill: false,
+        polyfill: true,
       },
-      minify: true,
+      minify: false,
     },
     plugins: [
       Inspect(),
@@ -39,7 +55,7 @@ export default defineConfig(({ command, mode, ssrBuild }) => {
         pragma: "r.xCreateElement",
         pragmaFrag: "r.xFragment",
         jsxRuntime: "classic",
-        pragmaImportSource: "src/lib/rezact/rezact-mdx",
+        pragmaImportSource: "src/lib/rezact/mdx",
         remarkPlugins: [
           remarkFrontmatter,
           [remarkMdxFrontmatter, { name: "fm" }],
@@ -47,7 +63,7 @@ export default defineConfig(({ command, mode, ssrBuild }) => {
         rehypePlugins: [rehypeHighlight],
       }),
       rezact(),
-      rezact_mdx()
+      rezact_mdx(),
     ],
   };
   if (mode === "production") {

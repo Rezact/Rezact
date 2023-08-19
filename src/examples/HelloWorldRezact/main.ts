@@ -1,4 +1,4 @@
-import { render } from "src/lib/rezact/rezact";
+import { render } from "rezact";
 import { Page } from "./HelloWorld";
 
 const app = document.getElementById("app");
