@@ -1,0 +1,48 @@
+---
+$title: Test
+$arr:
+  - apples
+  - oranges
+  - bananas
+---
+
+export function componentScript() {
+  let $test = "asdf";
+  
+  const handler = () => {
+    $test === "asdf"
+      ? ($test = fm.$title = "cool stuff!")
+      : ($test = fm.$title = "asdf");
+  };
+}
+
+export function Item(props){
+  return <div>
+  
+  ## {props.item} {props.test}
+
+  </div>
+}
+
+<div>
+
+# Hello World {fm.$title} {$test}
+
+</div>
+
+{fm.$arr.map(($item) => <Item item={$item} test={$test}/>)}
+
+<button onClick={handler}>Test</button>
+
+<div>
+  <p>Testing Nested</p>
+
+Testing Nested 2
+
+</div>
+
+Label:
+
+<input value={$test} />
+
+Para text
