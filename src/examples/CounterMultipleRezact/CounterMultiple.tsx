@@ -1,4 +1,5 @@
 import { xCreateElement, xFragment } from "src/lib/rezact/rezact";
+import { MyLayout } from "../Layout/nestedLayout";
 
 export function Page() {
   return (
@@ -27,3 +28,5 @@ function Button() {
     </button>
   );
 }
+
+export const Layout = MyLayout;

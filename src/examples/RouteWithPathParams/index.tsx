@@ -1,5 +1,5 @@
 import { xCreateElement, xFragment } from "src/lib/rezact/rezact";
-import { MyLayout } from "../Layout/layout";
+import { MyLayout } from "../Layout/nestedLayout";
 
 export default function (props) {
   console.log(props);

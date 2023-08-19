@@ -124,7 +124,7 @@ export function useInputs() {
     if (elm.type === "radio" && val === radioVal) return (elm.checked = true);
     if (elm.type === "radio" && val !== radioVal) return (elm.checked = false);
     if (elm.type === "checkbox") return (elm.checked = !!val);
-    elm.value = val;
+    elm.value = val.textContent || val;
   }
 
   const handleInputAttr = (element, attributeValue, attributes) => {

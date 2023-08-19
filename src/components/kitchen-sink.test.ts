@@ -6,7 +6,7 @@ import {
 } from "@testing-library/dom";
 import userEvent from "@testing-library/user-event";
 import { render } from "src/lib/rezact/rezact";
-import { Page } from "./HelloWorld";
+import { Page } from "./HomePage";
 
 const user = userEvent.setup();
 

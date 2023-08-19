@@ -1,4 +1,4 @@
-import { MyLayout } from "src/examples/Layout/layout";
+import { MyLayout } from "src/examples/Layout/nestedLayout";
 import { xCreateElement, xFragment } from "../lib/rezact/rezact";
 
 let $name = "test";
@@ -89,7 +89,19 @@ function Page() {
         asdf
       </button>
       <Button />
-      <a href="/post/asdf/something/qwer">Test</a>
+      <a style="display: block;" href="/post/asdf/something/qwer">
+        Test No Target (Only loads new page)
+      </a>
+      <a
+        style="display: block;"
+        href="/post/asdf/something/qwer"
+        target="_self"
+      >
+        Test Target _self (reloads page)
+      </a>
+      <a style="display: block;" href="https://google.com" target="_blank">
+        Google Target _blank
+      </a>
     </>
   );
 }

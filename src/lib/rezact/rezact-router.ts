@@ -20,8 +20,11 @@ export class TrieRouter {
     if (options.noRoute) this.noRoute = options.noRoute;
     document.body.addEventListener("click", (ev: any) => {
       if (ev.target.nodeName === "A") {
-        ev.preventDefault();
+        if (ev.target.target) return;
         const url = new URL(ev.target.href);
+        const locationHost = window.location.hostname; // Current page's hostname
+        if (url.hostname !== locationHost) return;
+        ev.preventDefault();
         history.pushState({}, "", url.pathname);
         this.routeRequest(url.pathname);
       }
