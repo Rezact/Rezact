@@ -10,6 +10,11 @@ export function MyLayout({ Component, pageProps }: any) {
           <a href="/">Home</a>
         </li>
         <li>
+          <a href="/array-state-persistent-across-route-changes">
+            Home (Persistent Toggle States)
+          </a>
+        </li>
+        <li>
           <a href="/benchmark">Benchmark</a>
         </li>
         <li>

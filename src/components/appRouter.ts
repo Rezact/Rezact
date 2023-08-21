@@ -29,6 +29,10 @@ const router = new TrieRouter({
 
 router.addRoute("/", () => import("src/components/HomePage"));
 router.addRoute(
+  "/array-state-persistent-across-route-changes",
+  () => import("src/components/HomePageStatePersistsAcrossRouteChanges")
+);
+router.addRoute(
   "/benchmark",
   () => import("src/examples/BenchmarkRezact/Benchmark")
 );

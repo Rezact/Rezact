@@ -47,6 +47,7 @@ export class MapState extends BaseState {
         item.idxState.setValue(idx);
       }
 
+      if (item.elmRef?.isConnected === false) item.elmRef = undefined;
       item.elmRef = item.elmRef || createComponent({ func, item });
 
       isArray(item.elmRef)
