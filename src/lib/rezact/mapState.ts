@@ -134,7 +134,11 @@ const removeStaleChildren = (parentNode, endNode, parent, child) => {
     } else if (val && elmRef && nextNode !== elmRef) {
       nextNode = nextNode.nextSibling;
       const prevElm = nextNode.previousSibling;
-      if (prevElm.replaceWith && elmRef instanceof HTMLElement) {
+      if (
+        prevElm.replaceWith &&
+        elmRef instanceof HTMLElement &&
+        elmRef.parentNode
+      ) {
         elmRef.replaceWith(remPlaceHolder);
         prevElm.replaceWith(elmRef);
         remPlaceHolder.replaceWith(prevElm);
