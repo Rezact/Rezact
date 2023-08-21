@@ -67,11 +67,7 @@ function findDependencies(node, excludeDeps = {}) {
 }
 
 function wrapInCreateComputed(node, explicitDeps = null, excludeDeps = {}) {
-  const test = src.slice(node.start, node.end);
   const _deps = explicitDeps || findDependencies(node, excludeDeps);
-  if (test === "$name.toUpperCase()") {
-    console.log(test, _deps);
-  }
   if (_deps.length === 0) return;
   const deps = _deps.map((dep) => dep.dep || dep);
   const args = _deps.map((dep) => dep.arg || dep);
@@ -108,8 +104,6 @@ function wrapInCreateMapped(node, explicitDeps = null, excludeDeps = {}) {
 }
 
 function tackOnDotVee(node) {
-  const test = src.slice(node.start, node.end);
-  // if (test === "$name") console.trace(test);
   magicString.appendRight(node.end, `.getValue()`);
 }
 
@@ -117,25 +111,28 @@ function hasAncestor(ancestors, type) {
   return ancestors.map((a) => a.type).indexOf(type) > -1;
 }
 
-function ancestorDistance(ancestors, func) {
-  let idx = 0;
-  for (let i = ancestors.length - 1; i > -1; i--) {
-    const anc = ancestors[i];
-    if (func(anc)) return idx;
-    idx += 1;
-  }
-  return -1;
-}
+// functions that I wrote that seem like they will probably come in handy,
+// but not currently needed (-Zach Aug 20, 2023)
 
-function ancestor(opts) {
-  const nodeDist = ancestorDistance(opts.ancestors, opts.node);
-  if (opts.isCloserThan) {
-    const otherNodeDist = ancestorDistance(opts.ancestors, opts.isCloserThan);
-    if (nodeDist < otherNodeDist) return true;
-    return false;
-  }
-  return undefined;
-}
+// function ancestorDistance(ancestors, func) {
+//   let idx = 0;
+//   for (let i = ancestors.length - 1; i > -1; i--) {
+//     const anc = ancestors[i];
+//     if (func(anc)) return idx;
+//     idx += 1;
+//   }
+//   return -1;
+// }
+
+// function ancestor(opts) {
+//   const nodeDist = ancestorDistance(opts.ancestors, opts.node);
+//   if (opts.isCloserThan) {
+//     const otherNodeDist = ancestorDistance(opts.ancestors, opts.isCloserThan);
+//     if (nodeDist < otherNodeDist) return true;
+//     return false;
+//   }
+//   return undefined;
+// }
 
 function inFunction(ancestors, funcName) {
   for (let i = ancestors.length - 1; i > -1; i--) {
@@ -345,6 +342,9 @@ function compileRezact(ast) {
 
         if (!isChildArg(ancestors) && !isAttributeArg(ancestors))
           tackOnDotVee(node.property);
+
+        // code the I wrote to use the ancestor function commented out above
+        // but did not end up needing, keeping as an example of how to use
 
         // if (
         //   ancestor({
