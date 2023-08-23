@@ -74,6 +74,7 @@ export class MapState extends BaseState {
 }
 
 const addChildren = (values: any, parentNode) => {
+  if (values === undefined) return;
   const len = values.length;
   let nextNode = parentNode;
   for (let i = 0; i < len; i++) {
