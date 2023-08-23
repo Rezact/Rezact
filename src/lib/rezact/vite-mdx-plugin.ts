@@ -48,7 +48,11 @@ function rezact_mdx(): PluginOption {
       if (supportedFileTypes.find((sf) => id.includes(sf)) === undefined)
         return;
       if (id.includes("node_modules")) return;
-      if (id.includes("rezact.ts")) return;
+      if (id.includes("rezact/index.ts")) return;
+      if (id.includes("rezact/vite-plugin.ts")) return;
+      if (id.includes("rezact/vite-mdx-plugin.ts")) return;
+      if (id.includes("rezact/mdx.ts")) return;
+      if (id.includes("rezact/router.ts")) return;
       if (id.includes("signals.ts")) return;
       if (id.includes("mapState.ts")) return;
       src = _src;

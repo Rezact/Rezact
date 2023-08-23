@@ -96,10 +96,12 @@ function wrapInCreateComputedAttribute(
 
 function wrapInCreateMapped(node, explicitDeps = null, excludeDeps = {}) {
   mapStateUsed.createMapped = true;
-  const deps = explicitDeps || findDependencies(node, excludeDeps);
-  if (deps.length === 0) return;
+  const _deps = explicitDeps || findDependencies(node, excludeDeps);
+  if (_deps.length === 0) return;
+  const args = _deps.map((dep) => (dep.includes(".") ? "arr" : dep));
+  const deps = _deps.map((dep) => dep.arg || dep);
   signalsUsed.createComputed = true;
-  magicString.appendLeft(node.start, `createMapped(([${deps.join(",")}]) => `);
+  magicString.appendLeft(node.start, `createMapped(([${args.join(",")}]) => `);
   magicString.appendRight(node.end, `, [${deps.join(",")}])`);
 }
 
@@ -137,6 +139,11 @@ function hasAncestor(ancestors, type) {
 function inFunction(ancestors, funcName) {
   for (let i = ancestors.length - 1; i > -1; i--) {
     const anc = ancestors[i];
+    if (
+      anc.callee?.type === "MemberExpression" &&
+      anc.callee.property?.name === funcName
+    )
+      return anc;
     if (anc.type === "CallExpression" && anc.callee.name === funcName)
       return anc;
   }
@@ -365,7 +372,11 @@ function compileRezact(ast) {
         // }
       } else if (
         node.property.type === "Identifier" &&
-        node.property.name[0] === "$"
+        node.property.name[0] === "$" &&
+        !(
+          ancestors.at(-2).type === "MemberExpression" &&
+          ancestors.at(-2).property?.name === "map"
+        )
       ) {
         if (
           ancestors.length > 2 &&
@@ -413,8 +424,11 @@ function compileRezact(ast) {
       }
       if (
         node.callee.type === "MemberExpression" &&
-        node.callee.object.type === "Identifier" &&
-        node.callee.object.name[0] === "$" &&
+        ((node.callee.object.type === "Identifier" &&
+          node.callee.object.name[0] === "$") ||
+          (node.callee.object.type === "MemberExpression" &&
+            node.callee.object.property.name &&
+            node.callee.object.property.name[0] === "$")) &&
         node.callee.property.name === "map"
       ) {
         magicString.overwrite(
@@ -422,7 +436,10 @@ function compileRezact(ast) {
           node.callee.property.end,
           "Map"
         );
-        wrapInCreateMapped(node, [node.callee.object.name]);
+        wrapInCreateMapped(node, [
+          node.callee.object.name ||
+            src.slice(node.callee.object.start, node.callee.object.end),
+        ]);
       }
     },
 
@@ -441,6 +458,23 @@ function compileRezact(ast) {
       if (node.key.name === "className") {
         magicString.overwrite(node.key.start, node.key.end, "class");
       }
+
+      if (
+        node.key.name &&
+        node.key.name[0] === "$" &&
+        node.value.type === "ArrayExpression"
+      ) {
+        return wrapInUseMapState(node.value);
+      }
+
+      if (
+        node.key.value &&
+        node.key.value[0] === "$" &&
+        node.value.type === "ArrayExpression"
+      ) {
+        return wrapInUseMapState(node.value);
+      }
+
       if (node.key.name && node.key.name[0] === "$") {
         wrapInUseSignal(node.value);
       }
@@ -525,6 +559,7 @@ function rezact(): PluginOption {
       if (id.includes("rezact/vite-plugin.ts")) return;
       if (id.includes("rezact/vite-mdx-plugin.ts")) return;
       if (id.includes("rezact/mdx.ts")) return;
+      if (id.includes("rezact/router.ts")) return;
       if (id.includes("signals.ts")) return;
       if (id.includes("mapState.ts")) return;
       src = _src;
