@@ -1,2 +1,9 @@
 Write some router tests!
+
 Write Tests for MDX!!!
+
+- Test the the arrays with a memberExpression like fm.$arr work
+  - this needs to pass this into the dep array of the createMapped function call, but obviously ([fm.$arr]) => {} is not a valid function argument signature, so just pass in any dummy value like [arr] because the access to fm.$arr inside the map function will still work because of the object reference inside the closure is a pointer, not a value
+- Also need to make sure the input value and the button works as expected. The input is tied to the $test variable which updates the header, but can also be updated by the button click.
+
+- Also need to starting writing some documentation! Get on it!
