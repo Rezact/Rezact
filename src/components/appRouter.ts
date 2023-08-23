@@ -27,6 +27,7 @@ const router = new TrieRouter({
   },
 });
 
+router.addRoute("/404", () => import("./404"));
 router.addRoute("/", () => import("src/components/HomePage"));
 router.addRoute(
   "/array-state-persistent-across-route-changes",

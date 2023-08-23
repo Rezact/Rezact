@@ -14,7 +14,9 @@ class RouteNode {
 export class TrieRouter {
   root: RouteNode;
   renderFunc: any = null;
-  noRoute: any = () => {};
+  noRoute: any = (router) => {
+    router.routeRequest("/404");
+  };
   constructor(options) {
     if (options.render) this.renderFunc = options.render;
     if (options.noRoute) this.noRoute = options.noRoute;
@@ -80,7 +82,7 @@ export class TrieRouter {
         return; // wildcard matches the rest of the route, so return
       } else {
         console.log(`No route found for path: ${path}`);
-        this.noRoute();
+        this.noRoute(this);
         return;
       }
     }
@@ -93,7 +95,7 @@ export class TrieRouter {
       }
     } else {
       console.log(`No handle found for path: ${path}`);
-      this.noRoute();
+      this.noRoute(this);
       return;
     }
   }
