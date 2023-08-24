@@ -15,7 +15,7 @@ export function Page() {
     <>
       <ShadowDiv>
         <link rel="stylesheet" href={styleUrl} />
-        <h1>Hello World</h1>
+        <h1>Shadow DOM Test (Scoped CSS)</h1>
         <p>asdfasdf</p>
       </ShadowDiv>
       <h1>asdfasdf</h1>
