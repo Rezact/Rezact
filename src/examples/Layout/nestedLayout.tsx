@@ -42,6 +42,9 @@ export function MyLayout({ Component, pageProps }: any) {
           <a href="/mdx">MDX</a>
         </li>
         <li>
+          <a href="/shadow-dom">Shadow DOM Example</a>
+        </li>
+        <li>
           <a href="/asdfasdfasdfasdf">A Route that does not exist</a>
         </li>
       </ul>

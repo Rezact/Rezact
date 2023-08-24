@@ -62,4 +62,9 @@ router.addRoute(
   () => import("src/examples/RouteWithPathParams/index")
 );
 
+router.addRoute(
+  "/shadow-dom",
+  () => import("src/examples/ShadowDom/ShadowDom")
+);
+
 export { router };

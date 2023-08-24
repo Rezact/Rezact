@@ -17,7 +17,7 @@ export function xCreateElement(tagName, attributes, ...children) {
   if (tagName === xFragment) return children;
   if (typeof tagName === "function") {
     attributes = attributes || {};
-    attributes.children = children;
+    attributes.children = attributes.children || children;
     return createComponent(tagName, attributes);
   }
   const elm = createElement(tagName);
