@@ -33,7 +33,7 @@ function runBatch() {
       func(func.stateObj.getValue());
     }
     batchSubs.splice(i, 1);
-    console.debug((window as any).totalSubscriberCount++);
+    // console.debug((window as any).totalSubscriberCount++);
   }
 
   const batchUnsubsLen = batchUnsubs.length - 1;
@@ -42,7 +42,7 @@ function runBatch() {
     if (!unsub.elm.isConnected) {
       unsub.func.stateObj.subs.delete(unsub.func);
       batchUnsubs.splice(idx, 1);
-      console.debug((window as any).totalSubscriberCount--);
+      // console.debug((window as any).totalSubscriberCount--);
     }
   }
 
@@ -52,7 +52,7 @@ function runBatch() {
 resetBatchTimeout();
 
 let subscFunctionsArr: any = [];
-console.debug(((window as any).totalSubscriberCount = 0));
+// console.debug(((window as any).totalSubscriberCount = 0));
 
 function createSignalElement(elm: any): any {
   if (isArray(elm)) {

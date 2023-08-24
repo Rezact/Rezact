@@ -2,7 +2,6 @@
 import { MyLayout } from "../Layout/nestedLayout";
 
 export default function (props) {
-  console.log(props);
   return (
     <>
       <h1>Path Params Test</h1>
