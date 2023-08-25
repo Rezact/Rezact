@@ -91,6 +91,8 @@ const removeStaleChildren = (parentNode, endNode, parent, child) => {
   const values = child.value;
   let nextNode = parentNode.nextSibling;
 
+  if (!parentNode.parentNode) return;
+
   if (
     parentNode.parentNode.childNodes.length === child.previousChildLen + 2 &&
     values.length === 0
@@ -163,6 +165,7 @@ const handleArray = (parent: any, child: any) => {
   frac(endNode);
 
   child.subscribe((newVal: any) => {
+    if (!parentNode.isConnected || !endNode.isConnected) return;
     if (child.previousChildLen === 0) {
       frac(parentNode);
       frac(endNode);
@@ -188,7 +191,7 @@ addAppendChildHook(childStateHandler);
 function insertNodeAfter(currentNode: any, childNode: any) {
   if (currentNode.nextSibling) {
     currentNode.parentNode.insertBefore(childNode, currentNode.nextSibling);
-  } else {
+  } else if (currentNode.parentNode) {
     currentNode.parentNode.appendChild(childNode);
   }
 }

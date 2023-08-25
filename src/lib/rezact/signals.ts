@@ -107,7 +107,7 @@ export class BaseState {
   func: any;
 
   constructor(st: any) {
-    this.value = st === null ? "" : st;
+    this.value = st;
   }
 
   alertSubs(newVal: any) {
@@ -192,7 +192,12 @@ function handleStateTypes(parent: any, child: any) {
     const newState = new BaseState(placeholder);
     if (val instanceof Node) newState.value = val;
     child.subscribe((newVal: any) => {
-      if (typeof newVal === "boolean") newState.setValue(placeholder);
+      if (
+        typeof newVal === "boolean" ||
+        newVal === null ||
+        newVal === undefined
+      )
+        newState.setValue(placeholder);
       if (newVal instanceof Node) newState.setValue(newVal);
     });
     appendChild(parent, newState.getValue());
@@ -246,6 +251,9 @@ function handleTextNode(parent: any, child: any) {
 }
 
 addAfterRenderHook(() => {
-  subscFunctionsArr.forEach((func: any) => func());
+  subscFunctionsArr.forEach((func: any) => {
+    func.stateObj.subs.set(func, true);
+    func(func.stateObj.getValue());
+  });
   subscFunctionsArr = [];
 });
