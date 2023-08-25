@@ -67,4 +67,9 @@ router.addRoute(
   () => import("src/examples/ShadowDom/ShadowDom")
 );
 
+router.addRoute(
+  "/data-fetching",
+  () => import("src/examples/DataFetching/DataFetching")
+);
+
 export { router };

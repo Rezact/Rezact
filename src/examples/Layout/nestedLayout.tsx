@@ -45,6 +45,9 @@ export function MyLayout({ Component, pageProps }: any) {
           <a href="/shadow-dom">Shadow DOM Example</a>
         </li>
         <li>
+          <a href="/data-fetching">Data Fetching</a>
+        </li>
+        <li>
           <a href="/asdfasdfasdfasdf">A Route that does not exist</a>
         </li>
       </ul>
