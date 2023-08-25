@@ -44,7 +44,7 @@ function handleAttributes(elm, attrs) {
       elm.addEventListener(evKeys[key], attrVal);
       continue;
     }
-    if (typeof key === "boolean" && key) {
+    if (typeof attrVal === "boolean" && attrVal) {
       elm.setAttribute(key, "");
       continue;
     }

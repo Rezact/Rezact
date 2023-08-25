@@ -44,7 +44,7 @@ describe("Data Fetching suite", () => {
     setTimeout(() => {
       $isLoading = false;
       $data = testData;
-    }, 10);
+    }, 20);
     await waitForElementToBeRemoved(isLoading);
     expect(document.body.innerHTML).toMatchSnapshot();
   });
@@ -54,7 +54,7 @@ describe("Data Fetching suite", () => {
     setTimeout(() => {
       $data = [];
       $error = true;
-    }, 10);
+    }, 20);
     await waitForElementToBeRemoved(test1);
     const error = screen.getByText("Error");
     expect(error).not.toBeNull();
