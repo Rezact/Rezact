@@ -64,7 +64,7 @@ router.addRoute(
 
 router.addRoute(
   "/shadow-dom",
-  () => import("src/examples/ShadowDom/ShadowDom")
+  () => import("src/examples/ShadowDom/ShadowDomForExample")
 );
 
 router.addRoute(

@@ -1,0 +1,5 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Shadow DOM suite > Renders an Element with scoped CSS using shadow DOM 1`] = `"<div></div><h1>asdfasdf</h1>"`;
+
+exports[`Shadow DOM suite > renders a div element with a shadow root 1`] = `"<style></style><h1>Shadow DOM Test (Scoped CSS)</h1><p>asdfasdf</p>"`;

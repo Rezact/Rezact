@@ -12,7 +12,7 @@ function get(url) {
     setTimeout(() => {
       $isLoading = false;
       $data = data;
-    }, 3000);
+    }, 1000);
   })();
   return [$isLoading, $error, $data];
 }
