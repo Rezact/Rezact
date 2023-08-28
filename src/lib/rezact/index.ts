@@ -33,7 +33,12 @@ export let attributeHandlers = [];
 
 export const addAttributeHandler = (item) => attributeHandlers.unshift(item);
 
-const evKeys = { onClick: "click" };
+const evKeys = {
+  onClick: "click",
+  onSubmit: "submit",
+  onChange: "change",
+  onInput: "input",
+};
 function handleAttributes(elm, attrs) {
   const keys = Object.keys(attrs);
   const keyLen = keys.length;

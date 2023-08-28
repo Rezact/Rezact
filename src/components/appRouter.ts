@@ -72,4 +72,5 @@ router.addRoute(
   () => import("src/examples/DataFetching/DataFetching")
 );
 
+router.addRoute("/forms", () => import("src/examples/Forms/Forms"));
 export { router };
