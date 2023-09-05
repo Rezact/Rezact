@@ -443,17 +443,6 @@ function compileRezact(ast) {
       }
     },
 
-    Identifier(_node: any, _state) {
-      if (_node.name === "onMount") {
-        importsUsed.useCustomElementsForMountCallbacks = true;
-        functionsToRun.push("useCustomElementsForMountCallbacks()");
-      }
-      if (_node.name === "onUnmount") {
-        importsUsed.useCustomElementsForMountCallbacks = true;
-        functionsToRun.push("useCustomElementsForMountCallbacks()");
-      }
-    },
-
     Property(node: any, _state) {
       if (node.key.name === "className") {
         magicString.overwrite(node.key.start, node.key.end, "class");
@@ -483,6 +472,12 @@ function compileRezact(ast) {
       }
       if (node.key.name === "value" && !importsUsed.useInputs)
         importsUsed.useInputs = true && functionsToRun.push("useInputs()");
+      if (node.key.name === "onMount" && !importsUsed.useInputs)
+        importsUsed.useLifeCycleAttributes =
+          true && functionsToRun.push("useLifeCycleAttributes()");
+      if (node.key.name === "onUnmount" && !importsUsed.useInputs)
+        importsUsed.useLifeCycleAttributes =
+          true && functionsToRun.push("useLifeCycleAttributes()");
     },
 
     ConditionalExpression(node: any, _state, ancestors: any) {

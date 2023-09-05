@@ -6,8 +6,18 @@ export function Page() {
     <>
       <h1>Hello World</h1>
       <Button />
+      <Clock />
     </>
   );
+}
+
+function Clock() {
+  let $count = 0;
+
+  const timer = setInterval(() => $count++, 1000);
+  const unmount = () => clearInterval(timer);
+
+  return <h1 onUnmount={unmount}>{$count}</h1>;
 }
 
 function Button() {

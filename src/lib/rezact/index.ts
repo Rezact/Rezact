@@ -165,3 +165,38 @@ export function useInputs() {
 
   addAttributeHandler(attributeInputValueHandler);
 }
+
+let usingLifeCycleAttrs = false;
+export function useLifeCycleAttributes() {
+  if (usingLifeCycleAttrs) return;
+  usingLifeCycleAttrs = true;
+
+  const onMountHandler = (elm, _key, attrVal, _attrs) => {
+    const checkMounted = () => {
+      if (elm.isConnected) return (elm.rzHasMounted = true) && attrVal(elm);
+      setTimeout(checkMounted, 10);
+    };
+    checkMounted();
+  };
+
+  const onMountAttrHandler = {
+    matches: (_attrs, key) => key === "onMount",
+    handler: onMountHandler,
+  };
+
+  const onUnMountAttrHandler = {
+    matches: (_attrs, key) => key === "onUnmount",
+    handler: (elm, _key, attrVal, attrs) => {
+      if (!attrs.onMount) onMountHandler(elm, _key, () => {}, attrs);
+
+      const checkMounted = () => {
+        if (elm.rzHasMounted && !elm.isConnected) return attrVal(elm);
+        setTimeout(checkMounted, 100);
+      };
+      checkMounted();
+    },
+  };
+
+  addAttributeHandler(onMountAttrHandler);
+  addAttributeHandler(onUnMountAttrHandler);
+}
