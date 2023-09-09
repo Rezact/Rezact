@@ -47,11 +47,7 @@ export function Page() {
   };
 
   const formRef = (
-    <form
-      onSubmit={handleSubmit}
-      data-testid="test-form"
-      onChange={updateTextArea}
-    >
+    <form onSubmit={handleSubmit} id="test-form" onChange={updateTextArea}>
       <h1>Uncontrolled Forms and Controls</h1>
       <label for="firstname">First Name</label>
       <input id="firstname" name="name.first" value="John" />

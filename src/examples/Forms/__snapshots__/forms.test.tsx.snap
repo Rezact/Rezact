@@ -1,0 +1,392 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Forms suite > clears the form when the reset button is clicked 1`] = `
+"{
+  \\"name\\": {
+    \\"first\\": \\"\\",
+    \\"last\\": \\"\\"
+  },
+  \\"age\\": \\"\\",
+  \\"children\\": [
+    \\"\\",
+    \\"\\",
+    \\"\\"
+  ],
+  \\"checkbox\\": {
+    \\"scales\\": false,
+    \\"horns\\": false
+  },
+  \\"lineItems\\": [
+    {
+      \\"item\\": \\"\\",
+      \\"price\\": \\"\\",
+      \\"qty\\": \\"\\"
+    },
+    {
+      \\"item\\": \\"\\",
+      \\"price\\": \\"\\",
+      \\"qty\\": \\"\\"
+    },
+    {
+      \\"item\\": \\"\\",
+      \\"price\\": \\"\\",
+      \\"qty\\": \\"\\"
+    }
+  ],
+  \\"selectItem\\": \\"\\"
+}"
+`;
+
+exports[`Forms suite > renders a form 1`] = `
+<body>
+  <form
+    id="test-form"
+  >
+    <h1>
+      Uncontrolled Forms and Controls
+    </h1>
+    <label
+      for="firstname"
+    >
+      First Name
+    </label>
+    <input
+      id="firstname"
+      name="name.first"
+      value="John"
+    />
+    <label
+      for="lastname"
+    >
+      Last Name
+    </label>
+    <input
+      id="lastname"
+      name="name.last"
+      value="Smith"
+    />
+    <label
+      for="age"
+    >
+      age
+    </label>
+    <input
+      id="age"
+      name="age"
+      value="30"
+    />
+    <label
+      for="child1"
+    >
+      Child 1
+    </label>
+    <input
+      id="child1"
+      name="children[0]"
+      value="Bob"
+    />
+    <label
+      for="child2"
+    >
+      Child 2
+    </label>
+    <input
+      id="child2"
+      name="children[1]"
+      value="Sara"
+    />
+    <label
+      for="child3"
+    >
+      Child 3
+    </label>
+    <input
+      id="child3"
+      name="children[2]"
+      value="Joe"
+    />
+    <fieldset>
+      <legend>
+        Choose your monsters features:
+      </legend>
+      <div>
+        <input
+          checked=""
+          id="scales"
+          name="checkbox.scales"
+          type="checkbox"
+        />
+        <label
+          for="scales"
+        >
+          Scales
+        </label>
+      </div>
+      <div>
+        <input
+          id="horns"
+          name="checkbox.horns"
+          type="checkbox"
+        />
+        <label
+          for="horns"
+        >
+          Horns
+        </label>
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend>
+        Select a maintenance drone:
+      </legend>
+      <div>
+        <input
+          checked=""
+          id="huey"
+          name="radio.drone"
+          type="radio"
+          value="huey"
+        />
+        <label
+          for="huey"
+        >
+          Huey
+        </label>
+      </div>
+      <div>
+        <input
+          id="dewey"
+          name="radio.drone"
+          type="radio"
+          value="dewey"
+        />
+        <label
+          for="dewey"
+        >
+          Dewey
+        </label>
+      </div>
+      <div>
+        <input
+          id="louie"
+          name="radio.drone"
+          type="radio"
+          value="louie"
+        />
+        <label
+          for="louie"
+        >
+          Louie
+        </label>
+      </div>
+    </fieldset>
+    <div>
+      <input
+        name="lineItems[0].item"
+        value="Apple"
+      />
+      <input
+        name="lineItems[0].price"
+        value="1.00"
+      />
+      <input
+        name="lineItems[0].qty"
+        value="4"
+      />
+    </div>
+    <div>
+      <input
+        name="lineItems[1].item"
+        value="Orange"
+      />
+      <input
+        name="lineItems[1].price"
+        value="2.00"
+      />
+      <input
+        name="lineItems[1].qty"
+        value="5"
+      />
+    </div>
+    <div>
+      <input
+        name="lineItems[2].item"
+        value="Lemon"
+      />
+      <input
+        name="lineItems[2].price"
+        value="3.00"
+      />
+      <input
+        name="lineItems[2].qty"
+        value="6"
+      />
+    </div>
+    <label
+      for="select-field"
+    >
+      Selectable Input
+    </label>
+    <select
+      id="select-field"
+      name="selectItem"
+      value="Opt 2"
+    >
+      <option>
+        Opt 1
+      </option>
+      <option>
+        Opt 2
+      </option>
+      <option>
+        Opt 3
+      </option>
+      <option>
+        Opt 4
+      </option>
+    </select>
+    <input
+      class="rounded-lg bg-themeShade-300 p-2 hover:bg-slate-500 dark:bg-dThemeShade-300"
+      type="submit"
+      value="Submit"
+    />
+    <input
+      class="rounded-lg bg-themeShade-300 p-2 hover:bg-slate-500 dark:bg-dThemeShade-300"
+      type="button"
+      value="Reset"
+    />
+    <button
+      type="button"
+    >
+      Update Form Data
+    </button>
+  </form>
+  <hr />
+  <p>
+    Form JSON Data:
+  </p>
+  <textarea
+    style="width: 100%; height: 300px;"
+  />
+</body>
+`;
+
+exports[`Forms suite > renders a form 2`] = `
+"{
+  \\"name\\": {
+    \\"first\\": \\"John\\",
+    \\"last\\": \\"Smith\\"
+  },
+  \\"age\\": \\"30\\",
+  \\"children\\": [
+    \\"Bob\\",
+    \\"Sara\\",
+    \\"Joe\\"
+  ],
+  \\"checkbox\\": {
+    \\"scales\\": true,
+    \\"horns\\": false
+  },
+  \\"radio\\": {
+    \\"drone\\": \\"huey\\"
+  },
+  \\"lineItems\\": [
+    {
+      \\"item\\": \\"Apple\\",
+      \\"price\\": \\"1.00\\",
+      \\"qty\\": \\"4\\"
+    },
+    {
+      \\"item\\": \\"Orange\\",
+      \\"price\\": \\"2.00\\",
+      \\"qty\\": \\"5\\"
+    },
+    {
+      \\"item\\": \\"Lemon\\",
+      \\"price\\": \\"3.00\\",
+      \\"qty\\": \\"6\\"
+    }
+  ],
+  \\"selectItem\\": \\"Opt 1\\"
+}"
+`;
+
+exports[`Forms suite > updates the form when the update button is clicked 1`] = `
+"{
+  \\"name\\": {
+    \\"first\\": \\"dude\\",
+    \\"last\\": \\"hell yes\\"
+  },
+  \\"age\\": \\"300\\",
+  \\"children\\": [
+    \\"asdf\\",
+    \\"qwer\\",
+    \\"1234\\"
+  ],
+  \\"checkbox\\": {
+    \\"scales\\": false,
+    \\"horns\\": true
+  },
+  \\"radio\\": {
+    \\"drone\\": \\"dewey\\"
+  },
+  \\"lineItems\\": [
+    {
+      \\"item\\": \\"Apple0\\",
+      \\"price\\": \\"10.00\\",
+      \\"qty\\": \\"40\\"
+    },
+    {
+      \\"item\\": \\"Orange0\\",
+      \\"price\\": \\"20.00\\",
+      \\"qty\\": \\"50\\"
+    },
+    {
+      \\"item\\": \\"Lemon0\\",
+      \\"price\\": \\"30.00\\",
+      \\"qty\\": \\"60\\"
+    }
+  ],
+  \\"selectItem\\": \\"Opt 3\\"
+}"
+`;
+
+exports[`Forms suite > updates the text area when the form changes 1`] = `
+"{
+  \\"name\\": {
+    \\"first\\": \\"Jane\\",
+    \\"last\\": \\"Doe\\"
+  },
+  \\"age\\": \\"40\\",
+  \\"children\\": [
+    \\"Sally\\",
+    \\"Bob\\",
+    \\"Joe\\"
+  ],
+  \\"checkbox\\": {
+    \\"scales\\": true,
+    \\"horns\\": true
+  },
+  \\"radio\\": {
+    \\"drone\\": \\"louie\\"
+  },
+  \\"lineItems\\": [
+    {
+      \\"item\\": \\"Item 1\\",
+      \\"price\\": \\"14.00\\",
+      \\"qty\\": \\"\\"
+    },
+    {
+      \\"item\\": \\"Item 2\\",
+      \\"price\\": \\"15.00\\",
+      \\"qty\\": \\"\\"
+    },
+    {
+      \\"item\\": \\"Item 3\\",
+      \\"price\\": \\"16.00\\",
+      \\"qty\\": \\"\\"
+    }
+  ],
+  \\"selectItem\\": \\"Opt 2\\"
+}"
+`;
