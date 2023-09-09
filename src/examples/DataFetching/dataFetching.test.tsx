@@ -46,6 +46,7 @@ describe("Data Fetching suite", () => {
       $data = testData;
     }, 20);
     await waitForElementToBeRemoved(isLoading);
+    await screen.findByText("test3");
     expect(document.body.innerHTML).toMatchSnapshot();
   });
 
