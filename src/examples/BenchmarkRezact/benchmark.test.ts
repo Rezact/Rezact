@@ -122,6 +122,20 @@ describe("Benchmark Suite", () => {
     expect(tbody.children[0].textContent.slice(0, 4)).toBe("2001");
     expect(tbody.children[999].textContent.slice(0, 4)).toBe("3000");
   });
+
+  it("Clears Rows Again", async () => {
+    screen.getByRole("button", { name: /Clear/i }).click();
+    const tbody = document.querySelector("tbody");
+    await waitFor(() => expect(tbody.children).toHaveLength(0));
+  });
+
+  it("Creates Another 1000 rows", async () => {
+    screen.getByText(/Create 1,000 rows/i).click();
+    const tbody = document.querySelector("tbody");
+    await waitFor(() => expect(tbody.childElementCount).toBe(1000));
+    expect(tbody.children[0].textContent[0]).toBe("3");
+    expect(tbody.children[999].textContent.slice(0, 4)).toBe("4000");
+  });
 });
 
 // function delay(n) {
