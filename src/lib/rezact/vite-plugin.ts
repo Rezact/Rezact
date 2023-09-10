@@ -290,6 +290,19 @@ function compileRezact(ast) {
         ) {
           tackOnDotVee(prop.value);
         }
+
+        if (
+          prop.value &&
+          prop.value.type &&
+          prop.value.type === "ArrayExpression" &&
+          !isAttributeArg(ancestors)
+        ) {
+          prop.value.elements.forEach((elem) => {
+            if (elem.type === "Identifier" && elem.name[0] === "$") {
+              tackOnDotVee(elem);
+            }
+          });
+        }
       });
     },
 

@@ -72,5 +72,13 @@ router.addRoute(
   () => import("src/examples/DataFetching/DataFetching")
 );
 
-router.addRoute("/forms", () => import("src/examples/Forms/UncontrolledForms"));
+router.addRoute(
+  "/uncontrolled-forms",
+  () => import("src/examples/Forms/UncontrolledForms")
+);
+
+router.addRoute(
+  "/controlled-forms",
+  () => import("src/examples/Forms/ControlledForms")
+);
 export { router };

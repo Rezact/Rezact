@@ -65,11 +65,10 @@ export class MapState extends BaseState {
   }
 
   toJson() {
-    return this.value.map((thisVal) =>
-      thisVal.value !== undefined && thisVal.value !== null
-        ? thisVal.getValue()
-        : thisVal
-    );
+    return this.value.map((thisVal) => {
+      if (thisVal.toJson) return thisVal.toJson();
+      thisVal.getValue ? thisVal.getValue() : thisVal;
+    });
   }
 }
 

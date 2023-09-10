@@ -118,7 +118,7 @@ export function useInputs() {
   if (handleInputValue) return;
   handleInputValue = true;
   function getInputVal(elm: HTMLInputElement) {
-    const radioVal = elm.id || elm.value;
+    const radioVal = elm.value || elm.id;
     if (elm.type === "radio" && elm.checked) return radioVal;
     if (elm.type === "radio" && !elm.checked) return "";
     if (elm.type === "checkbox") return elm.checked;
@@ -128,7 +128,7 @@ export function useInputs() {
   }
 
   function setInputVal(elm: any, val: any) {
-    const radioVal = elm.id || elm.value;
+    const radioVal = elm.value || elm.id;
     if (elm.type === "radio" && val === radioVal) return (elm.checked = true);
     if (elm.type === "radio" && val !== radioVal) return (elm.checked = false);
     if (elm.type === "checkbox") return (elm.checked = !!val);
@@ -158,7 +158,8 @@ export function useInputs() {
 
   const attributeInputValueHandler = {
     matches: (_attrs, key, attrVal) =>
-      key === "value" && attrVal.state && handleInputValue,
+      (key === "value" && attrVal.state) ||
+      (key === "checked" && attrVal.state),
     handler: (elm, _key, attrVal, attrs) =>
       handleInputAttr(elm, attrVal, attrs),
   };

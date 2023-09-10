@@ -162,6 +162,21 @@ export class BaseState {
 
     return;
   }
+
+  toJson() {
+    if (this.value.state) return this.value.toJson();
+    if (typeof this.value === "object") {
+      const newObj = {};
+      Object.keys(this.value).map((key) => {
+        const val = this.value[key];
+        if (val.state) return (newObj[key] = val.toJson());
+        newObj[key] = val;
+      });
+      return newObj;
+    }
+
+    return this.getValue();
+  }
 }
 
 const computeSub = (obj) => obj.newState.setValue(obj.func(obj.deps));
