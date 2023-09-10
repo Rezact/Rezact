@@ -178,6 +178,8 @@ function isChildArg(ancestors) {
 }
 
 function wrapInSetValue(node, nestedMember = false) {
+  if (node.right?.type === "ArrayExpression") nestedMember = true;
+
   if (nestedMember) {
     const left = src.slice(node.left.start, node.left.end);
     const right = src.slice(node.right.start, node.right.end);

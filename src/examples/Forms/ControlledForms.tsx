@@ -49,9 +49,11 @@ export function Page() {
     $drone = "huey";
     $selectItem = "Opt 4";
 
-    $lineItems.push({ $item: "Apple0", $price: "10.00", $qty: "40" });
-    $lineItems.push({ $item: "Orange0", $price: "20.00", $qty: "50" });
-    $lineItems.push({ $item: "Lemon0", $price: "30.00", $qty: "60" });
+    $lineItems = [
+      { $item: "Apple0", $price: "10.00", $qty: "40" },
+      { $item: "Orange0", $price: "20.00", $qty: "50" },
+      { $item: "Lemon0", $price: "30.00", $qty: "60" },
+    ];
   };
 
   const textAreaRef = <textarea style="width: 100%; height: 300px;"></textarea>;
@@ -144,7 +146,7 @@ export function Page() {
         }
 
         return (
-          <div>
+          <div class="line-item">
             <input value={$line.$item} />
             <input value={$line.$price} />
             <input value={$line.$qty} />

@@ -1,6 +1,321 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Forms suite > clears the form when the reset button is clicked 1`] = `
+exports[`Controlled Forms suite > clears the form when the reset button is clicked 1`] = `
+"{
+  \\"firstName\\": \\"\\",
+  \\"lastName\\": \\"\\",
+  \\"age\\": \\"\\",
+  \\"children\\": [
+    \\"\\",
+    \\"\\",
+    \\"\\"
+  ],
+  \\"checkbox\\": {
+    \\"scales\\": false,
+    \\"horns\\": false
+  },
+  \\"radio\\": {
+    \\"drone\\": \\"\\"
+  },
+  \\"lineItems\\": [],
+  \\"selectItem\\": \\"\\"
+}"
+`;
+
+exports[`Controlled Forms suite > renders a form 1`] = `
+<body>
+  <form
+    id="test-form"
+  >
+    <h1>
+      Controlled Forms and Controls
+    </h1>
+    <label
+      for="firstname"
+    >
+      First Name
+    </label>
+    <input
+      id="firstname"
+    />
+    <label
+      for="lastname"
+    >
+      Last Name
+    </label>
+    <input
+      id="lastname"
+    />
+    <label
+      for="age"
+    >
+      age
+    </label>
+    <input
+      id="age"
+    />
+    <label
+      for="child1"
+    >
+      Child 1
+    </label>
+    <input
+      id="child1"
+    />
+    <label
+      for="child2"
+    >
+      Child 2
+    </label>
+    <input
+      id="child2"
+    />
+    <label
+      for="child3"
+    >
+      Child 3
+    </label>
+    <input
+      id="child3"
+    />
+    <fieldset>
+      <legend>
+        Choose your monsters features:
+      </legend>
+      <div>
+        <input
+          id="scales"
+          type="checkbox"
+        />
+        <label
+          for="scales"
+        >
+          Scales
+        </label>
+      </div>
+      <div>
+        <input
+          id="horns"
+          type="checkbox"
+        />
+        <label
+          for="horns"
+        >
+          Horns
+        </label>
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend>
+        Select a maintenance drone:
+      </legend>
+      <div>
+        <input
+          id="huey"
+          type="radio"
+          value="huey"
+        />
+        <label
+          for="huey"
+        >
+          Huey
+        </label>
+      </div>
+      <div>
+        <input
+          id="dewey"
+          type="radio"
+          value="dewey"
+        />
+        <label
+          for="dewey"
+        >
+          Dewey
+        </label>
+      </div>
+      <div>
+        <input
+          id="louie"
+          type="radio"
+          value="louie"
+        />
+        <label
+          for="louie"
+        >
+          Louie
+        </label>
+      </div>
+    </fieldset>
+    <!--start map-->
+    <div
+      class="line-item"
+    >
+      <input />
+      <input />
+      <input />
+    </div>
+    <div
+      class="line-item"
+    >
+      <input />
+      <input />
+      <input />
+    </div>
+    <div
+      class="line-item"
+    >
+      <input />
+      <input />
+      <input />
+    </div>
+    <!--end map-->
+    <label
+      for="select-field"
+    >
+      Selectable Input
+    </label>
+    <select
+      id="select-field"
+    >
+      <option>
+        Opt 1
+      </option>
+      <option>
+        Opt 2
+      </option>
+      <option>
+        Opt 3
+      </option>
+      <option>
+        Opt 4
+      </option>
+    </select>
+    <input
+      class=""
+      type="submit"
+      value="Submit"
+    />
+    <input
+      class=""
+      type="button"
+      value="Reset"
+    />
+    <button
+      type="button"
+    >
+      Update Form Data
+    </button>
+  </form>
+  <hr />
+  <p>
+    Form JSON Data:
+  </p>
+  <textarea
+    style="width: 100%; height: 300px;"
+  />
+  <!--signal-->
+</body>
+`;
+
+exports[`Controlled Forms suite > renders a form 2`] = `
+"{
+  \\"firstName\\": \\"John\\",
+  \\"lastName\\": \\"Smith\\",
+  \\"age\\": \\"30\\",
+  \\"children\\": [
+    \\"Bob\\",
+    \\"Sara\\",
+    \\"Joe\\"
+  ],
+  \\"checkbox\\": {
+    \\"scales\\": true,
+    \\"horns\\": false
+  },
+  \\"radio\\": {
+    \\"drone\\": \\"dewey\\"
+  },
+  \\"lineItems\\": [
+    {
+      \\"$item\\": \\"Apple\\",
+      \\"$price\\": \\"1.00\\",
+      \\"$qty\\": \\"4\\"
+    },
+    {
+      \\"$item\\": \\"Orange\\",
+      \\"$price\\": \\"2.00\\",
+      \\"$qty\\": \\"5\\"
+    },
+    {
+      \\"$item\\": \\"Lemon\\",
+      \\"$price\\": \\"3.00\\",
+      \\"$qty\\": \\"6\\"
+    }
+  ],
+  \\"selectItem\\": \\"Opt 2\\"
+}"
+`;
+
+exports[`Controlled Forms suite > updates the form when the update button is clicked 1`] = `
+"{
+  \\"firstName\\": \\"Jane\\",
+  \\"lastName\\": \\"Doe\\",
+  \\"age\\": \\"40\\",
+  \\"children\\": [
+    \\"Billy\\",
+    \\"Sally\\",
+    \\"Joey\\"
+  ],
+  \\"checkbox\\": {
+    \\"scales\\": false,
+    \\"horns\\": true
+  },
+  \\"radio\\": {
+    \\"drone\\": \\"huey\\"
+  },
+  \\"lineItems\\": [
+    {
+      \\"$item\\": \\"Apple0\\",
+      \\"$price\\": \\"10.00\\",
+      \\"$qty\\": \\"40\\"
+    },
+    {
+      \\"$item\\": \\"Orange0\\",
+      \\"$price\\": \\"20.00\\",
+      \\"$qty\\": \\"50\\"
+    },
+    {
+      \\"$item\\": \\"Lemon0\\",
+      \\"$price\\": \\"30.00\\",
+      \\"$qty\\": \\"60\\"
+    }
+  ],
+  \\"selectItem\\": \\"Opt 4\\"
+}"
+`;
+
+exports[`Controlled Forms suite > updates the text area when the form changes 1`] = `
+"{
+  \\"firstName\\": \\"Jane\\",
+  \\"lastName\\": \\"Doe\\",
+  \\"age\\": \\"40\\",
+  \\"children\\": [
+    \\"Sally\\",
+    \\"Bob\\",
+    \\"Joe\\"
+  ],
+  \\"checkbox\\": {
+    \\"scales\\": true,
+    \\"horns\\": true
+  },
+  \\"radio\\": {
+    \\"drone\\": \\"louie\\"
+  },
+  \\"lineItems\\": [],
+  \\"selectItem\\": \\"\\"
+}"
+`;
+
+exports[`Uncontrolled Forms suite > clears the form when the reset button is clicked 1`] = `
 "{
   \\"name\\": {
     \\"first\\": \\"\\",
@@ -37,7 +352,7 @@ exports[`Forms suite > clears the form when the reset button is clicked 1`] = `
 }"
 `;
 
-exports[`Forms suite > renders a form 1`] = `
+exports[`Uncontrolled Forms suite > renders a form 1`] = `
 <body>
   <form
     id="test-form"
@@ -271,7 +586,7 @@ exports[`Forms suite > renders a form 1`] = `
 </body>
 `;
 
-exports[`Forms suite > renders a form 2`] = `
+exports[`Uncontrolled Forms suite > renders a form 2`] = `
 "{
   \\"name\\": {
     \\"first\\": \\"John\\",
@@ -311,7 +626,7 @@ exports[`Forms suite > renders a form 2`] = `
 }"
 `;
 
-exports[`Forms suite > updates the form when the update button is clicked 1`] = `
+exports[`Uncontrolled Forms suite > updates the form when the update button is clicked 1`] = `
 "{
   \\"name\\": {
     \\"first\\": \\"dude\\",
@@ -351,7 +666,7 @@ exports[`Forms suite > updates the form when the update button is clicked 1`] = 
 }"
 `;
 
-exports[`Forms suite > updates the text area when the form changes 1`] = `
+exports[`Uncontrolled Forms suite > updates the text area when the form changes 1`] = `
 "{
   \\"name\\": {
     \\"first\\": \\"Jane\\",
