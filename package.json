@@ -1,8 +1,8 @@
 {
   "name": "@rezact/rezact",
-  "version": "1.0.15-beta.1",
+  "version": "1.0.15-beta.2",
   "type": "module",
-  "description": " A JavaScript Framework/Library (call it what you want) that blends the best of svelte, solid, react, and many others.",
+  "description": "A JavaScript Framework/Library (call it what you want) that blends the best of svelte, solid, react, and many others.",
   "main": "index.js",
   "scripts": {
     "dev": "vite",
@@ -22,7 +22,7 @@
     "Framework"
   ],
   "author": "Zach Lankton",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/rezact/rezact/issues"
   },
