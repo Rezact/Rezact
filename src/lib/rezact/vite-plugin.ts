@@ -31,10 +31,16 @@ function wrapInUseMapState(node) {
   magicString.appendRight(node.end, `)`);
 }
 
-function findDependencies(node, excludeDeps = {}) {
+function findDependencies(startingNode, excludeDeps = {}) {
   const assignments: any = { ...excludeDeps };
   const identifiers: any = {};
-  walk.ancestor(node, {
+  let arrowFunctionParams = [];
+
+  walk.ancestor(startingNode, {
+    ArrowFunctionExpression(node: any) {
+      node.params.forEach((param) => arrowFunctionParams.push(param.name));
+    },
+
     AssignmentExpression(node: any) {
       if (node.left.name && node.left.name[0] !== "$") return;
       assignments[node.left.name] = true;
@@ -54,13 +60,23 @@ function findDependencies(node, excludeDeps = {}) {
       ] = `${node.object.name}.getValue().${node.property.name}`;
     },
 
-    Identifier(node: any, _state, ancestors: any) {
+    Identifier(node: any) {
       // if (hasAncestor(ancestors, "MemberExpression")) return;
-      if (ancestors.at(-2)?.type === "ArrowFunctionExpression") return;
       if (node.name && node.name[0] !== "$") return;
       identifiers[node.name] = true;
     },
   });
+
+  // remove dependencies that are arguments to the arrow function
+  arrowFunctionParams.forEach((param) => {
+    delete identifiers[param];
+    Object.keys(identifiers).forEach((key) => {
+      const val = identifiers[key];
+      if (typeof val === "string" && val.includes(param))
+        delete identifiers[key];
+    });
+  });
+
   const ids = Object.keys(identifiers);
   const assigns = Object.keys(assignments);
   return ids
