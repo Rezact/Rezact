@@ -61,6 +61,7 @@ export class MapState extends BaseState {
     if (index < 0) return;
     if (valToDelete.elmRef) valToDelete.elmRef.remove();
     this.value.splice(index, 1);
+    this.alertSubs(this.value);
     setTimeout(() => this.updateList(this.func), 0);
   }
 
@@ -159,6 +160,7 @@ const handleArray = (parent: any, child: any) => {
   const frac = frag.appendChild.bind(frag);
   const parentNode = createComment("start map");
   const endNode = createComment("end map");
+  const placeHolder = createComment("map-placeholder");
 
   frac(parentNode);
   frac(endNode);
@@ -166,13 +168,22 @@ const handleArray = (parent: any, child: any) => {
   child.subscribe((newVal: any) => {
     // if (!parentNode.isConnected || !endNode.isConnected) return;
     if (child.previousChildLen === 0) {
+      if (parentNode.parentNode) parent.insertBefore(placeHolder, parentNode);
+
       frac(parentNode);
       frac(endNode);
     }
     removeStaleChildren(parentNode, endNode, parent, child);
     addChildren(newVal, parentNode);
-    if (child.previousChildLen === 0) parent.appendChild(frag);
+    if (child.previousChildLen === 0) {
+      if (placeHolder.parentNode) {
+        parent.insertBefore(frag, placeHolder);
+      } else {
+        parent.appendChild(frag);
+      }
+    }
     child.previousChildLen = child.value.length;
+    placeHolder.remove();
   });
 
   child.previousChildLen = child.value.length;
