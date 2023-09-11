@@ -16,8 +16,13 @@ let functionsToRun: any = [];
 
 function wrapInUseSignal(node) {
   signalsUsed.BaseState = true;
+  node.wrappedInBaseState = true;
   magicString.appendLeft(node.start, `new BaseState(`);
-  magicString.appendRight(node.end, `)`);
+  if (node.name && node.name[0] === "$") {
+    magicString.appendRight(node.end, `.getValue())`);
+  } else {
+    magicString.appendRight(node.end, `)`);
+  }
 }
 
 function wrapInUseMapState(node) {
@@ -109,6 +114,7 @@ function wrapInCreateMapped(node, explicitDeps = null, excludeDeps = {}) {
 }
 
 function tackOnDotVee(node) {
+  if (node.wrappedInBaseState) return;
   magicString.appendRight(node.end, `.getValue()`);
 }
 
