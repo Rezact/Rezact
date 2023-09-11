@@ -574,7 +574,7 @@ function rezact(): PluginOption {
       if (id.includes("mapState.ts")) return;
       src = _src;
       magicString = null;
-      lastImport = null;
+      lastImport = { end: 0 };
       importsUsed = {};
       functionsToRun = [];
       // console.log(id);
@@ -608,7 +608,7 @@ function rezact(): PluginOption {
       if (lastImport)
         magicString.appendRight(
           lastImport.end,
-          `\n${functionsToRun.join("\n")}`
+          `\n${functionsToRun.join("\n")}\n`
         );
       return {
         code: magicString.toString(),
