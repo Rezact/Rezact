@@ -84,14 +84,16 @@ function wrapInCreateComputedAttribute(
   explicitDeps = null,
   excludeDeps = {}
 ) {
-  const deps = explicitDeps || findDependencies(node, excludeDeps);
-  if (deps.length === 0) return;
+  const _deps = explicitDeps || findDependencies(node, excludeDeps);
+  if (_deps.length === 0) return;
+  const deps = _deps.map((dep) => dep.dep || dep);
+  const args = _deps.map((dep) => dep.arg || dep);
   signalsUsed.createComputedAttribute = true;
   magicString.appendLeft(
     node.start,
     `createComputedAttribute(([${deps.join(",")}]) => `
   );
-  magicString.appendRight(node.end, `, [${deps.join(",")}])`);
+  magicString.appendRight(node.end, `, [${args.join(",")}])`);
 }
 
 function wrapInCreateMapped(node, explicitDeps = null, excludeDeps = {}) {
@@ -372,6 +374,9 @@ function compileRezact(ast) {
         node.property.name[0] === "$"
       ) {
         tackOnDotVee(node.object);
+
+        if (ancestors.at(-3).type === "TemplateLiteral")
+          tackOnDotVee(node.property);
 
         if (!isChildArg(ancestors) && !isAttributeArg(ancestors))
           tackOnDotVee(node.property);
