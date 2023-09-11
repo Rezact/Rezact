@@ -1,7 +1,7 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Data Fetching suite > renders loading state while 'fetching' 1`] = `"<h1>Data Fetching</h1><p>Loading</p><span></span><!--signal--><!--start map--><!--end map-->"`;
+exports[`Data Fetching suite > renders loading state while 'fetching' 1`] = `"<h1>Data Fetching</h1><p>Loading</p><span></span><!--start map--><!--end map--><!--signal-->"`;
 
-exports[`Data Fetching suite > shows data once loaded 1`] = `"<h1>Data Fetching</h1><span></span><span></span><!--signal--><!--start map--><p>test1</p><p>test2</p><p>test3</p><!--end map-->"`;
+exports[`Data Fetching suite > shows data once loaded 1`] = `"<h1>Data Fetching</h1><span></span><span></span><!--start map--><p>test1</p><p>test2</p><p>test3</p><!--end map--><!--signal-->"`;
 
-exports[`Data Fetching suite > shows error state when fetch failed 1`] = `"<h1>Data Fetching</h1><span></span><p>Error</p><!--signal--><!--start map--><!--end map-->"`;
+exports[`Data Fetching suite > shows error state when fetch failed 1`] = `"<h1>Data Fetching</h1><span></span><p>Error</p><!--start map--><!--end map--><!--signal-->"`;
