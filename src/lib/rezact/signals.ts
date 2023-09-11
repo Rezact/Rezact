@@ -9,6 +9,7 @@ import {
   createElement,
   createTextNode,
 } from ".";
+import { MapState } from "./mapState";
 
 let batchSubs = [];
 let batchUnsubs = [];
@@ -182,7 +183,8 @@ export class BaseState {
 const computeSub = (obj) => obj.newState.setValue(obj.func(obj.deps));
 
 export function createComputed(func: (obj: any) => {}, deps: any[]) {
-  const newState: any = new BaseState(func(deps));
+  const NewState = deps[0] instanceof MapState ? MapState : BaseState;
+  const newState: any = new NewState(func(deps));
   newState.computed = true;
   const depsLen = deps.length;
   for (let i = 0; i < depsLen; i++) {
