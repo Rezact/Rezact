@@ -35,6 +35,7 @@ export class MapState extends BaseState {
   }
 
   updateList(func) {
+    if (func === undefined) return;
     const len = this.value.length;
     for (let idx = 0; idx < len; idx++) {
       let item = this.value[idx];
