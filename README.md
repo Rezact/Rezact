@@ -2,18 +2,44 @@
 
 A JavaScript UI Framework/Library (call it what you want) that blends the best of svelte, solid, react, and many others.
 
-When you need you app to react exact, reach for Rezact.
+When you need your app to react exact, reach for Rezact.
+
+```jsx
+export default function App() {
+  let $counter = 0;
+
+  return (
+    <>
+      <h1>Hello World</h1>
+      <p>{$counter}</p>
+
+      <button onClick={() => $counter--}>Dec</button>
+      <button onClick={() => $counter++}>Inc</button>
+    </>
+  );
+}
+```
 
 ## Features
 
 - Blazingly Fast
-- Lightweight
 - Tree Shakable
+- Lightweight Bundles
+  - as low as 1.7kB gzipped for a basic Hello World
 - NO VDOM
 - Fine Grained DOM Updates
 - Functional JSX Components
+- Built in Client Side Router with Dynamic Routes and Imports
+- Support for Layouts and Nested Layouts
+- Built in support for uncontrolled/controlled forms/inputs
+- Built in Form Validation Library
+- Built in support for MDX
+- Built in support for Scoped Styles using Shadow DOM
 - Svelte like state management enabled by the compiler
 - SolidJS like signal fine grained reactivity
+- Customizeable Render Engine
+  - add custom attributes to native elements
+  - add custom child element handlers
 
 ---
 

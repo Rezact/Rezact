@@ -1,6 +1,6 @@
 {
   "name": "@rezact/rezact",
-  "version": "1.0.15-beta.2",
+  "version": "1.0.15-beta.3",
   "type": "module",
   "description": "A JavaScript Framework/Library (call it what you want) that blends the best of svelte, solid, react, and many others.",
   "main": "index.js",
