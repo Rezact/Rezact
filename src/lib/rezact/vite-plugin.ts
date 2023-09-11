@@ -358,6 +358,17 @@ function compileRezact(ast) {
         node.object.type === "Identifier" &&
         node.object.name[0] === "$" &&
         node.property.type === "Identifier" &&
+        node.property.name === "length" &&
+        ancestors.length > 2 &&
+        ancestors.at(-2).callee?.name === "xCreateElement"
+      ) {
+        wrapInCreateComputed(node);
+      }
+
+      if (
+        node.object.type === "Identifier" &&
+        node.object.name[0] === "$" &&
+        node.property.type === "Identifier" &&
         node.property.name[0] === "$"
       ) {
         tackOnDotVee(node.object);
@@ -514,10 +525,19 @@ function compileRezact(ast) {
       lastImport = node;
     },
 
-    BinaryExpression(node: any) {
+    BinaryExpression(node: any, _state, ancestors: any) {
       const name = node.left.name;
       if (name && name[0] === "$") {
         tackOnDotVee(node.left);
+      }
+
+      if (
+        node.left.type === "Identifier" &&
+        node.left.name[0] === "$" &&
+        ancestors.length > 2 &&
+        ancestors.at(-2).callee?.name === "xCreateElement"
+      ) {
+        wrapInCreateComputed(node);
       }
     },
 
