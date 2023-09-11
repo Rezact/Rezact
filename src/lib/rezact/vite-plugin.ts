@@ -49,8 +49,9 @@ function findDependencies(node, excludeDeps = {}) {
       ] = `${node.object.name}.getValue().${node.property.name}`;
     },
 
-    Identifier(node: any, _state) {
+    Identifier(node: any, _state, ancestors: any) {
       // if (hasAncestor(ancestors, "MemberExpression")) return;
+      if (ancestors.at(-2)?.type === "ArrowFunctionExpression") return;
       if (node.name && node.name[0] !== "$") return;
       identifiers[node.name] = true;
     },
