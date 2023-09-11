@@ -38,21 +38,9 @@ export function Page() {
 
       <fieldset>
         <legend>Filter:</legend>
-
-        <div>
-          <input type="radio" id="all" value="all" checked={$filter} />
-          <label for="all">Show All</label>
-        </div>
-
-        <div>
-          <input type="radio" id="comp" value="completed" checked={$filter} />
-          <label for="comp">Show Completed</label>
-        </div>
-
-        <div>
-          <input type="radio" id="todo" value="todo" checked={$filter} />
-          <label for="todo">Show Todo</label>
-        </div>
+        <Radio label="Show All" id="all" checked={$filter} />
+        <Radio label="Show Completed" id="completed" checked={$filter} />
+        <Radio label="Show Todo" id="todo" checked={$filter} />
       </fieldset>
 
       {$filteredTodos.map(($todo, $idx) => (
@@ -72,5 +60,14 @@ export function Page() {
 
       <button onClick={clearCompleted}>Remove Completed</button>
     </>
+  );
+}
+
+function Radio({ label, id, checked }) {
+  return (
+    <div>
+      <input type="radio" id={id} value={id} checked={checked} />
+      <label for={id}>{label}</label>
+    </div>
   );
 }
