@@ -131,11 +131,54 @@ function wrapInCreateMapped(node, explicitDeps = null, excludeDeps = {}) {
 
 function tackOnDotVee(node) {
   if (node.wrappedInBaseState) return;
+  node.vTackedOn = true;
   magicString.appendRight(node.end, `.getValue()`);
 }
 
 function hasAncestor(ancestors, type) {
   return ancestors.map((a) => a.type).indexOf(type) > -1;
+}
+
+function getNearestAncestor(ancestors, type) {
+  const ancestorLen = ancestors.length - 1;
+  for (let i = ancestorLen; i > -1; i--) {
+    const anc = ancestors[i];
+    if (anc.type === type) return { node: anc, distance: ancestorLen - i };
+  }
+  return { node: null, distance: Infinity };
+}
+
+function functionReturnsJSX(ancestors) {
+  const funcDec = getNearestAncestor(ancestors, "FunctionDeclaration");
+  const asyncFunc = getNearestAncestor(ancestors, "AsyncFunctionDeclaration");
+  const func =
+    funcDec.distance < asyncFunc.distance ? funcDec.node : asyncFunc.node;
+
+  if (!func) return false;
+  if (func.body.type === "BlockStatement") {
+    const returnStatement = func.body.body.find(
+      (statement) => statement.type === "ReturnStatement"
+    );
+
+    if (!returnStatement) return false;
+    if (returnStatement.argument.type === "JSXElement") return true;
+    if (returnStatement.argument.type === "CallExpression") {
+      if (returnStatement.argument.callee.name === "xCreateElement")
+        return true;
+    }
+    if (returnStatement.argument.type === "Identifier") {
+      const returnStatement = func.body.body.find(
+        (statement) => statement.type === "ReturnStatement"
+      );
+      if (!returnStatement) return false;
+      if (returnStatement.argument.type === "JSXElement") return true;
+      if (returnStatement.argument.type === "CallExpression") {
+        if (returnStatement.argument.callee.name === "xCreateElement")
+          return true;
+      }
+    }
+  }
+  return false;
 }
 
 // functions that I wrote that seem like they will probably come in handy,
@@ -333,9 +376,16 @@ function compileRezact(ast) {
       });
     },
 
-    UnaryExpression(node: any) {
+    UnaryExpression(node: any, _state, ancestors: any) {
       if (!node?.argument?.name) return;
-      if (node.argument.name[0] === "$") {
+
+      if (
+        node.argument.name[0] === "$" &&
+        inFunction(ancestors, "xCreateElement") &&
+        ancestors.at(-2).type === "LogicalExpression" &&
+        ancestors.at(-2).operator === "&&"
+      ) {
+        tackOnDotVee(node.argument);
       }
     },
 
@@ -362,7 +412,13 @@ function compileRezact(ast) {
     },
 
     MemberExpression(node: any, _state, ancestors: any) {
-      const propertyExcludeList = ["toJson", "map", "deleteValue", ...arrProps];
+      const propertyExcludeList = [
+        "toJson",
+        "map",
+        "refresh",
+        "deleteValue",
+        ...arrProps,
+      ];
       let isInAssignment = false;
       let anceLen = ancestors.length - 1;
       while (anceLen > -1) {
@@ -375,6 +431,16 @@ function compileRezact(ast) {
           break;
         }
         break;
+      }
+
+      if (
+        node.object.type === "Identifier" &&
+        node.object.name[0] === "$" &&
+        node.property.type === "Literal" &&
+        node.computed === true &&
+        node.optional === false
+      ) {
+        tackOnDotVee(node.object);
       }
 
       if (!node.property || !node.property.type || !node.property.name) return;
@@ -540,7 +606,10 @@ function compileRezact(ast) {
         !hasAncestor(ancestors, "TemplateLiteral")
       ) {
         wrapInCreateComputedAttribute(node);
-      } else if (!hasAncestor(ancestors, "TemplateLiteral")) {
+      } else if (
+        !hasAncestor(ancestors, "TemplateLiteral") &&
+        functionReturnsJSX(ancestors)
+      ) {
         wrapInCreateComputed(node);
       }
       if (!node?.test?.name) return;

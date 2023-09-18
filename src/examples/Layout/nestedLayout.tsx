@@ -54,6 +54,9 @@ export function MyLayout({ Component, pageProps }: any) {
           <a href="/data-fetching">Data Fetching</a>
         </li>
         <li>
+          <a href="/todos">Todos</a>
+        </li>
+        <li>
           <a href="/asdfasdfasdfasdf">A Route that does not exist</a>
         </li>
       </ul>

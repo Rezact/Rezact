@@ -55,7 +55,7 @@ Rezact combines a minimal framework with a compiler to bring the best of both. T
 
 ## Getting Start with Rezact
 
-Quick Start Single Component Example Template:
+Quick Start Single Bare Minimum:
 
 ```bash
 npx degit https://github.com/Rezact/rezact-quick-start my-rezact-project

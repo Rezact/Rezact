@@ -72,6 +72,13 @@ export class MapState extends BaseState {
       thisVal.getValue ? thisVal.getValue() : thisVal;
     });
   }
+
+  refresh = () => {
+    setTimeout(() => {
+      this.updateList(this.func);
+      this.alertSubs(this.value);
+    }, 10);
+  };
 }
 
 const addChildren = (values: any, parentNode) => {

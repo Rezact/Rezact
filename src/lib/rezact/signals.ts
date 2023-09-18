@@ -270,7 +270,11 @@ function handleTextNode(parent: any, child: any) {
 addAfterRenderHook(() => {
   subscFunctionsArr.forEach((func: any) => {
     func.stateObj.subs.set(func, true);
-    func(func.stateObj.getValue());
+    if (typeof func === "object") {
+      func.funcRef(func.obj);
+    } else {
+      func(func.stateObj.getValue());
+    }
   });
   subscFunctionsArr = [];
 });

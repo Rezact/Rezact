@@ -1,10 +1,10 @@
-export function Page() {
-  let $todos: any = [
-    { $text: "Learn Rezact", $completed: false },
-    { $text: "Learn TypeScript", $completed: true },
-    { $text: "Build something awesome", $completed: false },
-  ];
+let $todos: any = [
+  { $text: "Learn Rezact", $completed: false },
+  { $text: "Learn TypeScript", $completed: true },
+  { $text: "Build something awesome", $completed: false },
+];
 
+export function Page() {
   let $filter = "all";
   let $filteredTodos = $todos.filter((todo) => {
     if ($filter === "all") return true;
@@ -12,23 +12,25 @@ export function Page() {
     if ($filter === "todo") return !todo.$completed;
   });
 
-  let $newTodoTitle = "";
+  let $newTodoText = "";
 
   const addTodo = (ev) => {
     ev.preventDefault();
-    if ($newTodoTitle.trim() === "") return;
+    if ($newTodoText.trim() === "") return;
 
-    $todos.push({ $text: $newTodoTitle, $completed: false });
-    $newTodoTitle = "";
-  };
-
-  const deleteTodo = (todo) => {
-    $todos.deleteValue(todo.value);
+    $todos.push({ $text: $newTodoText, $completed: false });
+    $newTodoText = "";
   };
 
   const clearCompleted = () => {
     const completed = $todos.filter((todo) => todo.$completed);
     completed.forEach((todo) => $todos.deleteValue(todo));
+  };
+
+  const checkAll = () => {
+    const areAllMarked = $todos.every((todo) => todo.$completed);
+    $todos.forEach((todo) => (todo.$completed = !areAllMarked));
+    $todos.refresh();
   };
 
   return (
@@ -44,22 +46,68 @@ export function Page() {
       </fieldset>
 
       {$filteredTodos.map(($todo, $idx) => (
-        <div
-          style={`${$todo.$completed ? "text-decoration: line-through;" : ""}`}
-        >
-          {$idx + 1} - {$todo.$text}
-          <input type="checkbox" checked={$todo.$completed} />
-          <button onClick={() => deleteTodo($todo)}>X</button>
-        </div>
+        <TodoItem todo={$todo} idx={$idx} />
       ))}
 
       <form onSubmit={addTodo}>
-        <input value={$newTodoTitle} />
+        <input placeholder="Add Todo" value={$newTodoText} />
         <button onClick={addTodo}>Add</button>
       </form>
 
       <button onClick={clearCompleted}>Remove Completed</button>
+      <button onClick={checkAll}>Check All</button>
     </>
+  );
+}
+
+let currentEditingTodo = null;
+function editModeClickListener(ev) {
+  if (ev.target === currentEditingTodo.editInput) return;
+  currentEditingTodo.editing.setValue(false);
+  document.removeEventListener("click", editModeClickListener);
+}
+
+function TodoItem(props) {
+  const $todo = props.todo;
+  const $idx = props.idx;
+  let $editing = false;
+
+  const deleteTodo = (todo) => {
+    $todos.deleteValue(todo.value);
+  };
+
+  const closeOnEnter = (ev) => {
+    if (ev.key !== "Enter") return;
+    $editing = false;
+    document.removeEventListener("click", editModeClickListener);
+  };
+
+  const editInput = <input onKeyDown={closeOnEnter} value={$todo.$text} />;
+
+  const setEditing = () => {
+    $editing = !$editing;
+    const editing = $editing;
+    currentEditingTodo = { editInput, editing };
+    document.addEventListener("click", editModeClickListener);
+    editInput.setSelectionRange(0, editInput.value.length);
+    editInput.focus();
+  };
+
+  return (
+    <div style={`${$todo.$completed ? "text-decoration: line-through;" : ""}`}>
+      {$editing && editInput}
+      {!$editing && (
+        <span onDblClick={setEditing}>
+          {$idx + 1} - {$todo.$text}
+        </span>
+      )}
+      <input
+        type="checkbox"
+        checked={$todo.$completed}
+        onClick={$todos.refresh}
+      />
+      <button onClick={() => deleteTodo($todo)}>X</button>
+    </div>
   );
 }
 

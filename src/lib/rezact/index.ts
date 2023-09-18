@@ -35,6 +35,8 @@ export const addAttributeHandler = (item) => attributeHandlers.unshift(item);
 
 const evKeys = {
   onClick: "click",
+  onDblClick: "dblclick",
+  onKeyDown: "keydown",
   onSubmit: "submit",
   onChange: "change",
   onInput: "input",
