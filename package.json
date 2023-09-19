@@ -2,7 +2,7 @@
   "name": "@rezact/rezact",
   "version": "1.0.15-beta.3",
   "type": "module",
-  "description": "A JavaScript Framework/Library (call it what you want) that blends the best of svelte, solid, react, and many others.",
+  "description": "Intuitive Reactivity, Simplified State. Embrace a modern UI framework that encourages direct data mutations, offers module-level reactivity, and simplifies component design. With Rezact, you get the power of reactivity without the boilerplate. Dive into a seamless development experience tailored for today's web.",
   "main": "index.js",
   "scripts": {
     "dev": "vite",
