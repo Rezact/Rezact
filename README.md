@@ -2,7 +2,7 @@
 
 ## Intuitive Reactivity, Simplified State.
 
-Embrace a modern UI framework that encourages direct data mutations, offers module-level state variables, and simplifies component design. With Rezact, you get the power of reactivity without the boilerplate. Dive into a seamless development experience tailored for today's web.
+Embrace a modern UI framework that encourages direct data mutations, offers module-level reactivity, and simplifies component design. With Rezact, you get the power of reactivity without the boilerplate. Dive into a seamless development experience tailored for today's web.
 
 ```jsx
 export default function App() {
@@ -106,7 +106,7 @@ $count++;
 $todos.push({ $text: "This is awesome!", $completed: false });
 ```
 
-## 3. Module-Level State Variables
+## 3. Module-Level Reactivity
 
 Rezact allows you to declare reactive variables outside of components, making them module-level. This means you can share state across multiple components without resorting to props drilling or context providers.
 
@@ -163,6 +163,8 @@ Rezact allows you to derive values from reactive variables. These derived values
 let $filteredTodos = $todos.filter(todo => ...);
 ```
 
+In the example above, $filteredTodos will automatically update whenever $todos changes.
+
 ## 7. Reactive Statements (like Svelte!)
 
 Rezact uses a concise and intuitive way to respond to changes in reactive data: reactive statements. These statements automatically execute whenever the data they depend on changes.
@@ -177,8 +179,6 @@ $: {
   console.log(`this will also be logged whenever count changes`);
 }
 ```
-
-In the example above, $filteredTodos will automatically update whenever $todos changes.
 
 ## Conclusion
 
@@ -275,7 +275,7 @@ Key Utility Functions:
 
 ## How to Use Uncontrolled Components in Rezact
 
-    Declare Your Form Elements: Create your form with various input types. Remember, you don't need to bind them to a state variable.
+Declare Your Form Elements: Create your form with various input types. Remember, you don't need to bind them to a state variable.
 
 ```jsx
 <input id="firstname" name="name.first" value="John" />
