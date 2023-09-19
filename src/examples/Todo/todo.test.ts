@@ -3,7 +3,6 @@ import { screen, waitFor } from "@testing-library/dom";
 import { render } from "rezact";
 import { Page } from "./Todo";
 import userEvent from "@testing-library/user-event";
-import { wait } from "node_modules/@testing-library/user-event/dist/types/utils";
 
 const user = userEvent.setup();
 
@@ -235,7 +234,3 @@ describe("Todo suite", () => {
     expect(document.body.innerHTML).toMatchSnapshot();
   });
 });
-
-function delay(n) {
-  return new Promise((res) => setTimeout(res, n));
-}
