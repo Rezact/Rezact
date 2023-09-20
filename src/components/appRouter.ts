@@ -59,4 +59,9 @@ router.addRoute(
 
 router.addRoute("/todos", () => import("src/examples/Todo/Todo"));
 
+router.addRoute(
+  "/reactive-computations",
+  () => import("src/examples/ReactiveComputations/ReactiveComp")
+);
+
 export { router };

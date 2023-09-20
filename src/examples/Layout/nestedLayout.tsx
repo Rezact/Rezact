@@ -57,6 +57,9 @@ export function MyLayout({ Component, pageProps }: any) {
           <a href="/todos">Todos</a>
         </li>
         <li>
+          <a href="/reactive-computations">Reactive Computations</a>
+        </li>
+        <li>
           <a href="/asdfasdfasdfasdf">A Route that does not exist</a>
         </li>
       </ul>

@@ -334,6 +334,8 @@ function compileRezact(ast) {
       if (name[0] === "$") {
         if (node.init.type === "Literal") wrapInUseSignal(node.init);
         if (node.init.type === "UnaryExpression") wrapInUseSignal(node.init);
+        if (node.init.type === "BinaryExpression")
+          wrapInCreateComputed(node.init);
         if (node.init.type === "ArrayExpression") wrapInUseMapState(node.init);
         if (node.init.type === "CallExpression")
           wrapInCreateComputed(node.init);
