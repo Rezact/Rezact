@@ -343,7 +343,7 @@ There are lots of examples in the `src/examples` folder in this repo: https://gi
 
 ## Why the name Rezact?
 
-The name "Rezact" is a fusion of the words "React" and "Exact." While "React" nods to the foundational concepts familiar to many frontend developers, "Exact" underscores our framework's commitment to precision, clarity, and a streamlined approach. Rezact aims to offer developers an experience that is both familiar and refined, encapsulating the best of React-like reactivity with a more precise and predictable toolset.
+The name "Rezact" is a fusion of the words "React" and "Exact." While "React" nods to the foundational concepts familiar to many frontend developers, "Exact" underscores our framework's commitment to precision, clarity, and a streamlined approach. Rezact aims to offer developers an experience that is both familiar and refined.
 
 ## Does it work with Tailwind?
 
