@@ -9,7 +9,6 @@ import {
   createElement,
   createTextNode,
 } from ".";
-import { MapState } from "./mapState";
 
 let batchSubs = [];
 let batchUnsubs = [];
@@ -180,11 +179,15 @@ export class BaseState {
   }
 }
 
-const computeSub = (obj) => obj.newState.setValue(obj.func(obj.deps));
+export const computeSub = (obj) => obj.newState.setValue(obj.func(obj.deps));
 
-export function createComputed(func: (obj: any) => {}, deps: any[]) {
-  const NewState = deps[0] instanceof MapState ? MapState : BaseState;
-  const newState: any = new NewState(func(deps));
+export let createComputed = _createComputed;
+export function overrideCreateComputed(func: any) {
+  createComputed = func;
+}
+
+function _createComputed(func: (obj: any) => {}, deps: any[]) {
+  const newState: any = new BaseState(func(deps));
   newState.computed = true;
   const depsLen = deps.length;
   for (let i = 0; i < depsLen; i++) {

@@ -1,4 +1,9 @@
-import { BaseState, createComputed } from "./signals";
+import {
+  BaseState,
+  computeSub,
+  createComputed,
+  overrideCreateComputed,
+} from "./signals";
 import {
   addAppendChildHook,
   appendChild,
@@ -10,6 +15,19 @@ import {
   createElement,
   isArray,
 } from ".";
+
+overrideCreateComputed(_createComputed);
+
+function _createComputed(func: (obj: any) => {}, deps: any[]) {
+  const NewState = deps[0] instanceof MapState ? MapState : BaseState;
+  const newState: any = new NewState(func(deps));
+  newState.computed = true;
+  const depsLen = deps.length;
+  for (let i = 0; i < depsLen; i++) {
+    deps[i].subscribe({ funcRef: computeSub, obj: { newState, func, deps } });
+  }
+  return newState;
+}
 
 export class MapState extends BaseState {
   constructor(st: any) {
