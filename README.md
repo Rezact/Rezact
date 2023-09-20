@@ -20,11 +20,43 @@ export default function App() {
 }
 ```
 
+---
+
+# Table of Contents
+
+- [Intro](#reactivity-without-the-hooks-powered-by-jsx-and-function-components)
+  - [Key Features](#key-features)
+  - [Why Choose Rezact](#why-choose-rezact)
+- [Getting Started](#getting-start-with-rezact)
+- [Understanding Rezact's Reactivity System](#understanding-rezacts-reactivity-system)
+  - [1. Reactive Variables](#1-reactive-variables)
+  - [2. Direct Data Mutation](#2-direct-data-mutation)
+  - [3. Module Level Reactivity](#3-module-level-reactivity)
+  - [4. Automatic List Handling](#4-automatic-list-handling-in-rezact)
+  - [5. Two-Way Data Binding](#5-two-way-data-binding)
+  - [6. Reactive Computations](#6-reactive-computations)
+  - [7. Reactive Statements](#7-reactive-statements-like-svelte)
+- [Rezact "Stores": Simplified State Management](#rezact-stores-simplified-state-management)
+  - [Creating a Store](#creating-a-store)
+  - [Using the Store](#using-the-store)
+  - [Modifying the Store](#modifying-the-store)
+  - [Benefits of Rezact Stores](#benefits-of-rezact-stores)
+- [Uncontrolled Components](#rezacts-uncontrolled-components)
+  - [What are Uncontrolled Components?](#what-are-uncontrolled-components)
+  - [Rezact's Approach to Uncontrolled Components](#rezacts-approach-to-uncontrolled-components)
+- [More Examples](#more-examples)
+- [FAQ](#faq)
+  - [Why the name Rezact?](#why-the-name-rezact)
+  - [Does it work with Tailwind?](#does-it-work-with-tailwind)
+- [Contributing](#getting-started-with-contributing-to-this-package)
+
+---
+
 ## Reactivity Without the Hooks, Powered by JSX and Function Components
 
 Rezact redefines web development by offering unparalleled reactivity without the intricacies of hooks, all while harnessing the expressive power of JSX and function components. Designed for the modern web, Rezact bridges the gap between simplicity and power, allowing developers to craft dynamic user interfaces with ease and precision.
 
-Key Features:
+### Key Features:
 
 - **Familiar JSX Syntax:** Start coding with the widely-adopted JSX syntax. If you're acquainted with React or similar frameworks, Rezact's syntax will feel like second nature, ensuring rapid onboarding and development.
 - **Reactivity Without the Hooks:** Experience the magic of reactivity without wrestling with hooks. With Rezact, state management is intuitive and direct, eliminating the learning curve often associated with hook-based systems.
@@ -38,27 +70,6 @@ Key Features:
 ### Why Choose Rezact?
 
 Rezact is more than just a frontend framework—it's a paradigm shift in web development. By combining the familiarity of JSX with a hook-free reactivity model, Rezact empowers developers to focus on creativity and innovation. Whether you're building a small web app or a complex platform, Rezact provides the tools and simplicity to turn your ideas into reality.
-
-## Full Feature List
-
-- Blazingly Fast
-- Tree Shakable
-- Lightweight Bundles
-  - as low as 1.7kB gzipped for a basic Hello World
-- NO VDOM
-- Fine Grained DOM Updates
-- Functional JSX Components
-- Built in Client Side Router with Dynamic Routes and Imports
-- Support for Layouts and Nested Layouts
-- Built in support for uncontrolled/controlled forms/inputs
-- Built in Form Validation Library
-- Built in support for MDX
-- Built in support for Scoped Styles using Shadow DOM
-- Svelte like state management enabled by the compiler
-- SolidJS like signal fine grained reactivity
-- Customizeable Render Engine
-  - add custom attributes to native elements
-  - add custom child element handlers
 
 ---
 
@@ -92,7 +103,7 @@ let $todos = [
 ];
 ```
 
-Unlike traditional state management systems where state changes are explicitly triggered, in Rezact, simply modifying the value of a reactive variable is enough.
+Unlike traditional state management systems where state changes are explicitly triggered, in Rezact, simply modifying the value of a reactive variable is enough. Also notice that a reactive variable can be an array of objects with reactive properties as shown above.
 
 ## 2. Direct Data Mutation
 
@@ -129,9 +140,9 @@ function SomeComponent() {
 }
 ```
 
-This feature simplifies state management, especially for global states like themes, user data, or configurations (see Rezact Stores).
+This feature simplifies state management, especially for global states like themes, user data, or configurations (see [Rezact Stores](#rezact-stores-simplified-state-management)).
 
-## Automatic List Handling in Rezact
+## 4. Automatic List Handling in Rezact
 
 Rezact manages lists behind the scenes without requiring explicit keys via a key prop. When you map over an array to render a list of components, Rezact automatically keeps track of each item's identity, ensuring efficient updates.
 
@@ -153,7 +164,7 @@ let $inputValue = "";
 
 This two-way binding reduces the need for explicit event handlers to sync input values with state variables. But don't worry, if you still prefer to manage the state updates yourself you can: simply add the `onChange` or `onInput` prop as you would normally and the two-way data binding is cancelled.
 
-However, Rezact actually encourages the use of "Uncontrolled Inputs" as these are most performant and we provide some tools to make them even better. (See Rezact Uncontrolled Inputs)
+However, it should be noted that Rezact actually encourages the use of "Uncontrolled Inputs" as these are most performant and we provide some tools to make them even better. (See Rezact Uncontrolled Inputs)
 
 ## 6. Reactive Computations
 
@@ -169,7 +180,7 @@ In the example above, $filteredTodos will automatically update whenever $todos c
 
 Rezact uses a concise and intuitive way to respond to changes in reactive data: reactive statements. These statements automatically execute whenever the data they depend on changes.
 
-A reactive statement starts with the $: prefix, followed by the statement you want to execute:
+A reactive statement starts with the $: label, followed by the statement you want to execute:
 
 ```jsx
 $: console.log(`the count is ${count}`);
@@ -188,7 +199,7 @@ Rezact's reactivity system is designed to simplify state management and UI updat
 
 # Rezact Stores: Simplified State Management
 
-In Rezact, state management is made even more straightforward with the introduction of "stores." Unlike other frameworks where stores might involve a lot of boilerplate or additional libraries, Rezact offers a minimalist and intuitive approach.
+In Rezact, state management is made even more straightforward. Unlike other frameworks where stores might involve a lot of boilerplate or additional libraries, Rezact offers a minimalist and intuitive approach.
 
 ## Creating a Store
 
@@ -222,7 +233,7 @@ function UserProfile() {
 
 ## Modifying the Store
 
-Since Rezact encourages direct data mutations, updating the store is as straightforward as modifying an object property:
+Since Rezact encourages direct data mutations, updating the store is as easy as modifying an object property:
 
 ```jsx
 function login() {
@@ -249,11 +260,11 @@ Rezact stores offer a refreshing take on state management, emphasizing simplicit
 
 ---
 
-# Rezact's Uncontrolled Components: A Comprehensive Guide
+# Rezact's Uncontrolled Components
 
 ## Introduction
 
-In the world of frontend frameworks, the debate between controlled and uncontrolled components has always been a topic of discussion. Rezact offers a refreshing perspective by encouraging the use of uncontrolled components. This guide will walk you through Rezact's approach and how to effectively use uncontrolled components in your applications.
+In the world of frontend frameworks, the debate between controlled and uncontrolled components has always been a hot topic of discussion. Rezact offers a refreshing perspective by encouraging the use of uncontrolled components.
 
 ## What are Uncontrolled Components?
 
@@ -287,6 +298,12 @@ Handle Form Submission: Use Rezact's utility functions to interact with the form
 const handleSubmit = (ev) => {
   ev.preventDefault();
   const data = getFormData(formRef);
+  // data contains a structure that resembles the dot notated name field
+  // data = {
+  //   name: {
+  //     first: "John"
+  //   }
+  // }
   doStuffWithTheFormData(data);
 };
 
@@ -299,6 +316,13 @@ Manipulate Form Data: Use the setFormData function to update the form with new d
 const fetchData = async () => {
   const resp = await fetch("/data");
   const newData = await resp.json();
+  // newData should contain a structure that is the
+  // same as what would be returned by getFormData
+  // data = {
+  //   name: {
+  //     first: "John"
+  //   }
+  // }
   setFormData(formRef, newData);
 };
 ```
@@ -309,15 +333,36 @@ Rezact's encouragement of uncontrolled components offers a refreshing take on fo
 
 ---
 
+## More Examples
+
+There are lots of examples in the `src/examples` folder in this repo: https://github.com/Rezact/Rezact/tree/main/src/examples
+
+---
+
 # FAQ
 
 ## Why the name Rezact?
 
 The name "Rezact" is a fusion of the words "React" and "Exact." While "React" nods to the foundational concepts familiar to many frontend developers, "Exact" underscores our framework's commitment to precision, clarity, and a streamlined approach. Rezact aims to offer developers an experience that is both familiar and refined, encapsulating the best of React-like reactivity with a more precise and predictable toolset.
 
+## Does it work with Tailwind?
+
+Yes!!
+
+Full tailwind support, no fancy setup, works as expected using the standard install guide for Vite:
+
+https://tailwindcss.com/docs/guides/vite
+
+Only thing to do additionall is add `import './index.css'` to the top of your app or layout.
+
 ---
 
 # Getting Started with Contributing to this package
+
+Want to contribute!!! Awesome! Still working on full contributing guide, but
+for now feel free to dive right in and open PR's.
+
+Want to chat? Reach out to me on twitter: https://twitter.com/zachwritescode
 
 Clone the repo and install dependencies, spin up a dev server.
 
