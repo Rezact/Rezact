@@ -353,7 +353,7 @@ Full tailwind support, no fancy setup, works as expected using the standard inst
 
 https://tailwindcss.com/docs/guides/vite
 
-Only thing to do additionall is add `import './index.css'` to the top of your app or layout.
+Only thing to do additionally is add `import './index.css'` to the top of your app or layout.
 
 ---
 
