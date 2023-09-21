@@ -247,10 +247,14 @@ function isChildArg(ancestors) {
 
 function wrapInSetValue(node, nestedMember = false) {
   if (node.right?.type === "ArrayExpression") nestedMember = true;
+  if (node.right?.type === "BinaryExpression") nestedMember = true;
+  const isAssignOperator = node.operator === "+=" || node.operator === "-=";
+  const isAssignExpression = node.type === "AssignmentExpression";
+  if (isAssignExpression && isAssignOperator) nestedMember = true;
 
   if (nestedMember) {
     const left = src.slice(node.left.start, node.left.end);
-    const right = src.slice(node.right.start, node.right.end);
+    let right = src.slice(node.right.start, node.right.end);
 
     const backupMagicString = magicString;
     const backupMagicSrc = src;
@@ -262,7 +266,7 @@ function wrapInSetValue(node, nestedMember = false) {
     src = left;
     magicString = new MagicString(left);
     compileRezact(leftAst);
-    const leftParsed = magicString.toString();
+    let leftParsed = magicString.toString();
     const leftMinusValue =
       leftParsed.slice(-11) === ".getValue()"
         ? leftParsed.slice(0, leftParsed.length - 11)
@@ -286,7 +290,15 @@ function wrapInSetValue(node, nestedMember = false) {
     src = backupMagicSrc;
 
     let nestedRightVal = rightParsed || "";
+    if (leftParsed.includes("$data.getValue()")) console.log(leftParsed, node);
+    if (
+      isAssignExpression &&
+      isAssignOperator &&
+      node.left.type === "Identifier"
+    )
+      leftParsed = `${leftParsed}.getValue()`;
     if (node.operator === "+=") nestedRightVal = `${leftParsed} + ${right}`;
+    if (node.operator === "-=") nestedRightVal = `${leftParsed} - ${right}`;
     magicString.overwrite(
       node.start,
       node.end,
