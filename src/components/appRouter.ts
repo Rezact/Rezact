@@ -64,4 +64,6 @@ router.addRoute(
   () => import("src/examples/ReactiveComputations/ReactiveComp")
 );
 
+router.addRoute("/store-test", () => import("src/examples/StoreTest/App"));
+
 export { router };

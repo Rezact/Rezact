@@ -16,6 +16,10 @@ export default defineConfig(({ command, mode, ssrBuild }) => {
   // console.log({ command, mode, ssrBuild, example: process.env.example });
 
   const config: any = {
+    esbuild: {
+      jsxFactory: "xCreateElement",
+      jsxFragment: "xFragment",
+    },
     test: {
       global: true,
       environment: "happy-dom",

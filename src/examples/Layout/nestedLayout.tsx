@@ -60,6 +60,9 @@ export function MyLayout({ Component, pageProps }: any) {
           <a href="/reactive-computations">Reactive Computations</a>
         </li>
         <li>
+          <a href="/store-test">Store Test</a>
+        </li>
+        <li>
           <a href="/asdfasdfasdfasdf">A Route that does not exist</a>
         </li>
       </ul>

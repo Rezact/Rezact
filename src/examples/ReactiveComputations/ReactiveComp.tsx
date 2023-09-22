@@ -16,6 +16,7 @@ export default function App() {
       <button onClick={inc}>Inc</button>
       <hr />
       <ComposeTest />
+      <hr />
     </>
   );
 }
