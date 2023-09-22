@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { screen, waitFor } from "@testing-library/dom";
+import { waitFor } from "@testing-library/dom";
 import { render } from "rezact";
 import Page from "./App";
 
