@@ -248,13 +248,23 @@ function isChildArg(ancestors) {
 function wrapInSetValue(node, nestedMember = false) {
   if (node.right?.type === "ArrayExpression") nestedMember = true;
   if (node.right?.type === "BinaryExpression") nestedMember = true;
-  const isAssignOperator = node.operator === "+=" || node.operator === "-=";
+  const isAssignOperator =
+    node.operator === "+=" ||
+    node.operator === "-=" ||
+    node.operator === "*=" ||
+    node.operator === "/=" ||
+    node.operator === "++" ||
+    node.operator === "--";
   const isAssignExpression = node.type === "AssignmentExpression";
   if (isAssignExpression && isAssignOperator) nestedMember = true;
 
   if (nestedMember) {
     const left = src.slice(node.left.start, node.left.end);
-    let right = src.slice(node.right.start, node.right.end);
+    let right = "1";
+    if (node.right) {
+      node.right.alreadyProcessed = true;
+      right = src.slice(node.right.start, node.right.end);
+    }
 
     const backupMagicString = magicString;
     const backupMagicSrc = src;
@@ -290,7 +300,7 @@ function wrapInSetValue(node, nestedMember = false) {
     src = backupMagicSrc;
 
     let nestedRightVal = rightParsed || "";
-    if (leftParsed.includes("$data.getValue()")) console.log(leftParsed, node);
+
     if (
       isAssignExpression &&
       isAssignOperator &&
@@ -299,6 +309,10 @@ function wrapInSetValue(node, nestedMember = false) {
       leftParsed = `${leftParsed}.getValue()`;
     if (node.operator === "+=") nestedRightVal = `${leftParsed} + ${right}`;
     if (node.operator === "-=") nestedRightVal = `${leftParsed} - ${right}`;
+    if (node.operator === "*=") nestedRightVal = `${leftParsed} * ${right}`;
+    if (node.operator === "/=") nestedRightVal = `${leftParsed} / ${right}`;
+    if (node.operator === "++") nestedRightVal = `${leftParsed} + 1`;
+    if (node.operator === "--") nestedRightVal = `${leftParsed} - 1`;
     magicString.overwrite(
       node.start,
       node.end,
@@ -434,6 +448,7 @@ function compileRezact(ast) {
         ...arrProps,
       ];
       let isInAssignment = false;
+      let inUpdateExpression = false;
       let anceLen = ancestors.length - 1;
       while (anceLen > -1) {
         if (ancestors[anceLen].type === "MemberExpression") {
@@ -444,8 +459,15 @@ function compileRezact(ast) {
           isInAssignment = true;
           break;
         }
+        if (ancestors[anceLen].type === "UpdateExpression") {
+          ancestors[anceLen].left = node;
+          inUpdateExpression = true;
+          break;
+        }
         break;
       }
+
+      if (ancestors[anceLen].alreadyProcessed) return;
 
       if (
         node.object.type === "Identifier" &&
@@ -522,8 +544,9 @@ function compileRezact(ast) {
           ancestors.at(-2).callee?.name === "xCreateElement"
         )
           return;
-        if (isInAssignment)
+        if (isInAssignment || inUpdateExpression) {
           return wrapInSetValue(ancestors[anceLen], node.property);
+        }
 
         tackOnDotVee(node.property);
       } else if (

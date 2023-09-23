@@ -1,6 +1,6 @@
 {
   "name": "@rezact/rezact",
-  "version": "1.0.15-beta.6",
+  "version": "1.0.15-beta.7",
   "type": "module",
   "description": "Intuitive Reactivity, Simplified State. Embrace a modern UI framework that encourages direct data mutations, offers module-level reactivity, and simplifies component design. With Rezact, you get the power of reactivity without the boilerplate. Dive into a seamless development experience tailored for today's web.",
   "main": "index.js",
@@ -34,7 +34,7 @@
     "happy-dom": "^10.9.0",
     "vite-plugin-inspect": "^0.7.33",
     "vitest": "^0.34.2",
-    "vite": "^4.4.0",
+    "vite": "^4.4.9",
     "typescript": "^5.0.2"
   },
   "dependencies": {
