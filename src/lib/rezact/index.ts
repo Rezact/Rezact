@@ -151,7 +151,8 @@ export function useInputs() {
       !Object.keys(attributes).includes("onChange") &&
       !Object.keys(attributes).includes("onInput")
     ) {
-      const evType = element.type === "text" ? "input" : "change";
+      const inpEvType = element.type === "text" || element.type === "number";
+      const evType = inpEvType ? "input" : "change";
       element.addEventListener(evType, () => {
         attributeValue.setValue(getInputVal(element));
       });
