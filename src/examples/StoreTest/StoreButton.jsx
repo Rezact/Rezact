@@ -1,5 +1,5 @@
-import { $storeCount } from "./store";
+import { store } from "./store";
 
 export function StoreButton() {
-  return <button onClick={() => $storeCount++}>Inc Here</button>;
+  return <button onClick={() => store.$storeCount++}>Inc Here</button>;
 }
