@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 import { waitFor } from "@testing-library/dom";
 import { render } from "rezact";
 import Page from "./App";
-import { wait } from "node_modules/@testing-library/user-event/dist/types/utils";
 
 describe("Reactive Computations", () => {
   it("Doubled", async () => {
