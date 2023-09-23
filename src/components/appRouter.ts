@@ -59,6 +59,8 @@ router.addRoute(
 
 router.addRoute("/todos", () => import("src/examples/Todo/Todo"));
 
+router.addRoute("/list-redraw", () => import("src/examples/ListReRender/App"));
+
 router.addRoute(
   "/reactive-computations",
   () => import("src/examples/ReactiveComputations/ReactiveComp")
