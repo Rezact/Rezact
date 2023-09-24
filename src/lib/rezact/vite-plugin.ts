@@ -632,7 +632,7 @@ function compileRezact(ast) {
       }
     },
 
-    CallExpression(node: any, _state, ancestors: any) {
+    CallExpression(node: any, _state) {
       if (node.arguments) {
         node.arguments.forEach((arg) => {
           if (
