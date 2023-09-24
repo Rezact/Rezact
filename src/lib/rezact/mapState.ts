@@ -173,8 +173,7 @@ export class MapState extends BaseState {
 
       item.elmRef =
         cachedElmRef || item.elmRef || createComponent({ func, item });
-      if (!cachedElmRef && item.elmRef instanceof HTMLElement)
-        this.elmRefCache.set(item, item.elmRef);
+      if (!cachedElmRef) this.elmRefCache.set(item, item.elmRef);
 
       if (!item.nestedSubscribed) {
         subscribeToNestedStates(item, this);
