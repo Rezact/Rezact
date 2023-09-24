@@ -141,8 +141,25 @@ export class MapState extends BaseState {
         item.idxState.setValue(idx);
       }
 
-      if (item.elmRef?.isConnected === false) item.elmRef = undefined;
-      item.elmRef = item.elmRef || createComponent({ func, item });
+      let cachedElmRef = this.elmRefCache.get(item);
+      if (cachedElmRef?.isConnected === false) {
+        this.elmRefCache.delete(item);
+        cachedElmRef = undefined;
+      }
+
+      if (
+        item.elmRef?.isConnected === false ||
+        item.elmRef?.isConnected === undefined
+      )
+        item.elmRef = undefined;
+
+      item.elmRef =
+        cachedElmRef || item.elmRef || createComponent({ func, item });
+      if (!cachedElmRef) this.elmRefCache.set(item, item.elmRef);
+
+      if (!item.nestedSubscribed) {
+        subscribeToNestedStates(item, this);
+      }
 
       isArray(item.elmRef)
         ? item.elmRef.forEach((elm) => (elm.associatedState = item))
