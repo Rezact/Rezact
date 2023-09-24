@@ -46,8 +46,6 @@ function Display({ $value, $hue }) {
 }
 
 function Editor({ $item, $idx }) {
-  // const item = $item;
-  // console.log(item);
   return (
     <div style="display: flex; gap: 8px;">
       <label>
@@ -66,7 +64,7 @@ function Editor({ $item, $idx }) {
 }
 
 function Result() {
-  let $trigger = "";
+  let $trigger = 0;
   let $total = $items.reduce((acc, $item) => {
     return acc + $item.$price * $item.$qty;
   }, 0);
@@ -79,7 +77,7 @@ function Result() {
 }
 
 function Viewer({ $item }) {
-  let $trigger = "";
+  let $trigger = 0;
   $: {
     $item.$price;
     $item.$qty;
@@ -93,4 +91,4 @@ function Viewer({ $item }) {
   );
 }
 
-// export const Layout = MyLayout;
+export const Layout = MyLayout;
