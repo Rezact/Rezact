@@ -11,6 +11,8 @@ describe("MDX suite", () => {
   it("renders MDX", async () => {
     render(document.body, TestMdx);
 
+    // await waitFor(() => expect(document.body.innerHTML).toMatchSnapshot());
+    await delay(100);
     expect(document.body.innerHTML).toMatchSnapshot();
 
     const allHeaders = await screen.findAllByRole("heading", {
@@ -45,3 +47,7 @@ describe("MDX suite", () => {
     );
   });
 });
+
+function delay(n) {
+  return new Promise((resolve) => setTimeout(resolve, n));
+}
