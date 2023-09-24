@@ -104,6 +104,7 @@ function subscribeToNestedStates(item, mapStateObj) {
 export class MapState extends BaseState {
   elmRefCache: any = new Map();
   refreshTimer: any;
+  clearCacheTimer: any;
 
   constructor(st: any) {
     super(st);
@@ -114,6 +115,23 @@ export class MapState extends BaseState {
         this.alertSubs(this.value);
       };
     });
+  }
+
+  removeStaleElmRefCacheItems() {
+    if (this.clearCacheTimer) clearTimeout(this.clearCacheTimer);
+    this.clearCacheTimer = setTimeout(() => {
+      for (let [key, value] of this.elmRefCache) {
+        if (!value.isConnected) {
+          this.elmRefCache.delete(key);
+        }
+      }
+      this.deps &&
+        this.deps.forEach((dep) => {
+          if (dep instanceof MapState) {
+            dep.removeStaleElmRefCacheItems();
+          }
+        });
+    }, 10);
   }
 
   Map(func: any) {
@@ -168,9 +186,12 @@ export class MapState extends BaseState {
   }
 
   deleteValue(valToDelete: any) {
-    const index = this.value.indexOf(valToDelete);
+    const index = valToDelete.__private_idx || this.value.indexOf(valToDelete);
     if (index < 0) return;
-    if (valToDelete.elmRef) valToDelete.elmRef.remove();
+    if (valToDelete.elmRef && valToDelete.elmRef instanceof HTMLElement) {
+      this.elmRefCache.delete(valToDelete);
+      valToDelete.elmRef.remove();
+    }
     this.value.splice(index, 1);
     this.alertSubs(this.value);
     setTimeout(() => this.updateList(this.func), 0);
@@ -216,6 +237,7 @@ const removeStaleChildren = (parentNode, endNode, parent, child) => {
     parentNode.parentNode.childNodes.length === child.previousChildLen + 2 &&
     values.length === 0
   ) {
+    child.removeStaleElmRefCacheItems();
     return (parentNode.parentNode.innerHTML = "");
   }
 
