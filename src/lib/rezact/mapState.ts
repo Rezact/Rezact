@@ -29,10 +29,85 @@ function _createComputed(func: (obj: any) => {}, deps: any[]) {
   return newState;
 }
 
+function findNestedStates(obj, results = [], skipKeys = []) {
+  if (obj instanceof Window) return [];
+  if (obj instanceof Document) return [];
+  if (obj instanceof HTMLElement) return [];
+  if (obj instanceof Node) return [];
+
+  // Check if the input is an object
+  if (typeof obj === "object" && obj !== null) {
+    // If it's an array, iterate over each element
+    if (Array.isArray(obj)) {
+      for (let item of obj) {
+        findNestedStates(item, results, skipKeys);
+      }
+    } else {
+      // If it's an object, iterate over each property
+      for (let key in obj) {
+        if (key.startsWith("$")) {
+          results.push(obj[key]);
+        }
+        if (skipKeys.includes(key)) continue;
+        if (obj[key] instanceof Window) continue;
+        if (obj[key] instanceof Document) continue;
+        if (obj[key] instanceof HTMLElement) continue;
+        if (obj[key] instanceof Node) continue;
+
+        findNestedStates(obj[key], results, skipKeys);
+      }
+    }
+  }
+  return results;
+}
+
+function findNestedMapStates(item) {
+  return findNestedStates(
+    item,
+    [],
+    [
+      "elmRef",
+      "idxState",
+      "deps",
+      "subs",
+      "func",
+      "associatedState",
+      "state",
+      "computed",
+    ]
+  );
+}
+
+function subscribeToNestedStates(item, mapStateObj) {
+  if (!(item.elmRef instanceof HTMLElement)) return;
+  const nestedStates = findNestedMapStates(item.value);
+  nestedStates.forEach((state) => {
+    item.nestedSubscribed = true;
+
+    state.subscribe(
+      () => {
+        if (
+          mapStateObj.deps &&
+          mapStateObj.deps.length > 0 &&
+          mapStateObj.deps[0] instanceof MapState
+        ) {
+          mapStateObj.deps[0].refresh();
+        } else {
+          mapStateObj.refresh();
+        }
+      },
+      { elm: item.elmRef }
+    );
+  });
+}
+
 export class MapState extends BaseState {
+  elmRefCache: any = new Map();
+  refreshTimer: any;
+
   constructor(st: any) {
     super(st);
-    ["push", "pop", "splice", "shift", "unshift"].forEach((item) => {
+    ["push", "pop", "splice", "shift", "unshift", "reduce"].forEach((item) => {
       this[item] = (...args) => {
         this.value[item](...args);
         this.updateList(this.func);
@@ -92,7 +167,8 @@ export class MapState extends BaseState {
   }
 
   refresh = () => {
-    setTimeout(() => {
+    if (this.refreshTimer) clearTimeout(this.refreshTimer);
+    this.refreshTimer = setTimeout(() => {
       this.updateList(this.func);
       this.alertSubs(this.value);
     }, 10);
@@ -172,7 +248,7 @@ const removeStaleChildren = (parentNode, endNode, parent, child) => {
         prevElm.replaceWith(elmRef);
         remPlaceHolder.replaceWith(prevElm);
       } else {
-        elmRef.remove();
+        if (elmRef instanceof HTMLElement) elmRef.remove();
       }
     } else {
       nextNode = nextNode.nextSibling;
@@ -239,6 +315,9 @@ function appendChildNode(
   removeElm: boolean = false
 ) {
   if (removeElm) return childNode.remove();
+  if (parentNode instanceof Comment) insertAfter = true;
+  if (parentNode.state) return;
+  // console.log({ parentNode, childNode, insertAfter });
   insertAfter
     ? insertNodeAfter(parentNode, childNode)
     : parentNode.appendChild(childNode);
@@ -263,5 +342,6 @@ childArrayHandler.handler = (parent, child, insertAfter, removeElm) => {
 export const createMapped = (func, deps) => {
   const computed: any = createComputed(func, deps);
   computed.deps = deps;
+  computed.mapStateObj = false;
   return computed;
 };
