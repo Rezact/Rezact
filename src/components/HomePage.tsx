@@ -54,7 +54,7 @@ function Button() {
               {$idx}. {$item} {$testToggle ? "On" : "Off"}
             </span>
             <button onClick={() => ($testToggle = !$testToggle)}>Toggle</button>
-            <button type="button" onClick={() => $arr.deleteValue($item)}>
+            <button type="button" onClick={() => $arr.splice($idx, 1)}>
               Delete
             </button>
             <br />
