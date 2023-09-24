@@ -13,6 +13,7 @@ let importsUsed: any = {};
 let signalsUsed: any = {};
 let mapStateUsed: any = {};
 let functionsToRun: any = [];
+let mapDeclarationTracking = {};
 
 function wrapInUseSignal(node) {
   signalsUsed.BaseState = true;
@@ -25,7 +26,23 @@ function wrapInUseSignal(node) {
   }
 }
 
-function wrapInUseMapState(node) {
+function nodeWillWrapInCreateMapped(node) {
+  return (
+    node.callee.type === "MemberExpression" &&
+    ((node.callee.object.type === "Identifier" &&
+      node.callee.object.name[0] === "$") ||
+      (node.callee.object.type === "MemberExpression" &&
+        node.callee.object.property.name &&
+        node.callee.object.property.name[0] === "$")) &&
+    node.callee.property.name === "map"
+  );
+}
+
+function wrapInUseMapState(node, fullNode, objectNode = null) {
+  const mapName =
+    fullNode.id?.name || objectNode?.id?.name + "." + fullNode.key?.value;
+
+  if (mapName) mapDeclarationTracking[mapName] = objectNode || fullNode;
   mapStateUsed.MapState = true;
   magicString.appendLeft(node.start, `new MapState(`);
   magicString.appendRight(node.end, `)`);
@@ -60,9 +77,13 @@ function findDependencies(startingNode, excludeDeps = {}) {
       ] = `${node.object.name}.getValue().${node.property.name}`;
     },
 
-    Identifier(node: any) {
+    Identifier(node: any, _state, ancestors) {
       // if (hasAncestor(ancestors, "MemberExpression")) return;
       if (node.name && node.name[0] !== "$") return;
+      if (ancestors.at(-2)?.type === "TemplateLiteral" && !ancestors.at(-3)) {
+        appendGetValue(node);
+      }
+
       identifiers[node.name] = true;
     },
   });
@@ -120,16 +141,47 @@ function wrapInCreateComputedAttribute(
 
 function wrapInCreateMapped(node, explicitDeps = null, excludeDeps = {}) {
   mapStateUsed.createMapped = true;
+
   const _deps = explicitDeps || findDependencies(node, excludeDeps);
   if (_deps.length === 0) return;
   const args = _deps.map((dep) => (dep.includes(".") ? "arr" : dep));
   const deps = _deps.map((dep) => dep.arg || dep);
   signalsUsed.createComputed = true;
+  let mapStateObj = "";
+  if (node.callee.upgradedToRezactMap) {
+    const uuid = Math.random().toString(36).slice(-10).replace(".", "x");
+
+    const dependentArg =
+      node.callee?.object?.name || node.callee?.object?.property?.name;
+    const dependentMap =
+      node.callee?.object?.name ||
+      node.callee?.object?.object?.name +
+        "." +
+        node.callee?.object?.property?.name;
+
+    magicString.overwrite(
+      node.callee.object.start,
+      node.callee.object.end,
+      "$m" + uuid
+    );
+    const declaredMap = mapDeclarationTracking[dependentMap];
+    const decToRun = `let $m${uuid} = createMapped(([${dependentArg}]) => ${dependentMap}.Map((item) => item), [${dependentMap}] );`;
+    if (declaredMap) {
+      magicString.appendLeft(declaredMap.end + 1, decToRun);
+    } else {
+      functionsToRun.push(decToRun);
+    }
+    // magicString.appendRight(node.arguments[0].end, ", $m" + uuid);
+    args[0] = `$m${uuid}`;
+    deps[0] = `$m${uuid}`;
+    // mapStateObj = `, $m${uuid}`;
+  }
+
   magicString.appendLeft(node.start, `createMapped(([${args.join(",")}]) => `);
-  magicString.appendRight(node.end, `, [${deps.join(",")}])`);
+  magicString.appendRight(node.end, `, [${deps.join(",")}] ${mapStateObj})`);
 }
 
-function tackOnDotVee(node) {
+function appendGetValue(node) {
   if (node.wrappedInBaseState) return;
   node.vTackedOn = true;
   magicString.appendRight(node.end, `.getValue()`);
@@ -350,6 +402,14 @@ function wrapInSetValue(node, nestedMember = false) {
   );
 }
 
+function isReactiveAttribute(node) {
+  if (node.type !== "Property") return false;
+  if (!node.key) return false;
+  if (!node.key.name) return false;
+  if (node.key.name[0] !== "$") return false;
+  return true;
+}
+
 const arrProps = ["push", "pop", "splice", "shift", "unshift"];
 
 function compileRezact(ast) {
@@ -362,14 +422,27 @@ function compileRezact(ast) {
         if (node.init.type === "UnaryExpression") wrapInUseSignal(node.init);
         if (node.init.type === "BinaryExpression")
           wrapInCreateComputed(node.init);
-        if (node.init.type === "ArrayExpression") wrapInUseMapState(node.init);
-        if (node.init.type === "CallExpression")
-          wrapInCreateComputed(node.init);
+        if (node.init.type === "ArrayExpression")
+          wrapInUseMapState(node.init, node);
+        if (
+          node.init.type === "CallExpression" &&
+          !nodeWillWrapInCreateMapped(node.init)
+        ) {
+          const hasMapDecl =
+            mapDeclarationTracking[node.init?.callee?.object?.name];
+          if (hasMapDecl) {
+            const mapName = node.id?.name;
+            if (mapName) mapDeclarationTracking[mapName] = node;
+            wrapInCreateMapped(node.init);
+          } else {
+            wrapInCreateComputed(node.init);
+          }
+        }
       }
     },
 
     TemplateLiteral(node: any, _state, ancestors) {
-      if (isAttributeArg(ancestors)) {
+      if (isAttributeArg(ancestors) && !isReactiveAttribute(ancestors.at(-2))) {
         wrapInCreateComputedAttribute(node);
       } else {
         wrapInCreateComputed(node);
@@ -386,7 +459,7 @@ function compileRezact(ast) {
           prop.value.name[0] === "$" &&
           !isAttributeArg(ancestors)
         ) {
-          tackOnDotVee(prop.value);
+          appendGetValue(prop.value);
         }
 
         if (
@@ -397,7 +470,7 @@ function compileRezact(ast) {
         ) {
           prop.value.elements.forEach((elem) => {
             if (elem.type === "Identifier" && elem.name[0] === "$") {
-              tackOnDotVee(elem);
+              appendGetValue(elem);
             }
           });
         }
@@ -413,13 +486,13 @@ function compileRezact(ast) {
         ancestors.at(-2).type === "LogicalExpression" &&
         ancestors.at(-2).operator === "&&"
       ) {
-        tackOnDotVee(node.argument);
+        appendGetValue(node.argument);
       }
     },
 
     LogicalExpression(node: any, _state, ancestors: any) {
       if (node.left.type === "Identifier" && node.left.name[0] === "$") {
-        tackOnDotVee(node.left);
+        appendGetValue(node.left);
       }
 
       const lastAncestor = ancestors.at(-1);
@@ -476,7 +549,7 @@ function compileRezact(ast) {
         node.computed === true &&
         node.optional === false
       ) {
-        tackOnDotVee(node.object);
+        appendGetValue(node.object);
       }
 
       if (!node.property || !node.property.type || !node.property.name) return;
@@ -498,13 +571,13 @@ function compileRezact(ast) {
         node.property.type === "Identifier" &&
         node.property.name[0] === "$"
       ) {
-        tackOnDotVee(node.object);
+        appendGetValue(node.object);
 
         if (ancestors.at(-3).type === "TemplateLiteral")
-          tackOnDotVee(node.property);
+          appendGetValue(node.property);
 
         if (!isChildArg(ancestors) && !isAttributeArg(ancestors))
-          tackOnDotVee(node.property);
+          appendGetValue(node.property);
 
         // code the I wrote to use the ancestor function commented out above
         // but did not end up needing, keeping as an example of how to use
@@ -524,7 +597,7 @@ function compileRezact(ast) {
         //     "asdf",
         //     src.slice(node.property.start, node.property.end)
         //   );
-        //   tackOnDotVee(node.property);
+        //   appendGetValue(node.property);
         // }
       } else if (
         node.property.type === "Identifier" &&
@@ -548,18 +621,18 @@ function compileRezact(ast) {
           return wrapInSetValue(ancestors[anceLen], node.property);
         }
 
-        tackOnDotVee(node.property);
+        appendGetValue(node.property);
       } else if (
         node.object.name &&
         node.object.name[0] === "$" &&
         !propertyExcludeList.includes(node.property.name)
       ) {
-        tackOnDotVee(node.object);
-        if (node.computed) tackOnDotVee(node);
+        appendGetValue(node.object);
+        if (node.computed) appendGetValue(node);
       }
     },
 
-    CallExpression(node: any) {
+    CallExpression(node: any, _state, ancestors: any) {
       if (node.arguments) {
         node.arguments.forEach((arg) => {
           if (
@@ -568,31 +641,25 @@ function compileRezact(ast) {
             node.callee?.object?.name === "console" &&
             node.callee?.property?.name === "log"
           ) {
-            tackOnDotVee(arg);
+            appendGetValue(arg);
           } else if (
             node.callee.type === "MemberExpression" &&
             arrProps.includes(node.callee.property.name) &&
             arg.type === "Identifier" &&
             arg.name[0] === "$"
           ) {
-            tackOnDotVee(arg);
+            appendGetValue(arg);
           }
         });
       }
-      if (
-        node.callee.type === "MemberExpression" &&
-        ((node.callee.object.type === "Identifier" &&
-          node.callee.object.name[0] === "$") ||
-          (node.callee.object.type === "MemberExpression" &&
-            node.callee.object.property.name &&
-            node.callee.object.property.name[0] === "$")) &&
-        node.callee.property.name === "map"
-      ) {
+      if (nodeWillWrapInCreateMapped(node)) {
         magicString.overwrite(
           node.callee.property.start,
           node.callee.property.end,
           "Map"
         );
+        node.callee.upgradedToRezactMap = true;
+
         wrapInCreateMapped(node, [
           node.callee.object.name ||
             src.slice(node.callee.object.start, node.callee.object.end),
@@ -600,7 +667,10 @@ function compileRezact(ast) {
       }
     },
 
-    Property(node: any, _state) {
+    Property(node: any, _state, ancestors: any) {
+      // if (isAttributeArg(ancestors)) {
+      //   console.log(src.slice(node.key.start - 5, node.key.end + 5));
+      // }
       if (node.key.name === "className") {
         magicString.overwrite(node.key.start, node.key.end, "class");
       }
@@ -610,7 +680,7 @@ function compileRezact(ast) {
         node.key.name[0] === "$" &&
         node.value.type === "ArrayExpression"
       ) {
-        return wrapInUseMapState(node.value);
+        return wrapInUseMapState(node.value, node, ancestors.at(-3));
       }
 
       if (
@@ -618,10 +688,14 @@ function compileRezact(ast) {
         node.key.value[0] === "$" &&
         node.value.type === "ArrayExpression"
       ) {
-        return wrapInUseMapState(node.value);
+        return wrapInUseMapState(node.value, node, ancestors.at(-3));
       }
 
-      if (node.key.name && node.key.name[0] === "$") {
+      if (
+        node.key.name &&
+        node.key.name[0] === "$" &&
+        !isAttributeArg(ancestors)
+      ) {
         wrapInUseSignal(node.value);
       }
       if (node.key.value && node.key.value[0] === "$") {
@@ -651,7 +725,7 @@ function compileRezact(ast) {
       }
       if (!node?.test?.name) return;
       if (node.test.name && node.test.name[0] === "$") {
-        tackOnDotVee(node.test);
+        appendGetValue(node.test);
       }
     },
 
@@ -662,7 +736,7 @@ function compileRezact(ast) {
     BinaryExpression(node: any, _state, ancestors: any) {
       const name = node.left.name;
       if (name && name[0] === "$") {
-        tackOnDotVee(node.left);
+        appendGetValue(node.left);
       }
 
       if (
@@ -731,6 +805,7 @@ function rezact(): PluginOption {
       lastImport = { end: 0 };
       importsUsed = {};
       functionsToRun = [];
+      mapDeclarationTracking = {};
       // console.log(id);
       magicString = new MagicString(src);
       const ast = acorn.parse(src, {
