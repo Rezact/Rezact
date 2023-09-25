@@ -10,6 +10,7 @@ import rehypeHighlight from "rehype-highlight";
 import mdx from "@mdx-js/rollup";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+import dts from "vite-plugin-dts";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command, mode, ssrBuild }) => {
@@ -68,6 +69,7 @@ export default defineConfig(({ command, mode, ssrBuild }) => {
       }),
       rezact(),
       rezact_mdx(),
+      dts({ rollupTypes: true }),
     ],
   };
   if (mode === "production") {
