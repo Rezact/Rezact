@@ -21,7 +21,7 @@ export default defineConfig(({ command, mode, ssrBuild }) => {
       jsxFragment: "xFragment",
     },
     test: {
-      global: true,
+      globals: true,
       environment: "happy-dom",
     },
     resolve: {

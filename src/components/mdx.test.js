@@ -10,9 +10,8 @@ const user = userEvent.setup();
 describe("MDX suite", () => {
   it("renders MDX", async () => {
     render(document.body, TestMdx);
+    await delay(100); //give the framework a bit to render everything
 
-    // await waitFor(() => expect(document.body.innerHTML).toMatchSnapshot());
-    await delay(100);
     expect(document.body.innerHTML).toMatchSnapshot();
 
     const allHeaders = await screen.findAllByRole("heading", {

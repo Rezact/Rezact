@@ -6,6 +6,8 @@ import Page from "./ReactiveComp";
 describe("Reactive Computations", () => {
   it("Doubled", async () => {
     render(document.body, Page);
+    await delay(100); //give the framework a bit to render everything
+
     const allHeaders = screen.getAllByText(/hello world/i);
     expect(allHeaders).toHaveLength(1);
     let buttons: any = await screen.findAllByRole("button");
@@ -54,3 +56,5 @@ describe("Reactive Computations", () => {
     expect(button3.textContent).toBe("4");
   });
 });
+
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
