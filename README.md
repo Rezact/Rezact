@@ -78,7 +78,7 @@ Rezact is more than just a frontend framework—it's a paradigm shift in web dev
 Quick Start Single Bare Minimum:
 
 ```bash
-npx degit https://github.com/Rezact/rezact-quick-start my-rezact-project
+npm create @rezact/app@latest my-rezact-project
 cd my-rezact-project
 npm install
 npm run dev
