@@ -1,5 +1,8 @@
 # Rezact
 
+[![Tests](https://github.com/Rezact/Rezact/actions/workflows/main.yml/badge.svg)](https://github.com/Rezact/Rezact/actions/workflows/main.yml)
+[![Publish to npm](https://github.com/Rezact/Rezact/actions/workflows/publish.yml/badge.svg)](https://github.com/Rezact/Rezact/actions/workflows/publish.yml)
+
 ## Intuitive Reactivity, Simplified State.
 
 Embrace a modern UI framework that encourages direct data mutations, offers module-level reactivity, and simplifies component design. With Rezact, you get the power of reactivity without the boilerplate. Dive into a seamless development experience tailored for today's web.
