@@ -206,6 +206,19 @@ $: {
   console.log(`the count is ${count}`);
   console.log(`this will also be logged whenever count changes`);
 }
+
+// ========================================
+// hint: this is effectively a useEffect (react) or $effect (svelte 5)
+
+let $dep1 = "someValue";
+let $dep2 = "someValueAgain;";
+$: {
+  $dep1;
+  $dep2;
+  console.log("This effect runs whenever $dep1 or $dep2 change");
+}
+
+$dep1 = "new Dep Value triggers the effect above";
 ```
 
 ## Conclusion
