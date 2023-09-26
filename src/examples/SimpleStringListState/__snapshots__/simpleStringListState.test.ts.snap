@@ -1,5 +1,5 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Simple String List State > Renders both input list and output list 1`] = `"<h1>Simple String List</h1><!--start map--><div dataval=\\"[object Text]\\"><input></div><div dataval=\\"[object Text]\\"><input></div><div dataval=\\"[object Text]\\"><input></div><div dataval=\\"[object Text]\\"><input></div><!--end map--><!--start map--><div>Jack</div><div>Jill</div><div>John</div><div>Jane</div><!--end map--><!--signal-->"`;
+exports[`Simple String List State > Renders both input list and output list 1`] = `"<h1>Simple String List</h1><!--start map--><div dataval=\\"Jack\\"><input></div><div dataval=\\"Jill\\"><input></div><div dataval=\\"John\\"><input></div><div dataval=\\"Jane\\"><input></div><!--end map--><!--start map--><div>Jack</div><div>Jill</div><div>John</div><div>Jane</div><!--end map--><!--signal-->"`;
 
 exports[`Simple String List State > updates state when input is changed 1`] = `"<h1>Simple String List</h1><!--start map--><div dataval=\\"Jackhello\\"><input></div><div dataval=\\"Jillhello\\"><input></div><div dataval=\\"Johnhello\\"><input></div><div dataval=\\"Janehello\\"><input></div><!--end map--><!--start map--><div>Jackhello</div><div>Jillhello</div><div>Johnhello</div><div>Janehello</div><!--end map--><!--signal-->"`;

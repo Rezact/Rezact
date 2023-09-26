@@ -248,7 +248,7 @@ const attributeStateHandler = {
         );
       }
     } else {
-      elm.setAttribute(key, attrVal.value);
+      elm.setAttribute(key, attrVal.getValue());
       attrVal.subscribe({ funcRef: attrSub, obj: { elm, key } }, { elm });
     }
   },
