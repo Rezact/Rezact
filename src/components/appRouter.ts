@@ -68,4 +68,9 @@ router.addRoute(
 
 router.addRoute("/store-test", () => import("src/examples/StoreTest/App"));
 
+router.addRoute(
+  "/simple-string-list",
+  () => import("src/examples/SimpleStringListState/SimpleStringList")
+);
+
 export { router };

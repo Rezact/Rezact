@@ -171,8 +171,7 @@ export class MapState extends BaseState {
       )
         item.elmRef = undefined;
 
-      item.elmRef =
-        cachedElmRef || item.elmRef || createComponent({ func, item });
+      item.elmRef = cachedElmRef || createComponent({ func, item });
       if (!cachedElmRef) this.elmRefCache.set(item, item.elmRef);
 
       if (!item.nestedSubscribed) {

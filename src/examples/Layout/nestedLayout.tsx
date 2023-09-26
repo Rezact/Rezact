@@ -66,6 +66,9 @@ export function MyLayout({ Component, pageProps }: any) {
           <a href="/list-redraw">List Redraw</a>
         </li>
         <li>
+          <a href="/simple-string-list">Simple String List</a>
+        </li>
+        <li>
           <a href="/asdfasdfasdfasdf">A Route that does not exist</a>
         </li>
       </ul>
