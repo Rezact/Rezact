@@ -174,7 +174,21 @@ However, it should be noted that Rezact actually encourages the use of "Uncontro
 Rezact allows you to derive values from reactive variables. These derived values are themselves reactive and will update whenever their dependencies change.
 
 ```jsx
-let $filteredTodos = $todos.filter(todo => ...);
+let $count = 0;
+let $doubled = $count * 2;
+
+// ============================================
+
+let $todos = [
+  { $text: "Learn Rezact", $completed: false },
+  { $text: "Build an app", $completed: true },
+];
+let $filter = "all";
+let $filteredTodos = $todos.filter((todo) => {
+  if ($filter === "all") return true;
+  if ($filter === "completed") return todo.$completed;
+  if ($filter === "todo") return !todo.$completed;
+});
 ```
 
 In the example above, $filteredTodos will automatically update whenever $todos changes.
