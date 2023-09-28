@@ -1,4 +1,5 @@
 import { MyLayout } from "../Layout/nestedLayout";
+import { Issue14 } from "./Issue14";
 
 export default function App() {
   let $count = 0;
@@ -17,6 +18,7 @@ export default function App() {
       <hr />
       <ComposeTest />
       <hr />
+      <Issue14 />
     </>
   );
 }
