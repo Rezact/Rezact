@@ -735,6 +735,10 @@ function compileRezact(ast) {
 
     BinaryExpression(node: any, _state, ancestors: any) {
       const name = node.left.name;
+      const rightName = node.right.name;
+      if (rightName && rightName[0] === "$") {
+        appendGetValue(node.right);
+      }
       if (name && name[0] === "$") {
         appendGetValue(node.left);
       }

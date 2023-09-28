@@ -55,6 +55,18 @@ describe("Reactive Computations", () => {
     expect(button2.textContent).toBe("4");
     expect(button3.textContent).toBe("4");
   });
+
+  it("Issue 14 both sides of the binary expression are handled in the compiler", async () => {
+    const div1 = document.getElementById("iss14-1");
+    const div2 = document.getElementById("iss14-2");
+    const div3 = document.getElementById("iss14-3");
+    const div4 = document.getElementById("iss14-4");
+
+    expect(div1?.textContent).toBe("Hallo, jesen");
+    expect(div2?.textContent).toBe("width: 10");
+    expect(div3?.textContent).toBe("height: 20");
+    expect(div4?.textContent).toBe("area: 200");
+  });
 });
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
