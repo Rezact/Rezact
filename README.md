@@ -48,6 +48,7 @@ export default function App() {
   - [What are Uncontrolled Components?](#what-are-uncontrolled-components)
   - [Rezact's Approach to Uncontrolled Components](#rezacts-approach-to-uncontrolled-components)
 - [Understanding the Rezact Compiler](https://github.com/Rezact/Rezact/blob/main/COMPILER.md)
+- [Performance Benchmarks](#performance)
 - [More Examples](#more-examples)
 - [FAQ](#faq)
   - [Why the name Rezact?](#why-the-name-rezact)
@@ -367,6 +368,16 @@ Rezact's encouragement of uncontrolled components offers a refreshing take on fo
 # Understanding the Rezact Compiler Plugin
 
 For a more in depth look at how it all works see [here](https://github.com/Rezact/Rezact/blob/main/COMPILER.md).
+
+---
+
+## Performance
+
+![image](https://github.com/Rezact/Rezact/assets/2927894/6f2f27fc-7aba-4fe5-9d50-29bace81f2d4)
+
+![image](https://github.com/Rezact/Rezact/assets/2927894/72663190-80e2-4c50-9177-9be1ae79539b)
+
+![image](https://github.com/Rezact/Rezact/assets/2927894/36b42a6a-2383-4793-9735-bb3962725057)
 
 ---
 
