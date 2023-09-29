@@ -196,7 +196,7 @@ function _createComputed(func: (obj: any) => {}, deps: any[]) {
   return newState;
 }
 
-export function createComputedAttribute(func: (obj: any) => {}, deps: any[]) {
+export function attrEffect(func: (obj: any) => {}, deps: any[]) {
   return { computer: func, deps };
 }
 

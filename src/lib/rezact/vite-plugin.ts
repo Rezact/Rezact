@@ -131,11 +131,8 @@ function wrapInCreateComputedAttribute(
   if (_deps.length === 0) return;
   const deps = _deps.map((dep) => dep.dep || dep);
   const args = _deps.map((dep) => dep.arg || dep);
-  signalsUsed.createComputedAttribute = true;
-  magicString.appendLeft(
-    node.start,
-    `createComputedAttribute(([${deps.join(",")}]) => `
-  );
+  signalsUsed.attrEffect = true;
+  magicString.appendLeft(node.start, `attrEffect(([${deps.join(",")}]) => `);
   magicString.appendRight(node.end, `, [${args.join(",")}])`);
 }
 
