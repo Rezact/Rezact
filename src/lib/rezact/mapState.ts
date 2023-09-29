@@ -1,9 +1,4 @@
-import {
-  Signal,
-  computeSub,
-  createComputed,
-  overrideCreateComputed,
-} from "./signals";
+import { Signal, computeSub, effect, overrideCreateComputed } from "./signals";
 import {
   addAppendChildHook,
   appendChild,
@@ -16,9 +11,9 @@ import {
   isArray,
 } from ".";
 
-overrideCreateComputed(_createComputed);
+overrideCreateComputed(_effect);
 
-function _createComputed(func: (obj: any) => {}, deps: any[]) {
+function _effect(func: (obj: any) => {}, deps: any[]) {
   const NewState = deps[0] instanceof MapSignal ? MapSignal : Signal;
   const newState: any = new NewState(func(deps));
   newState.computed = true;
@@ -378,7 +373,7 @@ childArrayHandler.handler = (parent, child, insertAfter, removeElm) => {
 };
 
 export const createMapped = (func, deps) => {
-  const computed: any = createComputed(func, deps);
+  const computed: any = effect(func, deps);
   computed.deps = deps;
   computed.mapStateObj = false;
   return computed;

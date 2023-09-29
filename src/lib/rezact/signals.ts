@@ -181,12 +181,12 @@ export class Signal {
 
 export const computeSub = (obj) => obj.newState.set(obj.func(obj.deps));
 
-export let createComputed = _createComputed;
+export let effect = _effect;
 export function overrideCreateComputed(func: any) {
-  createComputed = func;
+  effect = func;
 }
 
-function _createComputed(func: (obj: any) => {}, deps: any[]) {
+function _effect(func: (obj: any) => {}, deps: any[]) {
   const newState: any = new Signal(func(deps));
   newState.computed = true;
   const depsLen = deps.length;
