@@ -799,6 +799,7 @@ function rezact(): PluginOption {
       lastImport = { end: 0 };
       importsUsed = {};
       signalsUsed = {};
+      mapStateUsed = {};
       functionsToRun = [];
       mapDeclarationTracking = {};
       // console.log(id);
