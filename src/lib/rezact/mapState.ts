@@ -1,4 +1,4 @@
-import { Signal, computeSub, effect, overrideCreateComputed } from "./signals";
+import { Signal, computeSub, effect, overrideEffect } from "./signals";
 import {
   addAppendChildHook,
   appendChild,
@@ -11,7 +11,7 @@ import {
   isArray,
 } from ".";
 
-overrideCreateComputed(_effect);
+overrideEffect(_effect);
 
 function _effect(func: (obj: any) => {}, deps: any[]) {
   const NewState = deps[0] instanceof MapSignal ? MapSignal : Signal;
