@@ -365,7 +365,7 @@ Rezact's encouragement of uncontrolled components offers a refreshing take on fo
 
 # Understanding the Rezact Compiler Plugin
 
-For a more in depth look at how it all works see here.
+For a more in depth look at how it all works see [here](https://github.com/Rezact/Rezact/blob/main/COMPILER.md).
 
 ---
 
