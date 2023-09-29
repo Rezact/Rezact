@@ -115,7 +115,7 @@ export function render(root, tagName, attributes: any = {}) {
 }
 export const xFragment = [];
 
-let handleInputValue = null;
+export let handleInputValue = null;
 export function useInputs() {
   if (handleInputValue) return;
   handleInputValue = true;

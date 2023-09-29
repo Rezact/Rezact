@@ -8,6 +8,7 @@ import {
   createComment,
   createElement,
   createTextNode,
+  handleInputValue,
 } from ".";
 
 let batchSubs = [];
@@ -235,7 +236,10 @@ addAppendChildHook(childStateHandler);
 const compAttrSub = (o) => o.elm.setAttribute(o.key, o.computer(o.deps));
 const attrSub = (o) => o.elm.setAttribute(o.key, o.newVal);
 const attributeStateHandler = {
-  matches: (_attrs, _key, attrVal) => attrVal.state || attrVal.computer,
+  matches: (_attrs, key, attrVal) =>
+    // skip if useInputs has been called and this is a value or checked attribute
+    !(handleInputValue && (key === "value" || key === "checked")) &&
+    (attrVal.state || attrVal.computer),
   handler: (elm, key, attrVal) => {
     if (attrVal.computer) {
       const { computer, deps } = attrVal;
