@@ -40,21 +40,21 @@ describe("counter suite name", () => {
       </h1>
     );
 
-    expect(mountCalledStateRef.getValue()).toBe(null);
-    expect(unmountCalledStateRef.getValue()).toBe(null);
+    expect(mountCalledStateRef.get()).toBe(null);
+    expect(unmountCalledStateRef.get()).toBe(null);
 
     render(document.body, () => testElm);
 
     const elmOnScreen = screen.getByText(/Mount Unmount Test/i);
 
-    await waitFor(() => expect(mountCalledStateRef.getValue()).toBe(true));
-    await waitFor(() => expect(unmountCalledStateRef.getValue()).toBe(null));
+    await waitFor(() => expect(mountCalledStateRef.get()).toBe(true));
+    await waitFor(() => expect(unmountCalledStateRef.get()).toBe(null));
 
     setTimeout(() => testElm.remove(), 20);
 
     await waitForElementToBeRemoved(elmOnScreen);
 
-    await waitFor(() => expect(mountCalledStateRef.getValue()).toBe(true));
-    await waitFor(() => expect(unmountCalledStateRef.getValue()).toBe(true));
+    await waitFor(() => expect(mountCalledStateRef.get()).toBe(true));
+    await waitFor(() => expect(unmountCalledStateRef.get()).toBe(true));
   });
 });

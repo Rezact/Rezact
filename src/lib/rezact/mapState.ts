@@ -199,7 +199,7 @@ export class MapSignal extends Signal {
   toJson() {
     return this.value.map((thisVal) => {
       if (thisVal.toJson) return thisVal.toJson();
-      thisVal.getValue ? thisVal.getValue() : thisVal;
+      thisVal.get ? thisVal.get() : thisVal;
     });
   }
 

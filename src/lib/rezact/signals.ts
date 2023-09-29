@@ -27,10 +27,10 @@ function runBatch() {
 
     func.stateObj.subs.set(func, true);
     if (func.funcRef) {
-      func.obj.newVal = func.stateObj.getValue();
+      func.obj.newVal = func.stateObj.get();
       func.funcRef(func.obj);
     } else {
-      func(func.stateObj.getValue());
+      func(func.stateObj.get());
     }
     batchSubs.splice(i, 1);
     // console.debug((window as any).totalSubscriberCount++);
@@ -122,13 +122,13 @@ export class Signal {
     }
   }
 
-  getValue() {
+  get() {
     if (this.value instanceof Text) return this.value.textContent;
     return this.value;
   }
 
   set(newVal: any) {
-    const val = this.getValue();
+    const val = this.get();
 
     if (newVal === val && !isArray(newVal)) return;
 
@@ -175,7 +175,7 @@ export class Signal {
       return newObj;
     }
 
-    return this.getValue();
+    return this.get();
   }
 }
 
@@ -202,7 +202,7 @@ export function createComputedAttribute(func: (obj: any) => {}, deps: any[]) {
 
 const textTypes = { string: true, number: true };
 function handleStateTypes(parent: any, child: any) {
-  const val = child.getValue();
+  const val = child.get();
   if (textTypes[typeof val]) {
     handleTextNode(parent, child);
   } else if (val instanceof Node && !child.computed) {
@@ -220,7 +220,7 @@ function handleStateTypes(parent: any, child: any) {
         newState.set(placeholder);
       if (newVal instanceof Node) newState.set(newVal);
     });
-    appendChild(parent, newState.getValue());
+    appendChild(parent, newState.get());
   }
 }
 
@@ -248,7 +248,7 @@ const attributeStateHandler = {
         );
       }
     } else {
-      elm.setAttribute(key, attrVal.getValue());
+      elm.setAttribute(key, attrVal.get());
       attrVal.subscribe({ funcRef: attrSub, obj: { elm, key } }, { elm });
     }
   },
@@ -258,7 +258,7 @@ addAttributeHandler(attributeStateHandler);
 
 const textNodeSub = (o) => (o.txtNode.textContent = o.newVal.toString());
 function handleTextNode(parent: any, child: any) {
-  const val = child.getValue();
+  const val = child.get();
   const txtNode = createTextNode(val.toString());
   if (typeof val === "string") child.value = txtNode;
   child.subscribe(
@@ -276,7 +276,7 @@ addAfterRenderHook(() => {
     if (typeof func === "object") {
       func.funcRef(func.obj);
     } else {
-      func(func.stateObj.getValue());
+      func(func.stateObj.get());
     }
   });
   subscFunctionsArr = [];

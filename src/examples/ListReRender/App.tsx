@@ -97,7 +97,7 @@ function Viewer({ $item }) {
   return (
     <Display
       $render={$testValue}
-      $value={`${$item.$price.getValue()}, x${$item.$qty.getValue()}`}
+      $value={`${$item.$price.get()}, x${$item.$qty.get()}`}
       $hue={`${$trigger * 360}`}
     />
   );
