@@ -140,7 +140,7 @@ function wrapInCreateMapped(node, explicitDeps = null, excludeDeps = {}) {
   if (_deps.length === 0) return;
   const args = _deps.map((dep) => (dep.includes(".") ? "arr" : dep));
   const deps = _deps.map((dep) => dep.arg || dep);
-  signalsUsed.effect = true;
+
   let mapStateObj = "";
   if (node.callee.upgradedToRezactMap) {
     const uuid = Math.random().toString(36).slice(-10).replace(".", "x");
