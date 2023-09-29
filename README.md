@@ -363,6 +363,12 @@ Rezact's encouragement of uncontrolled components offers a refreshing take on fo
 
 ---
 
+# Understanding the Rezact Compiler Plugin
+
+For a more in depth look at how it all works see here.
+
+---
+
 ## More Examples
 
 There are lots of examples in the `src/examples` folder in this repo: https://github.com/Rezact/Rezact/tree/main/src/examples
