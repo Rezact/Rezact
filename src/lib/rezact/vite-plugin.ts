@@ -368,7 +368,7 @@ function wrapInSetValue(node, nestedMember = false) {
     magicString.overwrite(
       node.start,
       node.end,
-      `${leftMinusValue}.setValue(${nestedRightVal})`
+      `${leftMinusValue}.set(${nestedRightVal})`
     );
     return;
   }
@@ -395,11 +395,7 @@ function wrapInSetValue(node, nestedMember = false) {
   )
     rightVal = `${node.right.operator}${node.right.argument.name}.getValue()`;
 
-  magicString.overwrite(
-    node.start,
-    node.end,
-    `${leftVal}.setValue(${rightVal})`
-  );
+  magicString.overwrite(node.start, node.end, `${leftVal}.set(${rightVal})`);
 }
 
 function isReactiveAttribute(node) {

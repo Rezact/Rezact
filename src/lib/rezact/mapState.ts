@@ -156,7 +156,7 @@ export class MapSignal extends Signal {
         if (!item.idxState) {
           item.idxState = new Signal(0);
         }
-        item.idxState.setValue(idx);
+        item.idxState.set(idx);
       }
 
       let cachedElmRef = this.elmRefCache.get(item);

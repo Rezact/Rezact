@@ -127,7 +127,7 @@ export class Signal {
     return this.value;
   }
 
-  setValue(newVal: any) {
+  set(newVal: any) {
     const val = this.getValue();
 
     if (newVal === val && !isArray(newVal)) return;
@@ -179,7 +179,7 @@ export class Signal {
   }
 }
 
-export const computeSub = (obj) => obj.newState.setValue(obj.func(obj.deps));
+export const computeSub = (obj) => obj.newState.set(obj.func(obj.deps));
 
 export let createComputed = _createComputed;
 export function overrideCreateComputed(func: any) {
@@ -217,8 +217,8 @@ function handleStateTypes(parent: any, child: any) {
         newVal === null ||
         newVal === undefined
       )
-        newState.setValue(placeholder);
-      if (newVal instanceof Node) newState.setValue(newVal);
+        newState.set(placeholder);
+      if (newVal instanceof Node) newState.set(newVal);
     });
     appendChild(parent, newState.getValue());
   }

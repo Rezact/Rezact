@@ -154,7 +154,7 @@ export function useInputs() {
       const inpEvType = element.type === "text" || element.type === "number";
       const evType = inpEvType ? "input" : "change";
       element.addEventListener(evType, () => {
-        attributeValue.setValue(getInputVal(element));
+        attributeValue.set(getInputVal(element));
       });
     }
   };
