@@ -134,7 +134,7 @@ function wrapInCreateComputedAttribute(
 }
 
 function wrapInCreateMapped(node, explicitDeps = null, excludeDeps = {}) {
-  mapStateUsed.createMapped = true;
+  mapStateUsed.mapEffect = true;
 
   const _deps = explicitDeps || findDependencies(node, excludeDeps);
   if (_deps.length === 0) return;
@@ -159,7 +159,7 @@ function wrapInCreateMapped(node, explicitDeps = null, excludeDeps = {}) {
       "$m" + uuid
     );
     const declaredMap = mapDeclarationTracking[dependentMap];
-    const decToRun = `let $m${uuid} = createMapped(([${dependentArg}]) => ${dependentMap}.Map((item) => item), [${dependentMap}] );`;
+    const decToRun = `let $m${uuid} = mapEffect(([${dependentArg}]) => ${dependentMap}.Map((item) => item), [${dependentMap}] );`;
     if (declaredMap) {
       magicString.appendLeft(declaredMap.end + 1, decToRun);
     } else {
@@ -171,7 +171,7 @@ function wrapInCreateMapped(node, explicitDeps = null, excludeDeps = {}) {
     // mapStateObj = `, $m${uuid}`;
   }
 
-  magicString.appendLeft(node.start, `createMapped(([${args.join(",")}]) => `);
+  magicString.appendLeft(node.start, `mapEffect(([${args.join(",")}]) => `);
   magicString.appendRight(node.end, `, [${deps.join(",")}] ${mapStateObj})`);
 }
 

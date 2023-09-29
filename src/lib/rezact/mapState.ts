@@ -372,7 +372,7 @@ childArrayHandler.handler = (parent, child, insertAfter, removeElm) => {
   }
 };
 
-export const createMapped = (func, deps) => {
+export const mapEffect = (func, deps) => {
   const computed: any = effect(func, deps);
   computed.deps = deps;
   computed.mapStateObj = false;
