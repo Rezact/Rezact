@@ -16,9 +16,9 @@ let functionsToRun: any = [];
 let mapDeclarationTracking = {};
 
 function wrapInUseSignal(node) {
-  signalsUsed.BaseState = true;
-  node.wrappedInBaseState = true;
-  magicString.appendLeft(node.start, `new BaseState(`);
+  signalsUsed.Signal = true;
+  node.wrappedInSignal = true;
+  magicString.appendLeft(node.start, `new Signal(`);
   if (node.name && node.name[0] === "$") {
     magicString.appendRight(node.end, `.getValue())`);
   } else {
@@ -38,13 +38,13 @@ function nodeWillWrapInCreateMapped(node) {
   );
 }
 
-function wrapInUseMapState(node, fullNode, objectNode = null) {
+function wrapInUseMapSignal(node, fullNode, objectNode = null) {
   const mapName =
     fullNode.id?.name || objectNode?.id?.name + "." + fullNode.key?.value;
 
   if (mapName) mapDeclarationTracking[mapName] = objectNode || fullNode;
-  mapStateUsed.MapState = true;
-  magicString.appendLeft(node.start, `new MapState(`);
+  mapStateUsed.MapSignal = true;
+  magicString.appendLeft(node.start, `new MapSignal(`);
   magicString.appendRight(node.end, `)`);
 }
 
@@ -182,7 +182,7 @@ function wrapInCreateMapped(node, explicitDeps = null, excludeDeps = {}) {
 }
 
 function appendGetValue(node) {
-  if (node.wrappedInBaseState) return;
+  if (node.wrappedInSignal) return;
   node.vTackedOn = true;
   magicString.appendRight(node.end, `.getValue()`);
 }
@@ -423,7 +423,7 @@ function compileRezact(ast) {
         if (node.init.type === "BinaryExpression")
           wrapInCreateComputed(node.init);
         if (node.init.type === "ArrayExpression")
-          wrapInUseMapState(node.init, node);
+          wrapInUseMapSignal(node.init, node);
         if (
           node.init.type === "CallExpression" &&
           !nodeWillWrapInCreateMapped(node.init)
@@ -680,7 +680,7 @@ function compileRezact(ast) {
         node.key.name[0] === "$" &&
         node.value.type === "ArrayExpression"
       ) {
-        return wrapInUseMapState(node.value, node, ancestors.at(-3));
+        return wrapInUseMapSignal(node.value, node, ancestors.at(-3));
       }
 
       if (
@@ -688,7 +688,7 @@ function compileRezact(ast) {
         node.key.value[0] === "$" &&
         node.value.type === "ArrayExpression"
       ) {
-        return wrapInUseMapState(node.value, node, ancestors.at(-3));
+        return wrapInUseMapSignal(node.value, node, ancestors.at(-3));
       }
 
       if (

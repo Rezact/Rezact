@@ -96,7 +96,7 @@ function attachSubs(elm, subFuncs) {
   batchTime = Date.now();
 }
 
-export class BaseState {
+export class Signal {
   state = true;
   value: any = null;
   subs: any = new Map();
@@ -187,7 +187,7 @@ export function overrideCreateComputed(func: any) {
 }
 
 function _createComputed(func: (obj: any) => {}, deps: any[]) {
-  const newState: any = new BaseState(func(deps));
+  const newState: any = new Signal(func(deps));
   newState.computed = true;
   const depsLen = deps.length;
   for (let i = 0; i < depsLen; i++) {
@@ -209,7 +209,7 @@ function handleStateTypes(parent: any, child: any) {
     appendChild(parent, val);
   } else if (child.computed) {
     const placeholder = createElement("span");
-    const newState = new BaseState(placeholder);
+    const newState = new Signal(placeholder);
     if (val instanceof Node) newState.value = val;
     child.subscribe((newVal: any) => {
       if (
