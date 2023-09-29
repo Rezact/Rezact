@@ -41,7 +41,7 @@ export function Page() {
     swapRows = () => {
       if ($data.length > 998) {
         const start = performance.now();
-        $data = swapElements($data.getValue(), 1, 998);
+        $data = swapElements($data.get(), 1, 998);
         $perfTime = performance.now() - start;
       }
     };

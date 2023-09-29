@@ -69,6 +69,9 @@ export function MyLayout({ Component, pageProps }: any) {
           <a href="/simple-string-list">Simple String List</a>
         </li>
         <li>
+          <a href="/escape-hatches">Escape Hatches</a>
+        </li>
+        <li>
           <a href="/asdfasdfasdfasdf">A Route that does not exist</a>
         </li>
       </ul>

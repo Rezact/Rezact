@@ -115,7 +115,7 @@ export function render(root, tagName, attributes: any = {}) {
 }
 export const xFragment = [];
 
-let handleInputValue = null;
+export let handleInputValue = null;
 export function useInputs() {
   if (handleInputValue) return;
   handleInputValue = true;
@@ -154,7 +154,7 @@ export function useInputs() {
       const inpEvType = element.type === "text" || element.type === "number";
       const evType = inpEvType ? "input" : "change";
       element.addEventListener(evType, () => {
-        attributeValue.setValue(getInputVal(element));
+        attributeValue.set(getInputVal(element));
       });
     }
   };

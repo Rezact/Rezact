@@ -1,9 +1,4 @@
-import {
-  BaseState,
-  computeSub,
-  createComputed,
-  overrideCreateComputed,
-} from "./signals";
+import { Signal, computeSub, effect, overrideEffect } from "./signals";
 import {
   addAppendChildHook,
   appendChild,
@@ -16,10 +11,10 @@ import {
   isArray,
 } from ".";
 
-overrideCreateComputed(_createComputed);
+overrideEffect(_effect);
 
-function _createComputed(func: (obj: any) => {}, deps: any[]) {
-  const NewState = deps[0] instanceof MapState ? MapState : BaseState;
+function _effect(func: (obj: any) => {}, deps: any[]) {
+  const NewState = deps[0] instanceof MapSignal ? MapSignal : Signal;
   const newState: any = new NewState(func(deps));
   newState.computed = true;
   const depsLen = deps.length;
@@ -61,7 +56,7 @@ function findNestedStates(obj, results = [], skipKeys = []) {
   return results;
 }
 
-function findNestedMapStates(item) {
+function findNestedMapSignals(item) {
   return findNestedStates(
     item,
     [],
@@ -80,7 +75,7 @@ function findNestedMapStates(item) {
 
 function subscribeToNestedStates(item, mapStateObj) {
   if (!(item.elmRef instanceof HTMLElement)) return;
-  const nestedStates = findNestedMapStates(item.value);
+  const nestedStates = findNestedMapSignals(item.value);
   nestedStates.forEach((state) => {
     item.nestedSubscribed = true;
 
@@ -89,7 +84,7 @@ function subscribeToNestedStates(item, mapStateObj) {
         if (
           mapStateObj.deps &&
           mapStateObj.deps.length > 0 &&
-          mapStateObj.deps[0] instanceof MapState
+          mapStateObj.deps[0] instanceof MapSignal
         ) {
           mapStateObj.deps[0].refresh();
         } else {
@@ -101,7 +96,7 @@ function subscribeToNestedStates(item, mapStateObj) {
   });
 }
 
-export class MapState extends BaseState {
+export class MapSignal extends Signal {
   elmRefCache: any = new Map();
   refreshTimer: any;
   clearCacheTimer: any;
@@ -127,7 +122,7 @@ export class MapState extends BaseState {
       }
       this.deps &&
         this.deps.forEach((dep) => {
-          if (dep instanceof MapState) {
+          if (dep instanceof MapSignal) {
             dep.removeStaleElmRefCacheItems();
           }
         });
@@ -150,13 +145,13 @@ export class MapState extends BaseState {
     const len = this.value.length;
     for (let idx = 0; idx < len; idx++) {
       let item = this.value[idx];
-      if (!item.state) this.value[idx] = item = new BaseState(item);
+      if (!item.state) this.value[idx] = item = new Signal(item);
       item.__private_idx = idx;
       if (func.args[1]) {
         if (!item.idxState) {
-          item.idxState = new BaseState(0);
+          item.idxState = new Signal(0);
         }
-        item.idxState.setValue(idx);
+        item.idxState.set(idx);
       }
 
       let cachedElmRef = this.elmRefCache.get(item);
@@ -199,7 +194,7 @@ export class MapState extends BaseState {
   toJson() {
     return this.value.map((thisVal) => {
       if (thisVal.toJson) return thisVal.toJson();
-      thisVal.getValue ? thisVal.getValue() : thisVal;
+      thisVal.get ? thisVal.get() : thisVal;
     });
   }
 
@@ -377,8 +372,8 @@ childArrayHandler.handler = (parent, child, insertAfter, removeElm) => {
   }
 };
 
-export const createMapped = (func, deps) => {
-  const computed: any = createComputed(func, deps);
+export const mapEffect = (func, deps) => {
+  const computed: any = effect(func, deps);
   computed.deps = deps;
   computed.mapStateObj = false;
   return computed;

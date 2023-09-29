@@ -16,11 +16,11 @@ let functionsToRun: any = [];
 let mapDeclarationTracking = {};
 
 function wrapInUseSignal(node) {
-  signalsUsed.BaseState = true;
-  node.wrappedInBaseState = true;
-  magicString.appendLeft(node.start, `new BaseState(`);
+  signalsUsed.Signal = true;
+  node.wrappedInSignal = true;
+  magicString.appendLeft(node.start, `new Signal(`);
   if (node.name && node.name[0] === "$") {
-    magicString.appendRight(node.end, `.getValue())`);
+    magicString.appendRight(node.end, `.get())`);
   } else {
     magicString.appendRight(node.end, `)`);
   }
@@ -38,13 +38,13 @@ function nodeWillWrapInCreateMapped(node) {
   );
 }
 
-function wrapInUseMapState(node, fullNode, objectNode = null) {
+function wrapInUseMapSignal(node, fullNode, objectNode = null) {
   const mapName =
     fullNode.id?.name || objectNode?.id?.name + "." + fullNode.key?.value;
 
   if (mapName) mapDeclarationTracking[mapName] = objectNode || fullNode;
-  mapStateUsed.MapState = true;
-  magicString.appendLeft(node.start, `new MapState(`);
+  mapStateUsed.MapSignal = true;
+  magicString.appendLeft(node.start, `new MapSignal(`);
   magicString.appendRight(node.end, `)`);
 }
 
@@ -74,7 +74,7 @@ function findDependencies(startingNode, excludeDeps = {}) {
       identifiers[node.object.name] = true;
       identifiers[
         node.property.name
-      ] = `${node.object.name}.getValue().${node.property.name}`;
+      ] = `${node.object.name}.get().${node.property.name}`;
     },
 
     Identifier(node: any, _state, ancestors) {
@@ -114,11 +114,8 @@ function wrapInCreateComputed(node, explicitDeps = null, excludeDeps = {}) {
   if (_deps.length === 0) return;
   const deps = _deps.map((dep) => dep.dep || dep);
   const args = _deps.map((dep) => dep.arg || dep);
-  signalsUsed.createComputed = true;
-  magicString.appendLeft(
-    node.start,
-    `createComputed(([${deps.join(",")}]) => `
-  );
+  signalsUsed.effect = true;
+  magicString.appendLeft(node.start, `effect(([${deps.join(",")}]) => `);
   magicString.appendRight(node.end, `, [${args.join(",")}])`);
 }
 
@@ -131,22 +128,19 @@ function wrapInCreateComputedAttribute(
   if (_deps.length === 0) return;
   const deps = _deps.map((dep) => dep.dep || dep);
   const args = _deps.map((dep) => dep.arg || dep);
-  signalsUsed.createComputedAttribute = true;
-  magicString.appendLeft(
-    node.start,
-    `createComputedAttribute(([${deps.join(",")}]) => `
-  );
+  signalsUsed.attrEffect = true;
+  magicString.appendLeft(node.start, `attrEffect(([${deps.join(",")}]) => `);
   magicString.appendRight(node.end, `, [${args.join(",")}])`);
 }
 
 function wrapInCreateMapped(node, explicitDeps = null, excludeDeps = {}) {
-  mapStateUsed.createMapped = true;
+  mapStateUsed.mapEffect = true;
 
   const _deps = explicitDeps || findDependencies(node, excludeDeps);
   if (_deps.length === 0) return;
   const args = _deps.map((dep) => (dep.includes(".") ? "arr" : dep));
   const deps = _deps.map((dep) => dep.arg || dep);
-  signalsUsed.createComputed = true;
+
   let mapStateObj = "";
   if (node.callee.upgradedToRezactMap) {
     const uuid = Math.random().toString(36).slice(-10).replace(".", "x");
@@ -165,7 +159,7 @@ function wrapInCreateMapped(node, explicitDeps = null, excludeDeps = {}) {
       "$m" + uuid
     );
     const declaredMap = mapDeclarationTracking[dependentMap];
-    const decToRun = `let $m${uuid} = createMapped(([${dependentArg}]) => ${dependentMap}.Map((item) => item), [${dependentMap}] );`;
+    const decToRun = `let $m${uuid} = mapEffect(([${dependentArg}]) => ${dependentMap}.Map((item) => item), [${dependentMap}] );`;
     if (declaredMap) {
       magicString.appendLeft(declaredMap.end + 1, decToRun);
     } else {
@@ -177,14 +171,14 @@ function wrapInCreateMapped(node, explicitDeps = null, excludeDeps = {}) {
     // mapStateObj = `, $m${uuid}`;
   }
 
-  magicString.appendLeft(node.start, `createMapped(([${args.join(",")}]) => `);
+  magicString.appendLeft(node.start, `mapEffect(([${args.join(",")}]) => `);
   magicString.appendRight(node.end, `, [${deps.join(",")}] ${mapStateObj})`);
 }
 
 function appendGetValue(node) {
-  if (node.wrappedInBaseState) return;
+  if (node.wrappedInSignal) return;
   node.vTackedOn = true;
-  magicString.appendRight(node.end, `.getValue()`);
+  magicString.appendRight(node.end, `.get()`);
 }
 
 function hasAncestor(ancestors, type) {
@@ -330,8 +324,8 @@ function wrapInSetValue(node, nestedMember = false) {
     compileRezact(leftAst);
     let leftParsed = magicString.toString();
     const leftMinusValue =
-      leftParsed.slice(-11) === ".getValue()"
-        ? leftParsed.slice(0, leftParsed.length - 11)
+      leftParsed.slice(-6) === ".get()"
+        ? leftParsed.slice(0, leftParsed.length - 6)
         : leftParsed;
 
     const rightAst = acorn.parse(right, {
@@ -344,7 +338,7 @@ function wrapInSetValue(node, nestedMember = false) {
     compileRezact(rightAst);
     const rightParsed = magicString.toString();
     // const rightMinusValue =
-    //   rightParsed.slice(-11) === ".getValue()"
+    //   rightParsed.slice(-6) === ".get()"
     //     ? rightParsed.slice(0, rightParsed.length - 11)
     //     : rightParsed;
 
@@ -358,7 +352,7 @@ function wrapInSetValue(node, nestedMember = false) {
       isAssignOperator &&
       node.left.type === "Identifier"
     )
-      leftParsed = `${leftParsed}.getValue()`;
+      leftParsed = `${leftParsed}.get()`;
     if (node.operator === "+=") nestedRightVal = `${leftParsed} + ${right}`;
     if (node.operator === "-=") nestedRightVal = `${leftParsed} - ${right}`;
     if (node.operator === "*=") nestedRightVal = `${leftParsed} * ${right}`;
@@ -368,7 +362,7 @@ function wrapInSetValue(node, nestedMember = false) {
     magicString.overwrite(
       node.start,
       node.end,
-      `${leftMinusValue}.setValue(${nestedRightVal})`
+      `${leftMinusValue}.set(${nestedRightVal})`
     );
     return;
   }
@@ -377,7 +371,7 @@ function wrapInSetValue(node, nestedMember = false) {
   let rightVal =
     node.right?.raw || src.slice(node.right?.start || 0, node.right?.end || 0);
   if (node.right?.value && node.right.value[0] === "$")
-    rightVal = `${node.right.value}.getValue()`;
+    rightVal = `${node.right.value}.get()`;
 
   const operation =
     node.operator === "++" ? "+ 1" : node.operator === "--" ? "- 1" : "";
@@ -387,19 +381,15 @@ function wrapInSetValue(node, nestedMember = false) {
     node.type === "UpdateExpression" &&
     node.argument.name[0] === "$"
   )
-    rightVal = `${node.argument.name}.getValue() ${operation}`;
+    rightVal = `${node.argument.name}.get() ${operation}`;
 
   if (
     node.right?.type === "UnaryExpression" &&
     node.right.argument.name[0] === "$"
   )
-    rightVal = `${node.right.operator}${node.right.argument.name}.getValue()`;
+    rightVal = `${node.right.operator}${node.right.argument.name}.get()`;
 
-  magicString.overwrite(
-    node.start,
-    node.end,
-    `${leftVal}.setValue(${rightVal})`
-  );
+  magicString.overwrite(node.start, node.end, `${leftVal}.set(${rightVal})`);
 }
 
 function isReactiveAttribute(node) {
@@ -423,7 +413,7 @@ function compileRezact(ast) {
         if (node.init.type === "BinaryExpression")
           wrapInCreateComputed(node.init);
         if (node.init.type === "ArrayExpression")
-          wrapInUseMapState(node.init, node);
+          wrapInUseMapSignal(node.init, node);
         if (
           node.init.type === "CallExpression" &&
           !nodeWillWrapInCreateMapped(node.init)
@@ -680,7 +670,7 @@ function compileRezact(ast) {
         node.key.name[0] === "$" &&
         node.value.type === "ArrayExpression"
       ) {
-        return wrapInUseMapState(node.value, node, ancestors.at(-3));
+        return wrapInUseMapSignal(node.value, node, ancestors.at(-3));
       }
 
       if (
@@ -688,7 +678,7 @@ function compileRezact(ast) {
         node.key.value[0] === "$" &&
         node.value.type === "ArrayExpression"
       ) {
-        return wrapInUseMapState(node.value, node, ancestors.at(-3));
+        return wrapInUseMapSignal(node.value, node, ancestors.at(-3));
       }
 
       if (
@@ -808,6 +798,8 @@ function rezact(): PluginOption {
       magicString = null;
       lastImport = { end: 0 };
       importsUsed = {};
+      signalsUsed = {};
+      mapStateUsed = {};
       functionsToRun = [];
       mapDeclarationTracking = {};
       // console.log(id);

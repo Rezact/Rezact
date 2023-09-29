@@ -63,7 +63,7 @@ export function Page() {
 let currentEditingTodo = null;
 function editModeClickListener(ev) {
   if (ev.target === currentEditingTodo.editInput) return;
-  currentEditingTodo.editing.setValue(false);
+  currentEditingTodo.editing.set(false);
   document.removeEventListener("click", editModeClickListener);
 }
 

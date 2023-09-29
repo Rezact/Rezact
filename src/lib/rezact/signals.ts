@@ -8,6 +8,7 @@ import {
   createComment,
   createElement,
   createTextNode,
+  handleInputValue,
 } from ".";
 
 let batchSubs = [];
@@ -27,10 +28,10 @@ function runBatch() {
 
     func.stateObj.subs.set(func, true);
     if (func.funcRef) {
-      func.obj.newVal = func.stateObj.getValue();
+      func.obj.newVal = func.stateObj.get();
       func.funcRef(func.obj);
     } else {
-      func(func.stateObj.getValue());
+      func(func.stateObj.get());
     }
     batchSubs.splice(i, 1);
     // console.debug((window as any).totalSubscriberCount++);
@@ -96,7 +97,7 @@ function attachSubs(elm, subFuncs) {
   batchTime = Date.now();
 }
 
-export class BaseState {
+export class Signal {
   state = true;
   value: any = null;
   subs: any = new Map();
@@ -122,13 +123,13 @@ export class BaseState {
     }
   }
 
-  getValue() {
+  get() {
     if (this.value instanceof Text) return this.value.textContent;
     return this.value;
   }
 
-  setValue(newVal: any) {
-    const val = this.getValue();
+  set(newVal: any) {
+    const val = this.get();
 
     if (newVal === val && !isArray(newVal)) return;
 
@@ -175,19 +176,19 @@ export class BaseState {
       return newObj;
     }
 
-    return this.getValue();
+    return this.get();
   }
 }
 
-export const computeSub = (obj) => obj.newState.setValue(obj.func(obj.deps));
+export const computeSub = (obj) => obj.newState.set(obj.func(obj.deps));
 
-export let createComputed = _createComputed;
-export function overrideCreateComputed(func: any) {
-  createComputed = func;
+export let effect = _effect;
+export function overrideEffect(func: any) {
+  effect = func;
 }
 
-function _createComputed(func: (obj: any) => {}, deps: any[]) {
-  const newState: any = new BaseState(func(deps));
+function _effect(func: (obj: any) => {}, deps: any[]) {
+  const newState: any = new Signal(func(deps));
   newState.computed = true;
   const depsLen = deps.length;
   for (let i = 0; i < depsLen; i++) {
@@ -196,20 +197,20 @@ function _createComputed(func: (obj: any) => {}, deps: any[]) {
   return newState;
 }
 
-export function createComputedAttribute(func: (obj: any) => {}, deps: any[]) {
+export function attrEffect(func: (obj: any) => {}, deps: any[]) {
   return { computer: func, deps };
 }
 
 const textTypes = { string: true, number: true };
 function handleStateTypes(parent: any, child: any) {
-  const val = child.getValue();
+  const val = child.get();
   if (textTypes[typeof val]) {
     handleTextNode(parent, child);
   } else if (val instanceof Node && !child.computed) {
     appendChild(parent, val);
   } else if (child.computed) {
     const placeholder = createElement("span");
-    const newState = new BaseState(placeholder);
+    const newState = new Signal(placeholder);
     if (val instanceof Node) newState.value = val;
     child.subscribe((newVal: any) => {
       if (
@@ -217,10 +218,10 @@ function handleStateTypes(parent: any, child: any) {
         newVal === null ||
         newVal === undefined
       )
-        newState.setValue(placeholder);
-      if (newVal instanceof Node) newState.setValue(newVal);
+        newState.set(placeholder);
+      if (newVal instanceof Node) newState.set(newVal);
     });
-    appendChild(parent, newState.getValue());
+    appendChild(parent, newState.get());
   }
 }
 
@@ -235,7 +236,10 @@ addAppendChildHook(childStateHandler);
 const compAttrSub = (o) => o.elm.setAttribute(o.key, o.computer(o.deps));
 const attrSub = (o) => o.elm.setAttribute(o.key, o.newVal);
 const attributeStateHandler = {
-  matches: (_attrs, _key, attrVal) => attrVal.state || attrVal.computer,
+  matches: (_attrs, key, attrVal) =>
+    // skip if useInputs has been called and this is a value or checked attribute
+    !(handleInputValue && (key === "value" || key === "checked")) &&
+    (attrVal.state || attrVal.computer),
   handler: (elm, key, attrVal) => {
     if (attrVal.computer) {
       const { computer, deps } = attrVal;
@@ -248,7 +252,7 @@ const attributeStateHandler = {
         );
       }
     } else {
-      elm.setAttribute(key, attrVal.getValue());
+      elm.setAttribute(key, attrVal.get());
       attrVal.subscribe({ funcRef: attrSub, obj: { elm, key } }, { elm });
     }
   },
@@ -258,7 +262,7 @@ addAttributeHandler(attributeStateHandler);
 
 const textNodeSub = (o) => (o.txtNode.textContent = o.newVal.toString());
 function handleTextNode(parent: any, child: any) {
-  const val = child.getValue();
+  const val = child.get();
   const txtNode = createTextNode(val.toString());
   if (typeof val === "string") child.value = txtNode;
   child.subscribe(
@@ -276,7 +280,7 @@ addAfterRenderHook(() => {
     if (typeof func === "object") {
       func.funcRef(func.obj);
     } else {
-      func(func.stateObj.getValue());
+      func(func.stateObj.get());
     }
   });
   subscFunctionsArr = [];

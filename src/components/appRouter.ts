@@ -57,6 +57,11 @@ router.addRoute(
   () => import("src/examples/Forms/ControlledForms")
 );
 
+router.addRoute(
+  "/escape-hatches",
+  () => import("src/examples/EscapeHatches/EscapeHatches")
+);
+
 router.addRoute("/todos", () => import("src/examples/Todo/Todo"));
 
 router.addRoute("/list-redraw", () => import("src/examples/ListReRender/App"));
