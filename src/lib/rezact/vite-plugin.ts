@@ -7,6 +7,7 @@ import MagicString from "magic-string";
 const acorn = Parser.extend(jsx());
 
 let src = "";
+let itemsAlreadyImported = [];
 let magicString: any = null;
 let lastImport: any = null;
 let importsUsed: any = {};
@@ -720,6 +721,9 @@ function compileRezact(ast) {
     },
 
     ImportDeclaration(node: any) {
+      itemsAlreadyImported.push(
+        ...node.specifiers.map((spec) => spec.imported?.name).filter((i) => i)
+      );
       lastImport = node;
     },
 
@@ -795,6 +799,7 @@ function rezact(): PluginOption {
       if (id.includes("signals.ts")) return;
       if (id.includes("mapState.ts")) return;
       src = _src;
+      itemsAlreadyImported = [];
       magicString = null;
       lastImport = { end: 0 };
       importsUsed = {};
@@ -812,19 +817,27 @@ function rezact(): PluginOption {
       compileRezact(ast);
       if (src.includes("xCreateElement")) importsUsed.xCreateElement = true;
       if (src.includes("xFragment")) importsUsed.xFragment = true;
-      const importsUsedArr = Object.keys(importsUsed);
+      const importsUsedArr = Object.keys(importsUsed).filter(
+        (i) => !itemsAlreadyImported.includes(i)
+      );
+
       if (importsUsedArr.length > 0)
         magicString.prepend(
           `import {${importsUsedArr.join(",")}} from "rezact"\n`
         );
 
-      const signalsUsedArr = Object.keys(signalsUsed);
+      const signalsUsedArr = Object.keys(signalsUsed).filter(
+        (i) => !itemsAlreadyImported.includes(i)
+      );
+
       if (signalsUsedArr.length > 0)
         magicString.prepend(
           `import {${signalsUsedArr.join(",")}} from "rezact/signals"\n`
         );
 
-      const mapStateUsedArr = Object.keys(mapStateUsed);
+      const mapStateUsedArr = Object.keys(mapStateUsed).filter(
+        (i) => !itemsAlreadyImported.includes(i)
+      );
       if (mapStateUsedArr.length > 0)
         magicString.prepend(
           `import {${mapStateUsedArr.join(",")}} from "rezact/mapState"\n`
