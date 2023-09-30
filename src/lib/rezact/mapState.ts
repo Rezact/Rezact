@@ -102,7 +102,7 @@ export class MapSignal<T> extends Signal<T> {
   clearCacheTimer: any;
   push: (...items: T[]) => {};
   map: (
-    callbackfn: (value: string, index: number, array: string[]) => unknown,
+    callbackfn: (value: T, index: number, array: T[]) => unknown,
     thisArg?: any
   ) => {};
 
