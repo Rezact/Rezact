@@ -2,6 +2,22 @@ import { Signal, effect } from "rezact/signals";
 import { MapSignal, mapEffect } from "rezact/mapState";
 
 export function TestManual() {
+  let $count = 10;
+  let count = $count as unknown as Signal<typeof $count>;
+  console.log(count, $count);
+
+  let $testArr = [
+    { name: "Jack", age: 20 },
+    { name: "Jill", age: 30 },
+    { name: "John", age: 40 },
+    { name: "Jane", age: 50 },
+  ];
+
+  let testArr = $testArr as unknown as MapSignal<(typeof $testArr)[0]>;
+
+  testArr.push({ name: "Jesen", age: 30 });
+  testArr.map((item) => console.log(item));
+
   let name = new Signal("jesen");
   let width = new Signal(10);
   let height = new Signal(20);

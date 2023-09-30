@@ -97,7 +97,7 @@ function attachSubs(elm, subFuncs) {
   batchTime = Date.now();
 }
 
-export class Signal {
+export class Signal<T> {
   state = true;
   value: any = null;
   subs: any = new Map();
@@ -107,7 +107,7 @@ export class Signal {
   idxState: any;
   func: any;
 
-  constructor(st: any) {
+  constructor(st: T) {
     this.value = st;
   }
 
@@ -123,12 +123,12 @@ export class Signal {
     }
   }
 
-  get() {
-    if (this.value instanceof Text) return this.value.textContent;
+  get(): T {
+    if (this.value instanceof Text) return this.value.textContent as T;
     return this.value;
   }
 
-  set(newVal: any) {
+  set(newVal: T) {
     const val = this.get();
 
     if (newVal === val && !isArray(newVal)) return;
@@ -142,7 +142,7 @@ export class Signal {
       val.replaceWith(newVal);
 
     if (this.value instanceof Text) {
-      this.value.textContent = newVal;
+      (this.value.textContent as T) = newVal;
     } else {
       this.value = newVal;
     }

@@ -15,7 +15,7 @@ overrideEffect(_effect);
 
 function _effect(func: (obj: any) => {}, deps: any[]) {
   const NewState = deps[0] instanceof MapSignal ? MapSignal : Signal;
-  const newState: any = new NewState(func(deps));
+  const newState: any = new NewState(func(deps) as any);
   newState.computed = true;
   const depsLen = deps.length;
   for (let i = 0; i < depsLen; i++) {
@@ -96,20 +96,27 @@ function subscribeToNestedStates(item, mapStateObj) {
   });
 }
 
-export class MapSignal extends Signal {
+export class MapSignal<T> extends Signal<T> {
   elmRefCache: any = new Map();
   refreshTimer: any;
   clearCacheTimer: any;
+  push: (...items: T[]) => {};
+  map: (
+    callbackfn: (value: T, index: number, array: T[]) => unknown,
+    thisArg?: any
+  ) => {};
 
-  constructor(st: any) {
-    super(st);
-    ["push", "pop", "splice", "shift", "unshift", "reduce"].forEach((item) => {
-      this[item] = (...args) => {
-        this.value[item](...args);
-        this.updateList(this.func);
-        this.alertSubs(this.value);
-      };
-    });
+  constructor(st: T[]) {
+    super(st as T);
+    ["push", "pop", "splice", "shift", "unshift", "reduce", "map"].forEach(
+      (item) => {
+        this[item] = (...args) => {
+          this.value[item](...args);
+          this.updateList(this.func);
+          this.alertSubs(this.value);
+        };
+      }
+    );
   }
 
   removeStaleElmRefCacheItems() {
