@@ -171,8 +171,6 @@ This separation allows each mapping to be independently reactive to changes in t
 
 In summary, having two separate `mapEffect` instances for two `.map` calls allows for optimized, independent reactivity and rendering for each mapped section of the component.
 
-Absolutely, here’s a refined version that emphasizes the enhanced developer experience:
-
 ---
 
 ### Enhanced Reactivity in Arrays/Maps
