@@ -180,7 +180,56 @@ The mask options in the Validator Library allow you to define a user-friendly fo
 
 ### Practical Usage:
 
-When setting up an input with mask options, you define the mask, maskSlots, and other related options in the `ValidatorOptions` object and then pass it to the `setupValidatorInput` function along with other validation options. This way, users see a formatted input field, guiding them to enter data in the correct format, while you can still access and validate the raw, unformatted data programmatically when needed.
+Below is a basic example of how you can create a masked input for a telephone number using the library. The mask is set up to format the input as `(XXX) XXX-XXXX`, where `X` represents a digit.
+
+### JavaScript/JSX Example:
+
+```javascript
+import { setupValidatorInput } from "@rezact/rezact/validator";
+import type { ValidatorOptions } from "@rezact/rezact/validator";
+
+const TelephoneInputGroup = (
+  <>
+    <label htmlFor="telephone">Telephone</label>
+    <input id="telephone" name="telephone" />
+    <div className="error-elm"></div>
+  </>
+);
+
+const telephoneInputValidationOptions: ValidatorOptions = {
+  inputElm: TelephoneInputGroup[1],
+  errorElm: TelephoneInputGroup[2],
+  required: true,
+  mask: "(XXX) XXX-XXXX",
+  maskSlots: "X",
+  dataAccept: /[\d]/,
+  showFullMaskWhileTyping: true,
+  exactLength: 10,
+};
+
+function setupInputValidators() {
+  setupValidatorInput(telephoneInputValidationOptions);
+}
+
+const handleSubmit = (ev) => {
+  ev.preventDefault();
+  const Form = ev.target;
+  if (Form.checkValidity()) {
+    // Handle form submission, e.g., send data to the server
+  }
+};
+
+const Form = (
+  <form onMount={setupInputValidators} onSubmit={handleSubmit}>
+    {TelephoneInputGroup}
+    <button type="submit">Submit</button>
+  </form>
+);
+
+export default function App() {
+  return <>{Form}</>;
+}
+```
 
 ---
 
