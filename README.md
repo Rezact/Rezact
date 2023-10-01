@@ -52,6 +52,7 @@ export default function App() {
 - [Uncontrolled Components](#rezacts-uncontrolled-components)
   - [What are Uncontrolled Components?](#what-are-uncontrolled-components)
   - [Rezact's Approach to Uncontrolled Components](#rezacts-approach-to-uncontrolled-components)
+- [Form Validation](https://github.com/Rezact/Rezact/blob/main/FormValidation.md)
 - [Understanding the Rezact Compiler](https://github.com/Rezact/Rezact/blob/main/COMPILER.md)
 - [Performance Benchmarks](#performance)
 - [More Examples](#more-examples)
@@ -367,6 +368,12 @@ const fetchData = async () => {
 ## Conclusion:
 
 Rezact's encouragement of uncontrolled components offers a refreshing take on form handling. By reducing the boilerplate and complexity associated with controlled components, developers can focus on building features and logic. The utility functions provided by Rezact further simplify interactions with uncontrolled forms, making it a powerful tool for modern web development.
+
+---
+
+## Form Validation
+
+Rezact includes a comprehensive form validation library.  For more info see https://github.com/Rezact/Rezact/blob/main/FormValidation.md.
 
 ---
 
