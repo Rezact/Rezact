@@ -1,0 +1,3 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Escape Hatch suite > Renders Escape Hatch Demo 1`] = `"<h1>Hello World</h1><div><div id=\\"iss14-1\\">Hallo, jesen</div><div id=\\"iss14-2\\">width: 10</div><div id=\\"iss14-3\\">height: 20</div><div id=\\"iss14-4\\">area: 200</div><button>Update Width</button><h1>Simple String List</h1><!--start map--><div dataval=\\"Jack\\"><input></div><div dataval=\\"Jill\\"><input></div><div dataval=\\"John\\"><input></div><div dataval=\\"Jane\\"><input></div><!--end map--><!--start map--><div>Jack</div><div>Jill</div><div>John</div><div>Jane</div><!--end map--></div>"`;

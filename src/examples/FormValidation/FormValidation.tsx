@@ -33,6 +33,25 @@ const serialNoInputValidationOptions: ValidatorOptions = {
   mask: "XXX ____ XDX-( ____ )-{ ____ }-[ ____ ]",
   maskSlots: "_",
   dataAccept: /[\d]/,
+  unmaskInputValueProp: false,
+  validateUnMaskedValue: true,
+  showFullMaskWhileTyping: true,
+  exactLength: 16,
+  customErrorMessages: {
+    inputNotLongEnough: "Serial Number is not complete.",
+  },
+  // showFullMaskWhileTyping: true,
+  // hideDotSlots: false
+};
+
+const SerialInput2 = <Input label="Serial2 No." />;
+const serialNoInputValidationOptions2: ValidatorOptions = {
+  inputElm: SerialInput2[1],
+  errorElm: SerialInput2[2],
+  required: true,
+  mask: "XXX ____ XDX-( ____ )-{ ____ }-[ ____ ]",
+  maskSlots: "_",
+  dataAccept: /[\d]/,
   unmaskInputValueProp: true,
   validateUnMaskedValue: true,
   showFullMaskWhileTyping: true,
@@ -141,6 +160,7 @@ const cvvInputValidationOptions: ValidatorOptions = {
 
 function setupInputValidators() {
   setupValidatorInput(serialNoInputValidationOptions);
+  setupValidatorInput(serialNoInputValidationOptions2);
   setupValidatorInput(ipv4InputValidationOptions);
   setupValidatorInput(nameInputValidationOptions);
   setupValidatorInput(phoneInputValidationOptions);
@@ -163,6 +183,7 @@ const handleSubmit = (ev) => {
 const Form = (
   <form onMount={setupInputValidators} onSubmit={handleSubmit}>
     {SerialInput}
+    {SerialInput2}
     {IPv4Input}
     {NameInput}
     {TelephoneInput}
