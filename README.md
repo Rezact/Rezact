@@ -1,7 +1,7 @@
 # Rezact
 
 <a href="https://discord.gg/AMZubV6rjK">
-    <img src="https://github.com/Rezact/Rezact/assets/2927894/8b3c5545-8b44-46dd-b862-eb7851ea7c5e" alt="Join The Discord Chat"  height="50px">
+    <img src="./public/discord.png" alt="Join The Discord Chat"  height="50px">
 </a>
 
 [![Tests](https://github.com/Rezact/Rezact/actions/workflows/main.yml/badge.svg)](https://github.com/Rezact/Rezact/actions/workflows/main.yml)
