@@ -78,4 +78,9 @@ router.addRoute(
   () => import("src/examples/SimpleStringListState/SimpleStringList")
 );
 
+router.addRoute(
+  "/form-validation",
+  () => import("src/examples/FormValidation/FormValidation")
+);
+
 export { router };
