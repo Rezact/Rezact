@@ -1,7 +1,12 @@
 # Rezact
 
+<a href="https://discord.gg/AMZubV6rjK">
+    <img src="./public/discord.png" alt="Join The Discord Chat"  height="50px">
+</a>
+
 [![Tests](https://github.com/Rezact/Rezact/actions/workflows/main.yml/badge.svg)](https://github.com/Rezact/Rezact/actions/workflows/main.yml)
 [![Publish to npm](https://github.com/Rezact/Rezact/actions/workflows/publish.yml/badge.svg)](https://github.com/Rezact/Rezact/actions/workflows/publish.yml)
+ 
 
 ## Intuitive Reactivity, Simplified State.
 
