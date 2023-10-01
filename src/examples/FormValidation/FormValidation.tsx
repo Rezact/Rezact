@@ -1,4 +1,7 @@
-import { setupValidatorInput } from "src/lib/rezact/validator";
+import {
+  ValidatorOptions,
+  setupValidatorInput,
+} from "src/lib/rezact/validator";
 import { MyLayout } from "../Layout/nestedLayout";
 import { getFormData } from "src/lib/rezact/formHelper";
 
@@ -25,7 +28,7 @@ function Input({ label, placeholder }: InputProps) {
 }
 
 const SerialInput = <Input label="Serial No." />;
-const serialNoInputValidationOptions = {
+const serialNoInputValidationOptions: ValidatorOptions = {
   inputElm: SerialInput[1],
   errorElm: SerialInput[2],
   required: true,
@@ -44,7 +47,7 @@ const serialNoInputValidationOptions = {
 };
 
 const IPv4Input = <Input label="IP v4" placeholder="123.234.123.234" />;
-const ipv4InputValidationOptions = {
+const ipv4InputValidationOptions: ValidatorOptions = {
   inputElm: IPv4Input[1],
   errorElm: IPv4Input[2],
   pattern: /^$|^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)\.?\b){4}$/,
@@ -53,14 +56,14 @@ const ipv4InputValidationOptions = {
 };
 
 const NameInput = <Input label="Name" placeholder="John Doe" />;
-const nameInputValidationOptions = {
+const nameInputValidationOptions: ValidatorOptions = {
   inputElm: NameInput[1],
   errorElm: NameInput[2],
   required: true,
 };
 
 const TelephoneInput = <Input label="Telephone" placeholder="(___) ___ ____" />;
-const phoneInputValidationOptions = {
+const phoneInputValidationOptions: ValidatorOptions = {
   inputElm: TelephoneInput[1],
   errorElm: TelephoneInput[2],
   required: true,
@@ -72,7 +75,7 @@ const phoneInputValidationOptions = {
 };
 
 const StreetInput = <Input label="Street" placeholder="1234 Main St." />;
-const streetInputValidationOptions = {
+const streetInputValidationOptions: ValidatorOptions = {
   inputElm: StreetInput[1],
   errorElm: StreetInput[2],
   required: true,
@@ -81,7 +84,7 @@ const streetInputValidationOptions = {
 };
 
 const ZipInput = <Input label="Zip" placeholder="12345" />;
-const zipInputValidationOptions = {
+const zipInputValidationOptions: ValidatorOptions = {
   inputElm: ZipInput[1],
   errorElm: ZipInput[2],
   required: true,
@@ -92,14 +95,14 @@ const zipInputValidationOptions = {
 };
 
 const CommentsInput = <Input label="Comments" placeholder="" />;
-const commentsInputValidationOptions = {
+const commentsInputValidationOptions: ValidatorOptions = {
   inputElm: CommentsInput[1],
   errorElm: CommentsInput[2],
   maxLength: 20,
 };
 
 const CreditCardInput = <Input label="Credit Card" />;
-const creditCardInputValidationOptions = {
+const creditCardInputValidationOptions: ValidatorOptions = {
   inputElm: CreditCardInput[1],
   errorElm: CreditCardInput[2],
   mask: ".... .... .... ....",
@@ -114,7 +117,7 @@ const creditCardInputValidationOptions = {
 };
 
 const ExpirationInput = <Input label="Expiration" placeholder="MM/YY" />;
-const expirationInputValidationOptions = {
+const expirationInputValidationOptions: ValidatorOptions = {
   inputElm: ExpirationInput[1],
   errorElm: ExpirationInput[2],
   pattern: /\d\d\/\d\d/,
@@ -130,7 +133,7 @@ const expirationInputValidationOptions = {
 };
 
 const CVVInput = <Input label="CVV" placeholder="000" />;
-const cvvInputValidationOptions = {
+const cvvInputValidationOptions: ValidatorOptions = {
   inputElm: CVVInput[1],
   errorElm: CVVInput[2],
   minLength: 3,

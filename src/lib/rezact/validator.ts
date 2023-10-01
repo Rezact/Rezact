@@ -1,3 +1,40 @@
+interface CustomInput extends HTMLInputElement {
+  errorElm: HTMLElement;
+  errorObj: Map<string, boolean>;
+}
+
+interface CustomErrorElm extends HTMLElement {
+  errorObj?: Map<string, boolean>;
+}
+
+interface ValidatorOptions {
+  inputElm: CustomInput;
+  errorElm?: CustomErrorElm;
+  required?: boolean;
+  minLength?: number;
+  maxLength?: number;
+  exactLength?: number;
+  pattern?: RegExp;
+  customValidator?: (value: string) => boolean | string;
+  mask?: string;
+  maskSlots?: string;
+  dataAccept?: RegExp;
+  allowUnacceptedChars?: boolean;
+  unmaskInputValueProp?: boolean;
+  showFullMaskWhileTyping?: boolean;
+  hideDotSlots?: boolean;
+  validateUnMaskedValue?: boolean;
+  validateOnInput?: boolean;
+  isNumeric?: boolean;
+  customErrorMessages?: {
+    isRequired?: string;
+    inputNotLongEnough?: string;
+    inputLengthTooLong?: string;
+    patternNotValid?: string;
+    customNotValid?: string;
+  };
+}
+
 // a deduplicated list of all the inputs and errorElements that are registered by setupInput
 const inputElms = new Map();
 const errorElms = new Map();
@@ -8,8 +45,8 @@ const blurEvent = "blur";
 const clickEvent = "click";
 const focusEvent = "focus";
 
-function setupValidatorInput(opts) {
-  opts.inputElm = getInputElm(opts);
+function setupValidatorInput(opts: ValidatorOptions) {
+  opts.inputElm = getInputElm(opts) as CustomInput;
   opts.errorElm = getErrorElm(opts);
 
   const inputElm = opts.inputElm;
@@ -30,7 +67,7 @@ function setupValidatorInput(opts) {
   const errorElm = opts.errorElm;
   const form = inputElm.form;
 
-  inputElm.errorElm = errorElm;
+  inputElm.errorElm = errorElm as HTMLElement;
 
   inputElms.set(inputElm, opts);
   errorElms.set(errorElm, opts);
@@ -85,13 +122,13 @@ function querySel(selector) {
 function getInputElm(opts) {
   if (typeof opts.inputElm === "function") return opts.inputElm(opts);
   if (typeof opts.inputElm === "string") return querySel(opts.inputElm);
-  return opts.inputElm;
+  return opts.inputElm as HTMLInputElement;
 }
 
 function getErrorElm(opts) {
   if (typeof opts.errorElm === "function") return opts.errorElm(opts);
   if (typeof opts.errorElm === "string") return querySel(opts.errorElm);
-  return opts.errorElm;
+  return opts.errorElm as HTMLElement;
 }
 
 function mergeDefaultOptions(opts) {
@@ -655,3 +692,5 @@ function VMasker(el) {
 }
 
 export { setupValidatorInput };
+
+export type { ValidatorOptions };
