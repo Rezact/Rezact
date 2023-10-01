@@ -798,6 +798,7 @@ function rezact(): PluginOption {
       if (id.includes("rezact/router.ts")) return;
       if (id.includes("signals.ts")) return;
       if (id.includes("mapState.ts")) return;
+      if (id.includes("validator.ts")) return;
       src = _src;
       itemsAlreadyImported = [];
       magicString = null;
