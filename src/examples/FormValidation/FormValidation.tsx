@@ -1,7 +1,5 @@
-import {
-  ValidatorOptions,
-  setupValidatorInput,
-} from "src/lib/rezact/validator";
+import { setupValidatorInput } from "src/lib/rezact/validator";
+import type { ValidatorOptions } from "src/lib/rezact/validator";
 import { MyLayout } from "../Layout/nestedLayout";
 import { getFormData } from "src/lib/rezact/formHelper";
 
