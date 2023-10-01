@@ -2,7 +2,7 @@
 
 ## Table of Contents
 
-1. [Import](#1-import)
+1. [Import](#import)
 2. [Basic Setup](#basic-setup)
    - [Example](#example)
 3. [Options](#options)
