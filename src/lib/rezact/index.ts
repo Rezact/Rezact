@@ -138,10 +138,11 @@ export function useInputs() {
   }
 
   const handleInputAttr = (element, attributeValue, attributes) => {
-    setInputVal(element, attributeValue.value);
+    setInputVal(element, attributeValue.get());
 
     attributeValue.subscribe(
       (newVal: string) => {
+        if (element.value === newVal) return;
         setInputVal(element, newVal);
       },
       { elm: element }
