@@ -694,10 +694,10 @@ function compileRezact(ast) {
       }
       if (node.key.name === "value" && !importsUsed.useInputs)
         importsUsed.useInputs = true && functionsToRun.push("useInputs()");
-      if (node.key.name === "onMount" && !importsUsed.useInputs)
+      if (node.key.name === "onMount" && !importsUsed.useLifeCycleAttributes)
         importsUsed.useLifeCycleAttributes =
           true && functionsToRun.push("useLifeCycleAttributes()");
-      if (node.key.name === "onUnmount" && !importsUsed.useInputs)
+      if (node.key.name === "onUnmount" && !importsUsed.useLifeCycleAttributes)
         importsUsed.useLifeCycleAttributes =
           true && functionsToRun.push("useLifeCycleAttributes()");
     },
