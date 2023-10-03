@@ -612,6 +612,8 @@ function compileRezact(ast) {
           return wrapInSetValue(ancestors[anceLen], node.property);
         }
 
+        if (ancestors.at(-2).key?.name === "value") return;
+
         appendGetValue(node.property);
       } else if (
         node.object.name &&
