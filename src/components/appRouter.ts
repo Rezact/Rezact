@@ -83,4 +83,8 @@ router.addRoute(
   () => import("src/examples/FormValidation/FormValidation")
 );
 
+router.addRoute(
+  "/value-attribute-dot-notation",
+  () => import("src/examples/ValueAttributeDotNotation/ValueAttributeDot")
+);
 export { router };

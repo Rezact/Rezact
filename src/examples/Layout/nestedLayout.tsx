@@ -75,6 +75,11 @@ export function MyLayout({ Component, pageProps }: any) {
           <a href="/form-validation">Form Validator</a>
         </li>
         <li>
+          <a href="/value-attribute-dot-notation">
+            Input Value Attribute passed with Dot Notation
+          </a>
+        </li>
+        <li>
           <a href="/asdfasdfasdfasdf">A Route that does not exist</a>
         </li>
       </ul>
