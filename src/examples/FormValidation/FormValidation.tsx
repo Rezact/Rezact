@@ -6,18 +6,20 @@ import { getFormData } from "src/lib/rezact/formHelper";
 type InputProps = {
   label: string;
   placeholder?: string;
+  value?: string;
 };
 
-function Input({ label, placeholder }: InputProps) {
+function Input({ label, placeholder, value }: InputProps) {
   const id = label.toLowerCase();
   return (
     <>
       <label for={id}>{label}</label>
       <input
-        style="display: block; "
+        style="display: block; width: 300px;"
         autocomplete="off"
         name={id}
         id={id}
+        value={value || ""}
         placeholder={placeholder || ""}
       />
       <div style="height: 0px; overflow: hidden; transition: all 300ms ease 0s; color: red; font-size: 10pt; margin-bottom: 10px;"></div>
@@ -48,6 +50,50 @@ const SerialInput2 = <Input label="Serial2 No." />;
 const serialNoInputValidationOptions2: ValidatorOptions = {
   inputElm: SerialInput2[1],
   errorElm: SerialInput2[2],
+  required: true,
+  mask: "XXX ____ XDX-( ____ )-{ ____ }-[ ____ ]",
+  maskSlots: "_",
+  dataAccept: /[\d]/,
+  unmaskInputValueProp: true,
+  validateUnMaskedValue: true,
+  showFullMaskWhileTyping: true,
+  exactLength: 16,
+  customErrorMessages: {
+    inputNotLongEnough: "Serial Number is not complete.",
+  },
+  // showFullMaskWhileTyping: true,
+  // hideDotSlots: false
+};
+
+let $controlledValue1 = "";
+const SerialInput3 = (
+  <Input label="Serial3 Controlled No." value={$controlledValue1} />
+);
+const serialNoInputValidationOptions3: ValidatorOptions = {
+  inputElm: SerialInput3[1],
+  errorElm: SerialInput3[2],
+  required: true,
+  mask: "XXX ____ XDX-( ____ )-{ ____ }-[ ____ ]",
+  maskSlots: "_",
+  dataAccept: /[\d]/,
+  unmaskInputValueProp: false,
+  validateUnMaskedValue: true,
+  showFullMaskWhileTyping: true,
+  exactLength: 16,
+  customErrorMessages: {
+    inputNotLongEnough: "Serial Number is not complete.",
+  },
+  // showFullMaskWhileTyping: true,
+  // hideDotSlots: false
+};
+
+let $controlledValue2 = "";
+const SerialInput4 = (
+  <Input label="Serial4 Controlled No." value={$controlledValue2} />
+);
+const serialNoInputValidationOptions4: ValidatorOptions = {
+  inputElm: SerialInput4[1],
+  errorElm: SerialInput4[2],
   required: true,
   mask: "XXX ____ XDX-( ____ )-{ ____ }-[ ____ ]",
   maskSlots: "_",
@@ -161,6 +207,8 @@ const cvvInputValidationOptions: ValidatorOptions = {
 function setupInputValidators() {
   setupValidatorInput(serialNoInputValidationOptions);
   setupValidatorInput(serialNoInputValidationOptions2);
+  setupValidatorInput(serialNoInputValidationOptions3);
+  setupValidatorInput(serialNoInputValidationOptions4);
   setupValidatorInput(ipv4InputValidationOptions);
   setupValidatorInput(nameInputValidationOptions);
   setupValidatorInput(phoneInputValidationOptions);
@@ -184,6 +232,10 @@ const Form = (
   <form onMount={setupInputValidators} onSubmit={handleSubmit}>
     {SerialInput}
     {SerialInput2}
+    {SerialInput3}
+    <p id="controlled-value-1">{$controlledValue1}</p>
+    {SerialInput4}
+    <p id="controlled-value-2">{$controlledValue2}</p>
     {IPv4Input}
     {NameInput}
     {TelephoneInput}

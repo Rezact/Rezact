@@ -3,7 +3,7 @@ import { render } from "rezact";
 import { Page } from "./FormValidation"; // Adjust the import to the actual file path
 import { screen } from "@testing-library/dom";
 import userEvent from "@testing-library/user-event";
-import { delay } from "src/lib/utils";
+import { delay, dispatchBlur, simulateTyping } from "src/lib/utils";
 
 const user = userEvent.setup();
 let originalConsoleInfo = console.info;
@@ -16,7 +16,7 @@ afterAll(() => {
   console.info = originalConsoleInfo;
 });
 
-describe("Page Component Tests", () => {
+describe("Form Validation Tests", () => {
   it("renders Page component and all input fields", async () => {
     render(document.body, Page);
     expect(screen.getByText("Validator Demo")).not.toBeNull();
@@ -121,5 +121,59 @@ describe("Page Component Tests", () => {
     serialNoInput.value = "XXX 1231 XDX-( 2312 )-{ 3123 }-[ 1231 ]";
     expect(serialNoInput.value).toBe("1231231231231231");
     expect(serialNoInput.nextElementSibling.textContent).toBe("");
+  });
+
+  it("renders and validates Controlled Serial3 No input", async () => {
+    const serialNoInput = screen.getByLabelText(
+      "Serial3 Controlled No."
+    ) as HTMLInputElement;
+    const testP1 = document.getElementById("controlled-value-1");
+
+    expect(serialNoInput.nextElementSibling.textContent).toBe(
+      "Serial3 Controlled No. is required."
+    );
+
+    // Test: Partial input should show "not complete" error
+    // dispatchFocus(serialNoInput);
+    simulateTyping("1234567890", serialNoInput);
+    dispatchBlur(serialNoInput);
+    expect(serialNoInput.nextElementSibling.textContent).toBe(
+      "Serial Number is not complete."
+    );
+    expect(serialNoInput.value).toBe("XXX 1234 XDX-( 5678 )-{ 90__ }-[ ____ ]");
+    expect(testP1.textContent).toBe("XXX 1234 XDX-( 5678 )-{ 90__ }-[ ____ ]");
+
+    simulateTyping("1234567890", serialNoInput);
+    dispatchBlur(serialNoInput);
+    expect(serialNoInput.nextElementSibling.textContent).toBe("");
+    expect(serialNoInput.value).toBe("XXX 1234 XDX-( 5678 )-{ 9012 }-[ 3456 ]");
+    expect(testP1.textContent).toBe("XXX 1234 XDX-( 5678 )-{ 9012 }-[ 3456 ]");
+  });
+
+  it("renders and validates Controlled Serial3 No input with unmasked value", async () => {
+    const serialNoInput = screen.getByLabelText(
+      "Serial4 Controlled No."
+    ) as HTMLInputElement;
+    const testP2 = document.getElementById("controlled-value-2");
+
+    expect(serialNoInput.nextElementSibling.textContent).toBe(
+      "Serial4 Controlled No. is required."
+    );
+
+    // Test: Partial input should show "not complete" error
+    // dispatchFocus(serialNoInput);
+    simulateTyping("1234567890", serialNoInput);
+    dispatchBlur(serialNoInput);
+    expect(serialNoInput.nextElementSibling.textContent).toBe(
+      "Serial Number is not complete."
+    );
+    expect(serialNoInput.value).toBe("1234567890");
+    expect(testP2.textContent).toBe("1234567890");
+
+    simulateTyping("1234567890", serialNoInput);
+    dispatchBlur(serialNoInput);
+    expect(serialNoInput.nextElementSibling.textContent).toBe("");
+    expect(serialNoInput.value).toBe("1234567890123456");
+    expect(testP2.textContent).toBe("1234567890123456");
   });
 });
