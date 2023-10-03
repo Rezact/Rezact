@@ -21,4 +21,4 @@ export function Page() {
   );
 }
 
-// export const Layout = MyLayout;
+export const Layout = MyLayout;
