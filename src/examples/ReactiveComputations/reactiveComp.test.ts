@@ -2,6 +2,9 @@ import { describe, expect, it } from "vitest";
 import { screen, waitFor } from "@testing-library/dom";
 import { render } from "rezact";
 import Page from "./ReactiveComp";
+import userEvent from "@testing-library/user-event";
+
+const user = userEvent.setup();
 
 describe("Reactive Computations", () => {
   it("Doubled", async () => {
@@ -66,6 +69,22 @@ describe("Reactive Computations", () => {
     expect(div2?.textContent).toBe("width: 10");
     expect(div3?.textContent).toBe("height: 20");
     expect(div4?.textContent).toBe("area: 200");
+  });
+
+  it("Issue 22 Compiler should not append .get() to code inside Labeled statements prematurely", async () => {
+    const inp = document.getElementById("issue-22-input") as HTMLInputElement;
+    const testP = document.getElementById("issue-22-test") as HTMLDivElement;
+    const testP2 = document.getElementById("issue-22-test2") as HTMLDivElement;
+
+    expect(inp.value).toBe("Zafar Ansari");
+    expect(testP.textContent).toBe("My name is Zafar Ansari");
+    expect(testP2.textContent).toBe("Zafar Ansari is my name");
+
+    await user.type(inp, "Zafar");
+
+    expect(inp.value).toBe("Zafar AnsariZafar");
+    expect(testP.textContent).toBe("My name is Zafar AnsariZafar");
+    expect(testP2.textContent).toBe("Zafar AnsariZafar is my name");
   });
 });
 
