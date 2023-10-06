@@ -442,6 +442,7 @@ function compileRezact(ast) {
 
     ObjectExpression(node: any, _state, ancestors) {
       node.properties.forEach((prop) => {
+        if (prop.key?.name === prop.value?.name) return;
         if (
           prop.value &&
           prop.value.type &&
@@ -687,7 +688,8 @@ function compileRezact(ast) {
       if (
         node.key.name &&
         node.key.name[0] === "$" &&
-        !isAttributeArg(ancestors)
+        !isAttributeArg(ancestors) &&
+        node.key.name !== node.value.name
       ) {
         wrapInUseSignal(node.value);
       }
