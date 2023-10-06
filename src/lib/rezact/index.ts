@@ -14,11 +14,48 @@ export let createComponent = (tagName, attributes = null) =>
 export const setCreateCompFunc = (func) => (createComponent = func);
 
 export function xCreateElement(tagName, attributes, ...children) {
-  if (tagName === xFragment) return children;
+  if (tagName === xFragment) {
+    (children as any).rezactFragment = true;
+    return children;
+  }
   if (typeof tagName === "function") {
     attributes = attributes || {};
     attributes.children = attributes.children || children;
-    return createComponent(tagName, attributes);
+
+    let componentContext = null;
+    attributes.setContext = (key, context) => {
+      if (!componentContext) componentContext = {};
+      componentContext[key] = context;
+    };
+
+    attributes.getContext = (key) => {
+      let currentElement = contextRoot;
+
+      while (currentElement.parentNode) {
+        currentElement = currentElement.parentNode;
+
+        if (
+          currentElement.firstChild &&
+          currentElement.firstChild.rezactContext &&
+          currentElement.firstChild.rezactContext[key]
+        ) {
+          return currentElement.firstChild.rezactContext[key];
+        }
+
+        if (currentElement.rezactContext && currentElement.rezactContext[key]) {
+          return currentElement.rezactContext[key];
+        }
+      }
+
+      return undefined;
+    };
+
+    const newComp = createComponent(tagName, attributes);
+
+    const contextRoot = newComp[0] || newComp;
+    contextRoot.rezactContext = componentContext;
+
+    return newComp;
   }
   const elm = createElement(tagName);
   if (attributes) handleAttributes(elm, attributes);
