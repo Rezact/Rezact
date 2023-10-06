@@ -87,4 +87,9 @@ router.addRoute(
   "/value-attribute-dot-notation",
   () => import("src/examples/ValueAttributeDotNotation/ValueAttributeDot")
 );
+
+router.addRoute(
+  "/component-context",
+  () => import("src/examples/ComponentContext/ComponentContext")
+);
 export { router };
