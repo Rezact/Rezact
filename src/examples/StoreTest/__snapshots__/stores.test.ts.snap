@@ -1,0 +1,28 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Reactive Computations > stringifies using JSON stringify properly 1`] = `
+"{
+  \\"$count\\": 0,
+  \\"$storeCount\\": 0,
+  \\"$firstName\\": \\"John\\",
+  \\"$lastName\\": \\"Doe\\",
+  \\"$email\\": \\"test@example.com\\",
+  \\"$todos\\": [
+    {
+      \\"$id\\": 1,
+      \\"$title\\": \\"Learn Vue 3\\",
+      \\"$completed\\": true
+    },
+    {
+      \\"$id\\": 2,
+      \\"$title\\": \\"Learn TypeScript\\",
+      \\"$completed\\": false
+    },
+    {
+      \\"$id\\": 3,
+      \\"$title\\": \\"Learn React\\",
+      \\"$completed\\": false
+    }
+  ]
+}"
+`;

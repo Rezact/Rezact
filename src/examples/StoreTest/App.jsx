@@ -3,6 +3,7 @@ import { StoreButton } from "./StoreButton";
 import { store } from "./store";
 
 export default function App() {
+  const jsonString = JSON.stringify(store, null, 2);
   return (
     <>
       <StoreButton />
@@ -10,6 +11,8 @@ export default function App() {
       <button onClick={() => store.$storeCount++}>Also Inc</button>
       <hr />
       <TestNested />
+      <hr />
+      <textarea>{jsonString}</textarea>
     </>
   );
 }

@@ -71,4 +71,9 @@ describe("Reactive Computations", () => {
     await buttonDiv2.click();
     await waitFor(() => expect(p.textContent).toBe("2"));
   });
+
+  it("stringifies using JSON stringify properly", async () => {
+    const textArea = document.querySelector("textarea");
+    expect(textArea.value).toMatchSnapshot();
+  });
 });

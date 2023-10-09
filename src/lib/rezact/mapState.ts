@@ -198,9 +198,11 @@ export class MapSignal<T> extends Signal<T> {
     setTimeout(() => this.updateList(this.func), 0);
   }
 
-  toJson() {
+  toJSON() {
     return this.value.map((thisVal) => {
-      if (thisVal.toJson) return thisVal.toJson();
+      if (typeof thisVal === "object" && !thisVal.state && !thisVal.get)
+        return thisVal;
+      if (thisVal.toJSON) return thisVal.toJSON();
       thisVal.get ? thisVal.get() : thisVal;
     });
   }
