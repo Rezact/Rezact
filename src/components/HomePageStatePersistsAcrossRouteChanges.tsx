@@ -14,7 +14,7 @@ function Button() {
   // let $obj = { $firstName: "", $lastName: "" };
   let xTime = "time";
   let xTimes = "times";
-  // $: console.log($count, $arr.toJson());
+  // $: console.log($count, $arr);
   // $: {
   //   if ($count === 2) console.log("Count is 2");
   //   if ($arr.length === 7) {
