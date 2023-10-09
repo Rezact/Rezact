@@ -627,6 +627,9 @@ function compileRezact(ast) {
     },
 
     CallExpression(node: any, _state) {
+      if (node.callee?.name === "setContext" && !importsUsed.useContext) {
+        importsUsed.useContext = true && functionsToRun.push("useContext()");
+      }
       if (node.arguments) {
         node.arguments.forEach((arg) => {
           if (
