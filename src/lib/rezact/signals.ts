@@ -164,13 +164,13 @@ export class Signal<T> {
     return;
   }
 
-  toJson() {
-    if (this.value.state) return this.value.toJson();
-    if (typeof this.value === "object") {
+  toJSON() {
+    if (this.value.state) return this.value.toJSON();
+    if (typeof this.value === "object" && !isArray(this.value)) {
       const newObj = {};
       Object.keys(this.value).map((key) => {
         const val = this.value[key];
-        if (val.state) return (newObj[key] = val.toJson());
+        if (val.state) return (newObj[key] = val.toJSON());
         newObj[key] = val;
       });
       return newObj;

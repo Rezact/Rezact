@@ -66,7 +66,7 @@ export function Page() {
         children: [$child1, $child2, $child3],
         checkbox: { scales: $scales, horns: $horns },
         radio: { drone: $drone },
-        lineItems: $lineItems.toJson(),
+        lineItems: $lineItems,
         selectItem: $selectItem,
       },
       null,
