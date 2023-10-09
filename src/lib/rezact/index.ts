@@ -13,12 +13,33 @@ export let createComponent = (tagName, attributes = null) =>
 
 export const setCreateCompFunc = (func) => (createComponent = func);
 
+const preCreateComponentHooks = [];
+export const addPreCreateComponentHook = (item) =>
+  preCreateComponentHooks.push(item);
+
+const postCreateComponentHooks = [];
+export const addPostCreateComponentHook = (item) =>
+  postCreateComponentHooks.push(item);
+
 export function xCreateElement(tagName, attributes, ...children) {
-  if (tagName === xFragment) return children;
+  if (tagName === xFragment) {
+    (children as any).rezactFragment = true;
+    return children;
+  }
   if (typeof tagName === "function") {
     attributes = attributes || {};
     attributes.children = attributes.children || children;
-    return createComponent(tagName, attributes);
+
+    const hookContext = {};
+    preCreateComponentHooks.forEach((func) =>
+      func(tagName, attributes, hookContext)
+    );
+    const newComp = createComponent(tagName, attributes);
+    postCreateComponentHooks.forEach((func) =>
+      func(newComp, tagName, attributes, hookContext)
+    );
+
+    return newComp;
   }
   const elm = createElement(tagName);
   if (attributes) handleAttributes(elm, attributes);
@@ -114,6 +135,48 @@ export function render(root, tagName, attributes: any = {}) {
   afterRenderHooks.forEach((func) => func());
 }
 export const xFragment = [];
+
+let contextUsed = false;
+export function useContext() {
+  if (contextUsed) return;
+  contextUsed = true;
+
+  preCreateComponentHooks.push((_tagName, attributes, hookContext) => {
+    attributes.setContext = (key, context) => {
+      if (!hookContext.componentContext) hookContext.componentContext = {};
+      hookContext.componentContext[key] = context;
+    };
+
+    attributes.getContext = (key) => {
+      let currentElement = hookContext.contextRoot;
+
+      while (currentElement.parentNode) {
+        currentElement = currentElement.parentNode;
+
+        if (
+          currentElement.firstChild &&
+          currentElement.firstChild.rezactContext &&
+          currentElement.firstChild.rezactContext[key]
+        ) {
+          return currentElement.firstChild.rezactContext[key];
+        }
+
+        if (currentElement.rezactContext && currentElement.rezactContext[key]) {
+          return currentElement.rezactContext[key];
+        }
+      }
+
+      return undefined;
+    };
+  });
+
+  postCreateComponentHooks.push(
+    (newComp, _tagName, _attributes, hookContext) => {
+      hookContext.contextRoot = newComp[0] || newComp;
+      hookContext.contextRoot.rezactContext = hookContext.componentContext;
+    }
+  );
+}
 
 export let handleInputValue = null;
 export function useInputs() {
