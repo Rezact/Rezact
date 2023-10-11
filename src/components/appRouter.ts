@@ -92,4 +92,9 @@ router.addRoute(
   "/component-context",
   () => import("src/examples/ComponentContext/ComponentContext")
 );
+
+router.addRoute(
+  "jsx-signals",
+  () => import("src/examples/JsxSignals/JsxSignals")
+)
 export { router };

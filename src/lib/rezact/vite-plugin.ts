@@ -16,7 +16,7 @@ let mapStateUsed: any = {};
 let functionsToRun: any = [];
 let mapDeclarationTracking = {};
 
-function wrapInUseSignal(node) {
+function wrapInSignal(node) {
   signalsUsed.Signal = true;
   node.wrappedInSignal = true;
   magicString.appendLeft(node.start, `new Signal(`);
@@ -110,7 +110,7 @@ function findDependencies(startingNode, excludeDeps = {}) {
     );
 }
 
-function wrapInCreateComputed(node, explicitDeps = null, excludeDeps = {}) {
+function wrapInEffect(node, explicitDeps = null, excludeDeps = {}) {
   const _deps = explicitDeps || findDependencies(node, excludeDeps);
   if (_deps.length === 0) return;
   const deps = _deps.map((dep) => dep.dep || dep);
@@ -371,6 +371,27 @@ function wrapInSetValue(node, nestedMember = false) {
   const leftVal = node.left?.name || node.argument?.name;
   let rightVal =
     node.right?.raw || src.slice(node.right?.start || 0, node.right?.end || 0);
+
+  if (
+    node.right?.type === "ConditionalExpression" &&
+    node.right?.test?.type === "BinaryExpression"
+  ) {
+    const backupMagicString = magicString;
+    const backupMagicSrc = src;
+    src = rightVal;
+    const test = acorn.parse(rightVal, {
+      locations: true,
+      ecmaVersion: "latest",
+      sourceType: "module",
+    });
+    magicString = new MagicString(rightVal);
+    compileRezact(test);
+    rightVal = magicString.toString();
+
+    src = backupMagicSrc;
+    magicString = backupMagicString;
+  }
+
   if (node.right?.value && node.right.value[0] === "$")
     rightVal = `${node.right.value}.get()`;
 
@@ -409,10 +430,16 @@ function compileRezact(ast) {
       const name = node.id.name;
       if (!name) return;
       if (name[0] === "$") {
-        if (node.init.type === "Literal") wrapInUseSignal(node.init);
-        if (node.init.type === "UnaryExpression") wrapInUseSignal(node.init);
-        if (node.init.type === "BinaryExpression")
-          wrapInCreateComputed(node.init);
+        if (node.init.type === "Literal") wrapInSignal(node.init);
+        if (node.init.type === "Identifier") wrapInSignal(node.init);
+        if (
+          node.init.type === "CallExpression" &&
+          node.init.callee.name === "xCreateElement"
+        ) {
+          wrapInSignal(node.init);
+        }
+        if (node.init.type === "UnaryExpression") wrapInSignal(node.init);
+        if (node.init.type === "BinaryExpression") wrapInEffect(node.init);
         if (node.init.type === "ArrayExpression")
           wrapInUseMapSignal(node.init, node);
         if (
@@ -426,7 +453,7 @@ function compileRezact(ast) {
             if (mapName) mapDeclarationTracking[mapName] = node;
             wrapInCreateMapped(node.init);
           } else {
-            wrapInCreateComputed(node.init);
+            wrapInEffect(node.init);
           }
         }
       }
@@ -436,7 +463,7 @@ function compileRezact(ast) {
       if (isAttributeArg(ancestors) && !isReactiveAttribute(ancestors.at(-2))) {
         wrapInCreateComputedAttribute(node);
       } else {
-        wrapInCreateComputed(node);
+        wrapInEffect(node);
       }
     },
 
@@ -501,7 +528,7 @@ function compileRezact(ast) {
         return;
 
       const explicitDeps = findDependencies(node.left);
-      wrapInCreateComputed(node, explicitDeps);
+      wrapInEffect(node, explicitDeps);
     },
 
     MemberExpression(node: any, _state, ancestors: any) {
@@ -554,7 +581,7 @@ function compileRezact(ast) {
         ancestors.length > 2 &&
         ancestors.at(-2).callee?.name === "xCreateElement"
       ) {
-        wrapInCreateComputed(node);
+        wrapInEffect(node);
       }
 
       if (
@@ -694,10 +721,10 @@ function compileRezact(ast) {
         !isAttributeArg(ancestors) &&
         node.key.name !== node.value.name
       ) {
-        wrapInUseSignal(node.value);
+        wrapInSignal(node.value);
       }
       if (node.key.value && node.key.value[0] === "$") {
-        wrapInUseSignal(node.value);
+        wrapInSignal(node.value);
       }
       if (node.key.name === "value" && !importsUsed.useInputs)
         importsUsed.useInputs = true && functionsToRun.push("useInputs()");
@@ -717,9 +744,10 @@ function compileRezact(ast) {
         wrapInCreateComputedAttribute(node);
       } else if (
         !hasAncestor(ancestors, "TemplateLiteral") &&
+        !hasAncestor(ancestors, "AssignmentExpression") &&
         functionReturnsJSX(ancestors)
       ) {
-        wrapInCreateComputed(node);
+        wrapInEffect(node);
       }
       if (!node?.test?.name) return;
       if (node.test.name && node.test.name[0] === "$") {
@@ -751,7 +779,7 @@ function compileRezact(ast) {
         ancestors.length > 2 &&
         ancestors.at(-2).callee?.name === "xCreateElement"
       ) {
-        wrapInCreateComputed(node);
+        wrapInEffect(node);
       }
     },
 
@@ -781,10 +809,9 @@ function compileRezact(ast) {
 
     LabeledStatement(node: any) {
       if (node.label.name === "$") {
-        if (node.body.type === "BlockStatement")
-          wrapInCreateComputed(node.body);
+        if (node.body.type === "BlockStatement") wrapInEffect(node.body);
         if (node.body.type === "ExpressionStatement")
-          wrapInCreateComputed(node.body.expression);
+          wrapInEffect(node.body.expression);
       }
     },
   });
