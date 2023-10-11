@@ -83,6 +83,9 @@ export function MyLayout({ Component, pageProps }: any) {
           <a href="/component-context">Component Context</a>
         </li>
         <li>
+          <a href="/jsx-signals">JSX Signals</a>
+        </li>
+        <li>
           <a href="/asdfasdfasdfasdf">A Route that does not exist</a>
         </li>
       </ul>
