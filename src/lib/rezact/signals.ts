@@ -378,7 +378,6 @@ const handleArray = (parent: any, child: any) => {
   frac(endNode);
 
   child.subscribe((newVal: any) => {
-    // if (!parentNode.isConnected || !endNode.isConnected) return;
     if (child.previousChildLen === 0) {
       if (parentNode.parentNode) parent.insertBefore(placeHolder, parentNode);
 

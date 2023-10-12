@@ -54,22 +54,19 @@ export let attributeHandlers = [];
 
 export const addAttributeHandler = (item) => attributeHandlers.unshift(item);
 
-const evKeys = {
-  onClick: "click",
-  onDblClick: "dblclick",
-  onKeyDown: "keydown",
-  onSubmit: "submit",
-  onChange: "change",
-  onInput: "input",
-};
+const skipEvents = new Set(["onMount", "onUnmount"]);
 function handleAttributes(elm, attrs) {
   const keys = Object.keys(attrs);
   const keyLen = keys.length;
   outer: for (let i = 0; i < keyLen; i++) {
     const key = keys[i];
     const attrVal = attrs[key];
-    if (evKeys[key] && typeof attrs[key] === "function") {
-      elm.addEventListener(evKeys[key], attrVal);
+    if (
+      key.startsWith("on") &&
+      typeof attrVal === "function" &&
+      !skipEvents.has(key)
+    ) {
+      elm.addEventListener(key.slice(2).toLowerCase(), attrVal);
       continue;
     }
     if (typeof attrVal === "boolean" && attrVal) {

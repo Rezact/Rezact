@@ -1,18 +1,35 @@
 import { Signal, effect } from "./signals";
 import { createComponent, isArray } from ".";
 
-function findNestedStates(obj, results = [], skipKeys = []) {
-  if (obj instanceof Window) return [];
-  if (obj instanceof Document) return [];
-  if (obj instanceof HTMLElement) return [];
-  if (obj instanceof Node) return [];
+function isIgnoredInstance(obj: any): boolean {
+  return (
+    obj instanceof Window ||
+    obj instanceof Document ||
+    obj instanceof HTMLElement ||
+    obj instanceof Node
+  );
+}
+
+const skipKeys = new Set([
+  "elmRef",
+  "idxState",
+  "deps",
+  "subs",
+  "func",
+  "associatedState",
+  "state",
+  "computed",
+]);
+
+function findNestedStates(obj, results = []) {
+  if (isIgnoredInstance(obj)) return [];
 
   // Check if the input is an object
   if (typeof obj === "object" && obj !== null) {
     // If it's an array, iterate over each element
     if (Array.isArray(obj)) {
       for (let item of obj) {
-        findNestedStates(item, results, skipKeys);
+        findNestedStates(item, results);
       }
     } else {
       // If it's an object, iterate over each property
@@ -20,39 +37,19 @@ function findNestedStates(obj, results = [], skipKeys = []) {
         if (key.startsWith("$")) {
           results.push(obj[key]);
         }
-        if (skipKeys.includes(key)) continue;
-        if (obj[key] instanceof Window) continue;
-        if (obj[key] instanceof Document) continue;
-        if (obj[key] instanceof HTMLElement) continue;
-        if (obj[key] instanceof Node) continue;
+        if (skipKeys.has(key)) continue;
+        if (isIgnoredInstance(obj[key])) continue;
 
-        findNestedStates(obj[key], results, skipKeys);
+        findNestedStates(obj[key], results);
       }
     }
   }
   return results;
 }
 
-function findNestedMapSignals(item) {
-  return findNestedStates(
-    item,
-    [],
-    [
-      "elmRef",
-      "idxState",
-      "deps",
-      "subs",
-      "func",
-      "associatedState",
-      "state",
-      "computed",
-    ]
-  );
-}
-
 function subscribeToNestedStates(item, mapStateObj) {
   if (!(item.elmRef instanceof HTMLElement)) return;
-  const nestedStates = findNestedMapSignals(item.value);
+  const nestedStates = findNestedStates(item);
   nestedStates.forEach((state) => {
     item.nestedSubscribed = true;
 
