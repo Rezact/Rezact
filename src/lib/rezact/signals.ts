@@ -9,6 +9,7 @@ import {
   createElement,
   createTextNode,
   handleInputValue,
+  createDocumentFragment,
 } from ".";
 
 let batchSubs = [];
@@ -182,13 +183,8 @@ export class Signal<T> {
 
 export const computeSub = (obj) => obj.newState.set(obj.func(obj.deps));
 
-export let effect = _effect;
-export function overrideEffect(func: any) {
-  effect = func;
-}
-
-function _effect(func: (obj: any) => {}, deps: any[]) {
-  const newState: any = new Signal(func(deps));
+export function effect(func: (obj: any) => {}, deps: any[]) {
+  const newState: any = new deps[0].constructor(func(deps));
   newState.computed = true;
   const depsLen = deps.length;
   for (let i = 0; i < depsLen; i++) {
@@ -207,7 +203,7 @@ function handleStateTypes(parent: any, child: any) {
   if (textTypes[typeof val]) {
     handleTextNode(parent, child);
   } else if (val instanceof Node && !child.computed) {
-    appendChild(parent, val);
+    handleArray(parent, child);
   } else if (child.computed) {
     const placeholder = createElement("span");
     const newState = new Signal(placeholder);
@@ -285,3 +281,130 @@ addAfterRenderHook(() => {
   });
   subscFunctionsArr = [];
 });
+
+const addChildren = (values: any, parentNode) => {
+  if (values === undefined) return;
+  values = values instanceof Element ? [values] : values;
+  const len = values.length;
+  let nextNode = parentNode;
+  for (let i = 0; i < len; i++) {
+    const elm = values[i].elmRef || values[i];
+    if (!(nextNode.nextSibling === (elm[0] || elm))) {
+      appendChild(nextNode, elm, true);
+    }
+    nextNode = isArray(elm) ? elm.at(-1) : elm;
+  }
+};
+
+const remPlaceHolder = createElement("span");
+const removeStaleChildren = (parentNode, endNode, parent, child) => {
+  const values = child.value instanceof Element ? [child.value] : child.value;
+  let nextNode = parentNode.nextSibling;
+
+  if (!parentNode.parentNode) return;
+
+  if (
+    parentNode.parentNode.childNodes.length === child.previousChildLen + 2 &&
+    values.length === 0
+  ) {
+    child.removeStaleElmRefCacheItems();
+    return (parentNode.parentNode.innerHTML = "");
+  }
+
+  if (values.length === 0) {
+    let frag = createDocumentFragment();
+    const placeholder = createElement("span");
+    parent.parentNode.insertBefore(placeholder, parent);
+    frag.appendChild(parent);
+    while (nextNode !== endNode) {
+      const thisNode = nextNode;
+      nextNode = nextNode.nextSibling;
+      thisNode.remove();
+    }
+    placeholder.parentNode.insertBefore(frag, placeholder);
+    parent.appendChild(frag);
+    placeholder.remove();
+    return;
+  }
+
+  let elmRefIdx = 0;
+  const childElm = values[0].elmRef || values[0];
+  const childLen = childElm.length || 1;
+  let inc = 0;
+  while (nextNode !== endNode) {
+    const idx = Math.floor(inc / childLen);
+    elmRefIdx = inc % childLen;
+    const val = values[idx];
+    let elmRef = val && val.elmRef && (val?.elmRef[elmRefIdx] || val?.elmRef);
+
+    if (values.indexOf(nextNode.associatedState) < 0) {
+      nextNode = nextNode.nextSibling;
+      const prevElm = nextNode.previousSibling;
+      if (prevElm.replaceWith && elmRef instanceof HTMLElement) {
+        prevElm.replaceWith(elmRef);
+        nextNode = elmRef.nextSibling;
+      } else {
+        prevElm.remove();
+      }
+    } else if (val && elmRef && nextNode !== elmRef) {
+      nextNode = nextNode.nextSibling;
+      const prevElm = nextNode.previousSibling;
+      if (
+        prevElm.replaceWith &&
+        elmRef instanceof HTMLElement &&
+        elmRef.parentNode
+      ) {
+        elmRef.replaceWith(remPlaceHolder);
+        prevElm.replaceWith(elmRef);
+        remPlaceHolder.replaceWith(prevElm);
+      } else {
+        if (elmRef instanceof HTMLElement) elmRef.remove();
+      }
+    } else {
+      nextNode = nextNode.nextSibling;
+    }
+    inc += 1;
+  }
+};
+
+const handleArray = (parent: any, child: any) => {
+  const frag = createDocumentFragment();
+  const frac = frag.appendChild.bind(frag);
+  const parentNode = createComment("start map");
+  const endNode = createComment("end map");
+  const placeHolder = createComment("map-placeholder");
+
+  frac(parentNode);
+  frac(endNode);
+
+  child.subscribe((newVal: any) => {
+    if (child.previousChildLen === 0) {
+      if (parentNode.parentNode) parent.insertBefore(placeHolder, parentNode);
+
+      frac(parentNode);
+      frac(endNode);
+    }
+    removeStaleChildren(parentNode, endNode, parent, child);
+    addChildren(newVal, parentNode);
+    if (child.previousChildLen === 0) {
+      if (placeHolder.parentNode) {
+        parent.insertBefore(frag, placeHolder);
+      } else {
+        parent.appendChild(frag);
+      }
+    }
+    child.previousChildLen = child.value.length;
+    placeHolder.remove();
+  });
+
+  child.previousChildLen = child.value.length;
+  addChildren(child.value, parentNode);
+  parent.appendChild(frag);
+};
+
+const childArrayStateHandler = {
+  matches: (child) => isArray(child.value) && child.state,
+  handler: (parent, child) => handleArray(parent, child),
+};
+
+addAppendChildHook(childArrayStateHandler);

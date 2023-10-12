@@ -1,41 +1,35 @@
-import { Signal, computeSub, effect, overrideEffect } from "./signals";
-import {
-  addAppendChildHook,
-  appendChild,
-  childArrayHandler,
-  childNodeHandler,
-  createComment,
-  createComponent,
-  createDocumentFragment,
-  createElement,
-  isArray,
-} from ".";
+import { Signal, effect } from "./signals";
+import { createComponent, isArray } from ".";
 
-overrideEffect(_effect);
-
-function _effect(func: (obj: any) => {}, deps: any[]) {
-  const NewState = deps[0] instanceof MapSignal ? MapSignal : Signal;
-  const newState: any = new NewState(func(deps) as any);
-  newState.computed = true;
-  const depsLen = deps.length;
-  for (let i = 0; i < depsLen; i++) {
-    deps[i].subscribe({ funcRef: computeSub, obj: { newState, func, deps } });
-  }
-  return newState;
+function isIgnoredInstance(obj: any): boolean {
+  return (
+    obj instanceof Window ||
+    obj instanceof Document ||
+    obj instanceof HTMLElement ||
+    obj instanceof Node
+  );
 }
 
-function findNestedStates(obj, results = [], skipKeys = []) {
-  if (obj instanceof Window) return [];
-  if (obj instanceof Document) return [];
-  if (obj instanceof HTMLElement) return [];
-  if (obj instanceof Node) return [];
+const skipKeys = new Set([
+  "elmRef",
+  "idxState",
+  "deps",
+  "subs",
+  "func",
+  "associatedState",
+  "state",
+  "computed",
+]);
+
+function findNestedStates(obj, results = []) {
+  if (isIgnoredInstance(obj)) return [];
 
   // Check if the input is an object
   if (typeof obj === "object" && obj !== null) {
     // If it's an array, iterate over each element
     if (Array.isArray(obj)) {
       for (let item of obj) {
-        findNestedStates(item, results, skipKeys);
+        findNestedStates(item, results);
       }
     } else {
       // If it's an object, iterate over each property
@@ -43,39 +37,19 @@ function findNestedStates(obj, results = [], skipKeys = []) {
         if (key.startsWith("$")) {
           results.push(obj[key]);
         }
-        if (skipKeys.includes(key)) continue;
-        if (obj[key] instanceof Window) continue;
-        if (obj[key] instanceof Document) continue;
-        if (obj[key] instanceof HTMLElement) continue;
-        if (obj[key] instanceof Node) continue;
+        if (skipKeys.has(key)) continue;
+        if (isIgnoredInstance(obj[key])) continue;
 
-        findNestedStates(obj[key], results, skipKeys);
+        findNestedStates(obj[key], results);
       }
     }
   }
   return results;
 }
 
-function findNestedMapSignals(item) {
-  return findNestedStates(
-    item,
-    [],
-    [
-      "elmRef",
-      "idxState",
-      "deps",
-      "subs",
-      "func",
-      "associatedState",
-      "state",
-      "computed",
-    ]
-  );
-}
-
 function subscribeToNestedStates(item, mapStateObj) {
   if (!(item.elmRef instanceof HTMLElement)) return;
-  const nestedStates = findNestedMapSignals(item.value);
+  const nestedStates = findNestedStates(item);
   nestedStates.forEach((state) => {
     item.nestedSubscribed = true;
 
@@ -215,171 +189,6 @@ export class MapSignal<T> extends Signal<T> {
     }, 10);
   };
 }
-
-const addChildren = (values: any, parentNode) => {
-  if (values === undefined) return;
-  const len = values.length;
-  let nextNode = parentNode;
-  for (let i = 0; i < len; i++) {
-    const elm = values[i].elmRef;
-    if (!(nextNode.nextSibling === (elm[0] || elm))) {
-      appendChild(nextNode, elm, true);
-    }
-    nextNode = isArray(elm) ? elm.at(-1) : elm;
-  }
-};
-
-const remPlaceHolder = createElement("span");
-const removeStaleChildren = (parentNode, endNode, parent, child) => {
-  const values = child.value;
-  let nextNode = parentNode.nextSibling;
-
-  if (!parentNode.parentNode) return;
-
-  if (
-    parentNode.parentNode.childNodes.length === child.previousChildLen + 2 &&
-    values.length === 0
-  ) {
-    child.removeStaleElmRefCacheItems();
-    return (parentNode.parentNode.innerHTML = "");
-  }
-
-  if (values.length === 0) {
-    let frag = createDocumentFragment();
-    const placeholder = createElement("span");
-    parent.parentNode.insertBefore(placeholder, parent);
-    frag.appendChild(parent);
-    while (nextNode !== endNode) {
-      const thisNode = nextNode;
-      nextNode = nextNode.nextSibling;
-      thisNode.remove();
-    }
-    placeholder.parentNode.insertBefore(frag, placeholder);
-    parent.appendChild(frag);
-    placeholder.remove();
-    return;
-  }
-
-  let elmRefIdx = 0;
-  const childLen = values[0].elmRef.length || 1;
-  let inc = 0;
-  while (nextNode !== endNode) {
-    const idx = Math.floor(inc / childLen);
-    elmRefIdx = inc % childLen;
-    const val = values[idx];
-    let elmRef = val && val.elmRef && (val?.elmRef[elmRefIdx] || val?.elmRef);
-
-    if (values.indexOf(nextNode.associatedState) < 0) {
-      nextNode = nextNode.nextSibling;
-      const prevElm = nextNode.previousSibling;
-      if (prevElm.replaceWith && elmRef instanceof HTMLElement) {
-        prevElm.replaceWith(elmRef);
-        nextNode = elmRef.nextSibling;
-      } else {
-        prevElm.remove();
-      }
-    } else if (val && elmRef && nextNode !== elmRef) {
-      nextNode = nextNode.nextSibling;
-      const prevElm = nextNode.previousSibling;
-      if (
-        prevElm.replaceWith &&
-        elmRef instanceof HTMLElement &&
-        elmRef.parentNode
-      ) {
-        elmRef.replaceWith(remPlaceHolder);
-        prevElm.replaceWith(elmRef);
-        remPlaceHolder.replaceWith(prevElm);
-      } else {
-        if (elmRef instanceof HTMLElement) elmRef.remove();
-      }
-    } else {
-      nextNode = nextNode.nextSibling;
-    }
-    inc += 1;
-  }
-};
-
-const handleArray = (parent: any, child: any) => {
-  const frag = createDocumentFragment();
-  const frac = frag.appendChild.bind(frag);
-  const parentNode = createComment("start map");
-  const endNode = createComment("end map");
-  const placeHolder = createComment("map-placeholder");
-
-  frac(parentNode);
-  frac(endNode);
-
-  child.subscribe((newVal: any) => {
-    // if (!parentNode.isConnected || !endNode.isConnected) return;
-    if (child.previousChildLen === 0) {
-      if (parentNode.parentNode) parent.insertBefore(placeHolder, parentNode);
-
-      frac(parentNode);
-      frac(endNode);
-    }
-    removeStaleChildren(parentNode, endNode, parent, child);
-    addChildren(newVal, parentNode);
-    if (child.previousChildLen === 0) {
-      if (placeHolder.parentNode) {
-        parent.insertBefore(frag, placeHolder);
-      } else {
-        parent.appendChild(frag);
-      }
-    }
-    child.previousChildLen = child.value.length;
-    placeHolder.remove();
-  });
-
-  child.previousChildLen = child.value.length;
-  addChildren(child.value, parentNode);
-  parent.appendChild(frag);
-};
-
-const childStateHandler = {
-  matches: (child) => isArray(child.value) && child.state,
-  handler: (parent, child) => handleArray(parent, child),
-};
-
-addAppendChildHook(childStateHandler);
-
-function insertNodeAfter(currentNode: any, childNode: any) {
-  if (currentNode.nextSibling) {
-    currentNode.parentNode.insertBefore(childNode, currentNode.nextSibling);
-  } else if (currentNode.parentNode) {
-    currentNode.parentNode.appendChild(childNode);
-  }
-}
-
-function appendChildNode(
-  parentNode: any,
-  childNode: any,
-  insertAfter: boolean = false,
-  removeElm: boolean = false
-) {
-  if (removeElm) return childNode.remove();
-  if (parentNode instanceof Comment) insertAfter = true;
-  if (parentNode.state) return;
-  // console.log({ parentNode, childNode, insertAfter });
-  insertAfter
-    ? insertNodeAfter(parentNode, childNode)
-    : parentNode.appendChild(childNode);
-}
-
-childNodeHandler.handler = (parent, child, insertAfter, removeElm) =>
-  appendChildNode(parent, child, insertAfter, removeElm);
-
-childArrayHandler.handler = (parent, child, insertAfter, removeElm) => {
-  const len = child.length;
-  if (insertAfter && isArray(child)) {
-    for (let i = len - 1; i > -1; i--) {
-      appendChild(parent, child[i], insertAfter, removeElm);
-    }
-  } else {
-    for (let i = 0; i < len; i++) {
-      appendChild(parent, child[i], insertAfter, removeElm);
-    }
-  }
-};
 
 export const mapEffect = (func, deps) => {
   const computed: any = effect(func, deps);

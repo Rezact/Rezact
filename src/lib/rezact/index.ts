@@ -54,22 +54,19 @@ export let attributeHandlers = [];
 
 export const addAttributeHandler = (item) => attributeHandlers.unshift(item);
 
-const evKeys = {
-  onClick: "click",
-  onDblClick: "dblclick",
-  onKeyDown: "keydown",
-  onSubmit: "submit",
-  onChange: "change",
-  onInput: "input",
-};
+const skipEvents = new Set(["onMount", "onUnmount"]);
 function handleAttributes(elm, attrs) {
   const keys = Object.keys(attrs);
   const keyLen = keys.length;
   outer: for (let i = 0; i < keyLen; i++) {
     const key = keys[i];
     const attrVal = attrs[key];
-    if (evKeys[key] && typeof attrs[key] === "function") {
-      elm.addEventListener(evKeys[key], attrVal);
+    if (
+      key.startsWith("on") &&
+      typeof attrVal === "function" &&
+      !skipEvents.has(key)
+    ) {
+      elm.addEventListener(key.slice(2).toLowerCase(), attrVal);
       continue;
     }
     if (typeof attrVal === "boolean" && attrVal) {
@@ -91,17 +88,47 @@ function handleAttributes(elm, attrs) {
 
 export const childArrayHandler: any = {
   matches: (child) => isArray(child),
-  handler: (parent, child) => {
-    const childLen = child.length;
-    for (let i = 0; i < childLen; i++) {
-      appendChild(parent, child[i]);
+  handler: (parent, child, insertAfter, removeElm) => {
+    const len = child.length;
+    if (insertAfter && isArray(child)) {
+      for (let i = len - 1; i > -1; i--) {
+        appendChild(parent, child[i], insertAfter, removeElm);
+      }
+    } else {
+      for (let i = 0; i < len; i++) {
+        appendChild(parent, child[i], insertAfter, removeElm);
+      }
     }
   },
 };
 
+function insertNodeAfter(currentNode: any, childNode: any) {
+  if (currentNode.nextSibling) {
+    currentNode.parentNode.insertBefore(childNode, currentNode.nextSibling);
+  } else if (currentNode.parentNode) {
+    currentNode.parentNode.appendChild(childNode);
+  }
+}
+
+function appendChildNode(
+  parentNode: any,
+  childNode: any,
+  insertAfter: boolean = false,
+  removeElm: boolean = false
+) {
+  if (removeElm) return childNode.remove();
+  if (parentNode instanceof Comment) insertAfter = true;
+  if (parentNode.state) return;
+  // console.log({ parentNode, childNode, insertAfter });
+  insertAfter
+    ? insertNodeAfter(parentNode, childNode)
+    : parentNode.appendChild(childNode);
+}
+
 export const childNodeHandler: any = {
   matches: (child) => child instanceof Node,
-  handler: (parent, child) => parent.appendChild(child),
+  handler: (parent, child, insertAfter, removeElm) =>
+    appendChildNode(parent, child, insertAfter, removeElm),
 };
 
 let appendChildHooks: any = [childArrayHandler, childNodeHandler];
