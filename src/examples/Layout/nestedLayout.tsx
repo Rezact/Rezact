@@ -1,7 +1,7 @@
 // import { xCreateElement } from "src/lib/rezact";
 import { MasterLayout } from "./masterLayout";
 
-export function MyLayout({ Component, pageProps }: any) {
+export function MyLayout({ router_outlet }: any) {
   return (
     <MasterLayout>
       <h1>Layout</h1>
@@ -89,7 +89,7 @@ export function MyLayout({ Component, pageProps }: any) {
           <a href="/asdfasdfasdfasdf">A Route that does not exist</a>
         </li>
       </ul>
-      <Component {...pageProps} />
+      {router_outlet}
     </MasterLayout>
   );
 }
