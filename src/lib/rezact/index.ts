@@ -158,7 +158,12 @@ export const addAfterRenderHook = (item) => afterRenderHooks.push(item);
 
 export function render(root, tagName, attributes: any = {}) {
   const elm = createComponent(tagName, attributes);
-  appendChild(root, elm);
+  if (root.state) {
+    root.set(elm);
+  } else {
+    root.innerHTML = "";
+    appendChild(root, elm);
+  }
   afterRenderHooks.forEach((func) => func());
 }
 export const xFragment = [];
