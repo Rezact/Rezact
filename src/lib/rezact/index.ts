@@ -91,17 +91,47 @@ function handleAttributes(elm, attrs) {
 
 export const childArrayHandler: any = {
   matches: (child) => isArray(child),
-  handler: (parent, child) => {
-    const childLen = child.length;
-    for (let i = 0; i < childLen; i++) {
-      appendChild(parent, child[i]);
+  handler: (parent, child, insertAfter, removeElm) => {
+    const len = child.length;
+    if (insertAfter && isArray(child)) {
+      for (let i = len - 1; i > -1; i--) {
+        appendChild(parent, child[i], insertAfter, removeElm);
+      }
+    } else {
+      for (let i = 0; i < len; i++) {
+        appendChild(parent, child[i], insertAfter, removeElm);
+      }
     }
   },
 };
 
+function insertNodeAfter(currentNode: any, childNode: any) {
+  if (currentNode.nextSibling) {
+    currentNode.parentNode.insertBefore(childNode, currentNode.nextSibling);
+  } else if (currentNode.parentNode) {
+    currentNode.parentNode.appendChild(childNode);
+  }
+}
+
+function appendChildNode(
+  parentNode: any,
+  childNode: any,
+  insertAfter: boolean = false,
+  removeElm: boolean = false
+) {
+  if (removeElm) return childNode.remove();
+  if (parentNode instanceof Comment) insertAfter = true;
+  if (parentNode.state) return;
+  // console.log({ parentNode, childNode, insertAfter });
+  insertAfter
+    ? insertNodeAfter(parentNode, childNode)
+    : parentNode.appendChild(childNode);
+}
+
 export const childNodeHandler: any = {
   matches: (child) => child instanceof Node,
-  handler: (parent, child) => parent.appendChild(child),
+  handler: (parent, child, insertAfter, removeElm) =>
+    appendChildNode(parent, child, insertAfter, removeElm),
 };
 
 let appendChildHooks: any = [childArrayHandler, childNodeHandler];
