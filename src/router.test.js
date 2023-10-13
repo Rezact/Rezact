@@ -102,6 +102,42 @@ describe("Router Tests Suite", () => {
     expect(paragraphs[1].textContent).toBe("Test Param: qwer");
   });
 
+  it("Ambiguous Route/Params Link Works 1", async () => {
+    const links = await screen.findAllByRole("link", {
+      name: "Ambiguous Route/Params 1",
+    });
+    await user.click(links[0]);
+    const allHeaders = await screen.findAllByRole("heading", {
+      name: /Ambiguous Test 1/i,
+    });
+    expect(allHeaders).toHaveLength(1);
+    await waitFor(() =>
+      expect(allHeaders[0].textContent).toBe("Ambiguous Test 1")
+    );
+
+    const paragraphs = document.querySelectorAll("p");
+    expect(paragraphs).toHaveLength(1);
+    expect(paragraphs[0].textContent).toBe("ID: 123");
+  });
+
+  it("Ambiguous Route/Params Link Works 2", async () => {
+    const links = await screen.findAllByRole("link", {
+      name: "Ambiguous Route/Params 2",
+    });
+    await user.click(links[0]);
+    const allHeaders = await screen.findAllByRole("heading", {
+      name: /Ambiguous Test 2/i,
+    });
+    expect(allHeaders).toHaveLength(1);
+    await waitFor(() =>
+      expect(allHeaders[0].textContent).toBe("Ambiguous Test 2")
+    );
+
+    const paragraphs = document.querySelectorAll("p");
+    expect(paragraphs).toHaveLength(1);
+    expect(paragraphs[0].textContent).toBe("ID: 321");
+  });
+
   it("Home Page Input State Persists across navigations", async () => {
     const links = await screen.findAllByRole("link", { name: "Home" });
     await user.click(links[0]);
