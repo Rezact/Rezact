@@ -1,4 +1,4 @@
-import { useRouter } from "rezact/router";
+import { nestedRoot, useRouter } from "rezact/router";
 
 const router = useRouter();
 
@@ -94,7 +94,36 @@ router.addRoute(
 );
 
 router.addRoute(
-  "jsx-signals",
+  "/jsx-signals",
   () => import("src/examples/JsxSignals/JsxSignals")
-)
+);
+
+router.addRoute(
+  "/payments/:id",
+  () => import("src/examples/RouteWithPathParams/AmbiguousTest1")
+);
+
+router.addRoute(
+  "/payments/ach/:id",
+  () => import("src/examples/RouteWithPathParams/AmbiguousTest2")
+);
+
+router.addRoute(
+  "/users",
+  () => import("src/examples/NestedRoutes/Users"),
+  nestedRoot
+);
+router.addRoute(
+  "/users/:id",
+  () => import("src/examples/NestedRoutes/UsersId")
+);
+router.addRoute(
+  "/users/:id/settings",
+  () => import("src/examples/NestedRoutes/UsersIdSettings")
+);
+router.addRoute(
+  "/users/:id/settings/*",
+  () => import("src/examples/NestedRoutes/UsersIdSettingsWildCard")
+);
+
 export { router };
