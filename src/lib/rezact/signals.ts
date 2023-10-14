@@ -125,7 +125,7 @@ export class Signal<T> {
   }
 
   get(): T {
-    if (this.value instanceof Text) return this.value.textContent as T;
+    if (this.value instanceof Text) return this.value.nodeValue as T;
     return this.value;
   }
 
@@ -143,7 +143,7 @@ export class Signal<T> {
       val.replaceWith(newVal);
 
     if (this.value instanceof Text) {
-      (this.value.textContent as T) = newVal;
+      (this.value.nodeValue as T) = newVal;
     } else {
       this.value = newVal;
     }
@@ -256,7 +256,7 @@ const attributeStateHandler = {
 
 addAttributeHandler(attributeStateHandler);
 
-const textNodeSub = (o) => (o.txtNode.textContent = o.newVal.toString());
+const textNodeSub = (o) => (o.txtNode.nodeValue = o.newVal.toString());
 function handleTextNode(parent: any, child: any) {
   const val = child.get();
   const txtNode = createTextNode(val.toString());
