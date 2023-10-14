@@ -1,0 +1,70 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Router Tests Suite > JSX Signals 1`] = `
+<div
+  id="jsx-signals-test-id"
+>
+  <h1>
+    JSX Signals
+  </h1>
+  <!--start map-->
+  <p>
+    Test Signal Element
+  </p>
+  <!--end map-->
+  <button>
+    Change 1
+  </button>
+  <hr />
+  <!--start map-->
+  <p>
+    Elm 1
+  </p>
+  <!--end map-->
+  <button>
+    Change 2
+  </button>
+  <hr />
+  <!--start map-->
+  <p>
+    Elm 3
+  </p>
+  <!--end map-->
+  <button>
+    Change 3
+  </button>
+  <hr />
+  <!--start map-->
+  <p>
+    Elm 5
+  </p>
+  <p>
+    Elm 6
+  </p>
+  <!--end map-->
+  <button>
+    Change 4
+  </button>
+  <hr />
+  <!--start map-->
+  <p>
+    Elm 9
+  </p>
+  <!--end map-->
+  <button>
+    Change 5
+  </button>
+  <hr />
+  <!--start map-->
+  <p>
+    Elm 12
+  </p>
+  <p>
+    Elm 13
+  </p>
+  <!--end map-->
+  <button>
+    Change 6
+  </button>
+</div>
+`;

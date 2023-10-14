@@ -159,7 +159,9 @@ export const addAfterRenderHook = (item) => afterRenderHooks.push(item);
 export function render(root, tagName, attributes: any = {}) {
   const elm = createComponent(tagName, attributes);
   if (root.state) {
-    root.set(elm);
+    const frag = document.createDocumentFragment();
+    appendChild(frag, elm);
+    root.set([...frag.childNodes]);
   } else {
     root.innerHTML = "";
     appendChild(root, elm);
@@ -229,7 +231,7 @@ export function useInputs() {
     if (elm.type === "radio" && val === radioVal) return (elm.checked = true);
     if (elm.type === "radio" && val !== radioVal) return (elm.checked = false);
     if (elm.type === "checkbox") return (elm.checked = !!val);
-    elm.value = val.textContent || val;
+    elm.value = val.nodeValue || val;
   }
 
   const handleInputAttr = (element, attributeValue, attributes) => {
