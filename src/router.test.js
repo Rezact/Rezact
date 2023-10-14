@@ -255,6 +255,18 @@ describe("Router Tests Suite", () => {
     expect(paragraphs[0].textContent).toBe("ID: 5678");
     expect(paragraphs[1].textContent).toBe("Test Param: 1234");
   });
+
+  it("JSX Signals", async () => {
+    router.routeRequest("/jsx-signals");
+    const allHeaders = await screen.findAllByRole("heading", {
+      name: /JSX Signals/i,
+    });
+    expect(allHeaders).toHaveLength(1);
+    await waitFor(() => expect(allHeaders[0].textContent).toBe("JSX Signals"));
+
+    const jsxSignals = document.getElementById("jsx-signals-test-id");
+    expect(jsxSignals).not.toMatchSnapshot();
+  });
 });
 
 function delay(n) {

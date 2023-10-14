@@ -65,7 +65,7 @@ export function Page() {
     ($elmRefArr3 = $elmRefArr3 === elm12and13 ? elm14 : elm12and13);
 
   return (
-    <>
+    <div id="jsx-signals-test-id">
       <h1>JSX Signals</h1>
       {$elmRef}
       <button onClick={change}>Change 1</button>
@@ -89,7 +89,7 @@ export function Page() {
       <hr />
       {$elmRefArr3}
       <button onClick={change6}>Change 6</button>
-    </>
+    </div>
   );
 }
 
