@@ -94,7 +94,17 @@ router.addRoute(
 );
 
 router.addRoute(
-  "jsx-signals",
+  "/jsx-signals",
   () => import("src/examples/JsxSignals/JsxSignals")
-)
+);
+
+router.addRoute(
+  "/payments/:id",
+  () => import("src/examples/RouteWithPathParams/AmbiguousTest1")
+);
+
+router.addRoute(
+  "/payments/ach/:id",
+  () => import("src/examples/RouteWithPathParams/AmbiguousTest2")
+);
 export { router };
