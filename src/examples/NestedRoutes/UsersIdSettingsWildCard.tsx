@@ -3,7 +3,7 @@ import { MyLayout } from "../Layout/nestedLayout";
 export default function ({ routeParams }) {
   return (
     <>
-      <h1>Users ID Settings Wild Card</h1>
+      <h1>4. Users ID Settings Wild Card</h1>
       <p>ID: {routeParams.id}</p>
     </>
   );
