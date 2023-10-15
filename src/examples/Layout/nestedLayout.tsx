@@ -39,6 +39,12 @@ export function MyLayout({ router_outlet }: any) {
           <a href="/post/asdf/something/qwer">Route Params</a>
         </li>
         <li>
+          <a href="/payments/123">Ambiguous Route/Params 1</a>
+        </li>
+        <li>
+          <a href="/payments/ach/321">Ambiguous Route/Params 2</a>
+        </li>
+        <li>
           <a href="/mdx">MDX</a>
         </li>
         <li>
