@@ -110,6 +110,7 @@ export function MyLayout({ router_outlet }: any) {
         </li>
       </ul>
       {router_outlet}
+      <p>End Layout</p>
     </MasterLayout>
   );
 }

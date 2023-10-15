@@ -97,7 +97,7 @@ describe("Router Tests Suite", () => {
     );
 
     const paragraphs = document.querySelectorAll("p");
-    expect(paragraphs).toHaveLength(2);
+    expect(paragraphs).toHaveLength(3);
     expect(paragraphs[0].textContent).toBe("ID: asdf");
     expect(paragraphs[1].textContent).toBe("Test Param: qwer");
   });
@@ -116,7 +116,7 @@ describe("Router Tests Suite", () => {
     );
 
     const paragraphs = document.querySelectorAll("p");
-    expect(paragraphs).toHaveLength(1);
+    expect(paragraphs).toHaveLength(2);
     expect(paragraphs[0].textContent).toBe("ID: 123");
   });
 
@@ -134,7 +134,7 @@ describe("Router Tests Suite", () => {
     );
 
     const paragraphs = document.querySelectorAll("p");
-    expect(paragraphs).toHaveLength(1);
+    expect(paragraphs).toHaveLength(2);
     expect(paragraphs[0].textContent).toBe("ID: 321");
   });
 
@@ -287,13 +287,14 @@ describe("Router Tests Suite", () => {
     );
 
     const paragraphs = document.querySelectorAll("p");
-    expect(paragraphs).toHaveLength(2);
+    expect(paragraphs).toHaveLength(3);
     expect(paragraphs[0].textContent).toBe("ID: 5678");
     expect(paragraphs[1].textContent).toBe("Test Param: 1234");
   });
 
   it("JSX Signals", async () => {
     router.routeRequest("/jsx-signals");
+    await delay(100);
     const allHeaders = await screen.findAllByRole("heading", {
       name: /JSX Signals/i,
     });
