@@ -45,6 +45,20 @@ export function MyLayout({ router_outlet }: any) {
           <a href="/payments/ach/321">Ambiguous Route/Params 2</a>
         </li>
         <li>
+          <a href="/users">Nested Routes /users</a>
+        </li>
+        <li>
+          <a href="/users/123">Nested Routes /users/:id</a>
+        </li>
+        <li>
+          <a href="/users/123/settings">Nested Routes /users/:id/settings</a>
+        </li>
+        <li>
+          <a href="/users/123/settings/all/wild/card/stuff">
+            Nested Routes /users/:id/settings/all/wild/card/stuff
+          </a>
+        </li>
+        <li>
           <a href="/mdx">MDX</a>
         </li>
         <li>
@@ -75,7 +89,7 @@ export function MyLayout({ router_outlet }: any) {
           <a href="/simple-string-list">Simple String List</a>
         </li>
         <li>
-          <a href="/escape-hatches">Escape Hatches</a>
+          <a href="/escape-hatches">Escape Hatches (Progressive Exposure)</a>
         </li>
         <li>
           <a href="/form-validation">Form Validator</a>
