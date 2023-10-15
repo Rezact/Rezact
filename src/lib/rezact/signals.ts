@@ -290,9 +290,15 @@ const addChildren = (values: any, parentNode) => {
   for (let i = 0; i < len; i++) {
     const elm = values[i].elmRef || values[i];
     if (!(nextNode.nextSibling === (elm[0] || elm))) {
+      elm.insertNodeBefore = nextNode;
       appendChild(nextNode, elm, true);
     }
-    nextNode = isArray(elm) ? elm.at(-1) : elm;
+
+    if (elm instanceof Signal) {
+      nextNode = isArray(elm.value) ? elm.value.at(-1) : elm.value;
+    } else {
+      nextNode = isArray(elm) ? elm.at(-1) : elm;
+    }
   }
 };
 
@@ -399,7 +405,12 @@ const handleArray = (parent: any, child: any) => {
 
   child.previousChildLen = child.value.length;
   addChildren(child.value, parentNode);
-  parent.appendChild(frag);
+
+  if (child.insertNodeBefore) {
+    appendChild(child.insertNodeBefore, frag, true);
+  } else {
+    parent.appendChild(frag);
+  }
 };
 
 const childArrayStateHandler = {

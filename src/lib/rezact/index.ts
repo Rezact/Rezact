@@ -159,9 +159,7 @@ export const addAfterRenderHook = (item) => afterRenderHooks.push(item);
 export function render(root, tagName, attributes: any = {}) {
   const elm = createComponent(tagName, attributes);
   if (root.state) {
-    const frag = document.createDocumentFragment();
-    appendChild(frag, elm);
-    root.set([...frag.childNodes]);
+    root.set(elm);
   } else {
     root.innerHTML = "";
     appendChild(root, elm);
