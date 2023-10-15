@@ -138,6 +138,81 @@ describe("Router Tests Suite", () => {
     expect(paragraphs[0].textContent).toBe("ID: 321");
   });
 
+  it("Nested Route Level 1", async () => {
+    const links = await screen.findAllByRole("link", {
+      name: "Nested Routes /users",
+    });
+    await user.click(links[0]);
+    await delay(100);
+    const testDiv = document.getElementById("nested-routes-test-id");
+    expect(testDiv.innerHTML).toMatchSnapshot();
+
+    router.routeRequest("/users");
+    await delay(100);
+    const testDiv2 = document.getElementById("nested-routes-test-id");
+    expect(testDiv2.innerHTML).toMatchSnapshot();
+  });
+
+  it("Nested Route Level 3", async () => {
+    const links = await screen.findAllByRole("link", {
+      name: "Nested Routes /users/:id/settings",
+    });
+    await user.click(links[0]);
+    await delay(100);
+    const testDiv = document.getElementById("nested-routes-test-id");
+    expect(testDiv.innerHTML).toMatchSnapshot();
+
+    router.routeRequest("/users/953test/settings");
+    await delay(100);
+    const testDiv2 = document.getElementById("nested-routes-test-id");
+    expect(testDiv2.innerHTML).toMatchSnapshot();
+  });
+
+  it("Nested Route Level 2", async () => {
+    const links = await screen.findAllByRole("link", {
+      name: "Nested Routes /users/:id",
+    });
+    await user.click(links[0]);
+    await delay(100);
+    const testDiv = document.getElementById("nested-routes-test-id");
+    expect(testDiv.innerHTML).toMatchSnapshot();
+
+    router.routeRequest("/users/953test");
+    await delay(100);
+    const testDiv2 = document.getElementById("nested-routes-test-id");
+    expect(testDiv2.innerHTML).toMatchSnapshot();
+  });
+
+  it("Nested Route Level 4", async () => {
+    const links = await screen.findAllByRole("link", {
+      name: "Nested Routes /users/:id/settings/all/wild/card/stuff",
+    });
+    await user.click(links[0]);
+    await delay(100);
+    const testDiv = document.getElementById("nested-routes-test-id");
+    expect(testDiv.innerHTML).toMatchSnapshot();
+
+    router.routeRequest("/users/953test/settings/all/wild/card/stuff");
+    await delay(100);
+    const testDiv2 = document.getElementById("nested-routes-test-id");
+    expect(testDiv2.innerHTML).toMatchSnapshot();
+  });
+
+  it("Nested Route Level 1 Again", async () => {
+    const links = await screen.findAllByRole("link", {
+      name: "Nested Routes /users",
+    });
+    await user.click(links[0]);
+    await delay(100);
+    const testDiv = document.getElementById("nested-routes-test-id");
+    expect(testDiv.innerHTML).toMatchSnapshot();
+
+    router.routeRequest("/users");
+    await delay(100);
+    const testDiv2 = document.getElementById("nested-routes-test-id");
+    expect(testDiv2.innerHTML).toMatchSnapshot();
+  });
+
   it("Home Page Input State Persists across navigations", async () => {
     const links = await screen.findAllByRole("link", { name: "Home" });
     await user.click(links[0]);

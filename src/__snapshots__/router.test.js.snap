@@ -68,3 +68,23 @@ exports[`Router Tests Suite > JSX Signals 1`] = `
   </button>
 </div>
 `;
+
+exports[`Router Tests Suite > Nested Route Level 1 1`] = `"<h1>1. Users START</h1><p>ID: No User Selected</p><!--start map--><span></span><!--end map--><p>1. Users END</p>"`;
+
+exports[`Router Tests Suite > Nested Route Level 1 2`] = `"<h1>1. Users START</h1><p>ID: No User Selected</p><!--start map--><span></span><!--end map--><p>1. Users END</p>"`;
+
+exports[`Router Tests Suite > Nested Route Level 1 Again 1`] = `"<h1>1. Users START</h1><p>ID: No User Selected</p><!--start map--><span></span><!--end map--><p>1. Users END</p>"`;
+
+exports[`Router Tests Suite > Nested Route Level 1 Again 2`] = `"<h1>1. Users START</h1><p>ID: No User Selected</p><!--start map--><span></span><!--end map--><p>1. Users END</p>"`;
+
+exports[`Router Tests Suite > Nested Route Level 2 1`] = `"<h1>1. Users START</h1><p>ID: 123</p><!--start map--><h1>2. Users ID START</h1><p>ID: 123</p><!--start map--><span></span><p>2. Users ID END</p><!--end map--><!--end map--><p>1. Users END</p>"`;
+
+exports[`Router Tests Suite > Nested Route Level 2 2`] = `"<h1>1. Users START</h1><p>ID: 953test</p><!--start map--><h1>2. Users ID START</h1><p>ID: 953test</p><!--start map--><span></span><p>2. Users ID END</p><!--end map--><!--end map--><p>1. Users END</p>"`;
+
+exports[`Router Tests Suite > Nested Route Level 3 1`] = `"<h1>1. Users START</h1><p>ID: 123</p><!--start map--><h1>2. Users ID START</h1><p>ID: 123</p><!--start map--><div><h1>3. Users ID Settings START</h1><p>ID: 123</p><!--start map--><span></span><!--end map--><p>3. Users ID Settings END</p></div><p>2. Users ID END</p><!--end map--><!--end map--><p>1. Users END</p>"`;
+
+exports[`Router Tests Suite > Nested Route Level 3 2`] = `"<h1>1. Users START</h1><p>ID: 953test</p><!--start map--><h1>2. Users ID START</h1><p>ID: 953test</p><!--start map--><div><h1>3. Users ID Settings START</h1><p>ID: 953test</p><!--start map--><span></span><!--end map--><p>3. Users ID Settings END</p></div><p>2. Users ID END</p><!--end map--><!--end map--><p>1. Users END</p>"`;
+
+exports[`Router Tests Suite > Nested Route Level 4 1`] = `"<h1>1. Users START</h1><p>ID: 123</p><!--start map--><h1>2. Users ID START</h1><p>ID: 123</p><!--start map--><div><h1>3. Users ID Settings START</h1><p>ID: 123</p><!--start map--><h1>4. Users ID Settings Wild Card</h1><p>ID: 123</p><!--end map--><p>3. Users ID Settings END</p></div><p>2. Users ID END</p><!--end map--><!--end map--><p>1. Users END</p>"`;
+
+exports[`Router Tests Suite > Nested Route Level 4 2`] = `"<h1>1. Users START</h1><p>ID: 953test</p><!--start map--><h1>2. Users ID START</h1><p>ID: 953test</p><!--start map--><div><h1>3. Users ID Settings START</h1><p>ID: 953test</p><!--start map--><h1>4. Users ID Settings Wild Card</h1><p>ID: 953test</p><!--end map--><p>3. Users ID Settings END</p></div><p>2. Users ID END</p><!--end map--><!--end map--><p>1. Users END</p>"`;
