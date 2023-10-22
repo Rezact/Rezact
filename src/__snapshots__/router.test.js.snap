@@ -99,6 +99,21 @@ exports[`Router Tests Suite > MDX Route 1`] = `
 </code></pre><!--signal--></div>"
 `;
 
+exports[`Router Tests Suite > MDX Route Click 1`] = `
+"<div id=\\"app\\"><div><h1>Hello World Test asdf</h1></div>
+<!--start map--><div>## apples asdf</div><div>## oranges asdf</div><div>## bananas asdf</div><!--end map-->
+<button>Test</button>
+<div><p>Testing Nested</p><p>Testing Nested 2</p></div>
+<p>Label:</p>
+<input>
+<p>Para text</p>
+<pre><code class=\\"hljs language-javascript\\"><span class=\\"hljs-comment\\">// testing highlight</span>
+<span class=\\"hljs-keyword\\">function</span> <span class=\\"hljs-title function_\\">test</span>(<span class=\\"hljs-params\\"></span>) {
+  <span class=\\"hljs-variable language_\\">console</span>.<span class=\\"hljs-title function_\\">log</span>(<span class=\\"hljs-string\\">\\"hello world!\\"</span>);
+}
+</code></pre><!--signal--></div>"
+`;
+
 exports[`Router Tests Suite > Nested Route Level 1 1`] = `"<h1>1. Users START</h1><p>ID: No User Selected</p><h1>Data Fetching</h1><p>Loading</p><span></span><!--start map--><!--end map--><!--signal--><!--start map--><span></span><!--end map--><h1>Data Fetching</h1><p>Loading</p><span></span><!--start map--><!--end map--><!--signal--><p>1. Users END</p>"`;
 
 exports[`Router Tests Suite > Nested Route Level 1 2`] = `"<h1>1. Users START</h1><p>ID: No User Selected</p><h1>Data Fetching</h1><p>Loading</p><span></span><!--start map--><!--end map--><!--signal--><!--start map--><span></span><!--end map--><h1>Data Fetching</h1><p>Loading</p><span></span><!--start map--><!--end map--><!--signal--><p>1. Users END</p>"`;

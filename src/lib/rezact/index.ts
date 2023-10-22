@@ -119,6 +119,10 @@ function appendChildNode(
   if (removeElm) return childNode.remove();
   if (parentNode instanceof Comment) insertAfter = true;
   if (parentNode.state) return;
+  if (parentNode.nodeName === "#text" && !insertAfter) {
+    // debugger;
+    throw "Cannot append to text node";
+  }
   // console.log({ parentNode, childNode, insertAfter });
   insertAfter
     ? insertNodeAfter(parentNode, childNode)

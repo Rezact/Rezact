@@ -198,10 +198,10 @@ export function attrEffect(func: (obj: any) => {}, deps: any[]) {
 }
 
 const textTypes = { string: true, number: true };
-function handleStateTypes(parent: any, child: any) {
+function handleStateTypes(parent: any, child: any, ...args: any[]) {
   const val = child.get();
   if (textTypes[typeof val]) {
-    handleTextNode(parent, child);
+    handleTextNode(parent, child, ...args);
   } else if (val instanceof Node && !child.computed) {
     handleArray(parent, child);
   } else if (child.computed) {
@@ -224,7 +224,7 @@ function handleStateTypes(parent: any, child: any) {
 const childStateHandler = {
   matches: (child) =>
     typeof child === "object" && (child.state || child.computer),
-  handler: (parent, child) => handleStateTypes(parent, child),
+  handler: (parent, child, ...args) => handleStateTypes(parent, child, ...args),
 };
 
 addAppendChildHook(childStateHandler);
@@ -257,7 +257,7 @@ const attributeStateHandler = {
 addAttributeHandler(attributeStateHandler);
 
 const textNodeSub = (o) => (o.txtNode.nodeValue = o.newVal.toString());
-function handleTextNode(parent: any, child: any) {
+function handleTextNode(parent: any, child: any, ...args: any[]) {
   const val = child.get();
   const txtNode = createTextNode(val.toString());
   if (typeof val === "string") child.value = txtNode;
@@ -267,7 +267,7 @@ function handleTextNode(parent: any, child: any) {
       elm: parent,
     }
   );
-  appendChild(parent, txtNode);
+  appendChild(parent, txtNode, ...args);
 }
 
 addAfterRenderHook(() => {

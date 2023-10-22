@@ -178,7 +178,7 @@ describe("Router Tests Suite", () => {
       name: "Nested Routes /users/:id/settings",
     });
     await user.click(links[0]);
-    await delay(100);
+    await delay(200);
     const testDiv = document.getElementById("nested-routes-test-id");
     expect(testDiv.innerHTML).toMatchSnapshot();
 
@@ -400,8 +400,12 @@ describe("Router Tests Suite", () => {
     expect(jsxSignals).not.toMatchSnapshot();
   });
 
-  it("MDX Route", async () => {
-    router.routeRequest("/mdx");
+  it("MDX Route Click", async () => {
+    const links = await screen.findAllByRole("link", {
+      name: "MDX",
+    });
+    await user.click(links[0]);
+    await delay(100);
     const allHeaders = await screen.findAllByRole("heading", {
       name: /Hello World Test asdf/i,
     });
@@ -428,6 +432,16 @@ describe("Router Tests Suite", () => {
 
     const loaded3 = await screen.findAllByText("test3-loaded");
     expect(loaded3).toHaveLength(1);
+  });
+
+  it("MDX Route", async () => {
+    router.routeRequest("/mdx");
+    await delay(100);
+    const allHeaders = await screen.findAllByRole("heading", {
+      name: /Hello World Test asdf/i,
+    });
+    expect(allHeaders).toHaveLength(1);
+    expect(document.body.innerHTML).toMatchSnapshot();
   });
 
   it("Simple String List Route", async () => {
