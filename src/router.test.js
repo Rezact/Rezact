@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import {
   screen,
   waitFor,
@@ -6,6 +6,24 @@ import {
 } from "@testing-library/dom";
 import userEvent from "@testing-library/user-event";
 
+const currentFetch = global.fetch;
+beforeAll(() => {
+  global.fetch = async () => {
+    return {
+      async json() {
+        return [
+          { testData: "test1-loaded" },
+          { testData: "test2-loaded" },
+          { testData: "test3-loaded" },
+        ];
+      },
+    };
+  };
+});
+
+afterAll(() => {
+  global.fetch = currentFetch;
+});
 const user = userEvent.setup();
 let router = null;
 
@@ -21,6 +39,8 @@ describe("Router Tests Suite", () => {
     });
     expect(allHeaders).toHaveLength(1);
     expect(allHeaders[0].textContent).toBe("Hello World TEST");
+    const routerOutlet = document.getElementById("router-outlet-test");
+    expect(routerOutlet.innerHTML).toMatchSnapshot();
   });
 
   it("Bleeds from previous test state", async () => {
@@ -378,6 +398,48 @@ describe("Router Tests Suite", () => {
 
     const jsxSignals = document.getElementById("jsx-signals-test-id");
     expect(jsxSignals).not.toMatchSnapshot();
+  });
+
+  it("MDX Route", async () => {
+    router.routeRequest("/mdx");
+    const allHeaders = await screen.findAllByRole("heading", {
+      name: /Hello World Test asdf/i,
+    });
+    expect(allHeaders).toHaveLength(1);
+    expect(document.body.innerHTML).toMatchSnapshot();
+  });
+
+  it("Data Fetching Route", async () => {
+    router.routeRequest("/data-fetching");
+
+    const allHeaders = await screen.findAllByRole("heading", {
+      name: /Data Fetching/i,
+    });
+    expect(allHeaders).toHaveLength(1);
+
+    const txt = await screen.findAllByText("Loading");
+    expect(txt).toHaveLength(1);
+
+    const loaded1 = await screen.findAllByText("test1-loaded");
+    expect(loaded1).toHaveLength(1);
+
+    const loaded2 = await screen.findAllByText("test2-loaded");
+    expect(loaded2).toHaveLength(1);
+
+    const loaded3 = await screen.findAllByText("test3-loaded");
+    expect(loaded3).toHaveLength(1);
+  });
+
+  it("Simple String List Route", async () => {
+    router.routeRequest("/simple-string-list");
+    await delay(100);
+    const allHeaders = await screen.findAllByRole("heading", {
+      name: /simple string list/i,
+    });
+    expect(allHeaders).toHaveLength(1);
+
+    const routerOutlet = document.getElementById("router-outlet-test");
+    expect(routerOutlet.innerHTML).toMatchSnapshot();
   });
 });
 
