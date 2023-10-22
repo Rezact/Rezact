@@ -1,1 +1,5 @@
-[{ "testData": "test1" }, { "testData": "test2" }, { "testData": "test3" }]
+[
+  { "testData": "test1-loaded" },
+  { "testData": "test2-loaded" },
+  { "testData": "test3-loaded" }
+]

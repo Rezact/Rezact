@@ -1,5 +1,20 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`Router Tests Suite > First Render Home Page 1`] = `
+"<!--start map--><h1>Hello World TEST</h1><label for=\\"test-input\\">Test Input</label><input id=\\"test-input\\"><button>asdf</button><div><style>
+        .test {
+          transition: all 200ms;
+        }
+        .pink {
+          background-color: pink
+        }
+
+        .sky {
+          background-color: skyblue
+        }
+      </style><!--start map--><div><span>0. apple On</span><button>Toggle</button><button type=\\"button\\">Delete</button><br></div><div><span>1. orange On</span><button>Toggle</button><button type=\\"button\\">Delete</button><br></div><div><span>2. banana On</span><button>Toggle</button><button type=\\"button\\">Delete</button><br></div><!--end map--><button class=\\"test sky\\" ref=\\"null\\">Clicked 0 times test</button><span></span></div><a style=\\"display: block;\\" href=\\"/post/asdf/something/qwer\\">Test No Target (Only loads new page)</a><a style=\\"display: block;\\" href=\\"/post/asdf/something/qwer\\" target=\\"_self\\">Test Target _self (reloads page)</a><a style=\\"display: block;\\" href=\\"https://google.com\\" target=\\"_blank\\">Google Target _blank</a><!--signal--><!--end map-->"
+`;
+
 exports[`Router Tests Suite > JSX Signals 1`] = `
 <div
   id="jsx-signals-test-id"
@@ -68,3 +83,20 @@ exports[`Router Tests Suite > JSX Signals 1`] = `
   </button>
 </div>
 `;
+
+exports[`Router Tests Suite > MDX Route 1`] = `
+"<div id=\\"app\\"><div><h1>Hello World Test asdf</h1></div>
+<!--start map--><div>## apples asdf</div><div>## oranges asdf</div><div>## bananas asdf</div><!--end map-->
+<button>Test</button>
+<div><p>Testing Nested</p><p>Testing Nested 2</p></div>
+<p>Label:</p>
+<input>
+<p>Para text</p>
+<pre><code class=\\"hljs language-javascript\\"><span class=\\"hljs-comment\\">// testing highlight</span>
+<span class=\\"hljs-keyword\\">function</span> <span class=\\"hljs-title function_\\">test</span>(<span class=\\"hljs-params\\"></span>) {
+  <span class=\\"hljs-variable language_\\">console</span>.<span class=\\"hljs-title function_\\">log</span>(<span class=\\"hljs-string\\">\\"hello world!\\"</span>);
+}
+</code></pre><!--signal--></div>"
+`;
+
+exports[`Router Tests Suite > Simple String List Route 1`] = `"<!--start map--><h1>Simple String List</h1><!--start map--><div dataval=\\"Jack\\"><input></div><div dataval=\\"Jill\\"><input></div><div dataval=\\"John\\"><input></div><div dataval=\\"Jane\\"><input></div><!--end map--><!--start map--><div>Jack</div><div>Jill</div><div>John</div><div>Jane</div><!--end map--><!--signal--><!--end map-->"`;

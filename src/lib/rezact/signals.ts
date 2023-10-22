@@ -379,7 +379,8 @@ const handleArray = (parent: any, child: any) => {
 
   child.subscribe((newVal: any) => {
     if (child.previousChildLen === 0) {
-      if (parentNode.parentNode) parent.insertBefore(placeHolder, parentNode);
+      if (parentNode.parentNode)
+        parentNode.parentNode.insertBefore(placeHolder, parentNode);
 
       frac(parentNode);
       frac(endNode);
@@ -388,7 +389,7 @@ const handleArray = (parent: any, child: any) => {
     addChildren(newVal, parentNode);
     if (child.previousChildLen === 0) {
       if (placeHolder.parentNode) {
-        parent.insertBefore(frag, placeHolder);
+        placeHolder.parentNode.insertBefore(frag, placeHolder);
       } else {
         parent.appendChild(frag);
       }
