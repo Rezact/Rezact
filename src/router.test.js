@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import {
   screen,
   waitFor,
@@ -6,6 +6,24 @@ import {
 } from "@testing-library/dom";
 import userEvent from "@testing-library/user-event";
 
+const currentFetch = global.fetch;
+beforeAll(() => {
+  global.fetch = async () => {
+    return {
+      async json() {
+        return [
+          { testData: "test1-loaded" },
+          { testData: "test2-loaded" },
+          { testData: "test3-loaded" },
+        ];
+      },
+    };
+  };
+});
+
+afterAll(() => {
+  global.fetch = currentFetch;
+});
 const user = userEvent.setup();
 let router = null;
 
@@ -21,6 +39,8 @@ describe("Router Tests Suite", () => {
     });
     expect(allHeaders).toHaveLength(1);
     expect(allHeaders[0].textContent).toBe("Hello World TEST");
+    const routerOutlet = document.getElementById("router-outlet-test");
+    expect(routerOutlet.innerHTML).toMatchSnapshot();
   });
 
   it("Bleeds from previous test state", async () => {
@@ -97,9 +117,120 @@ describe("Router Tests Suite", () => {
     );
 
     const paragraphs = document.querySelectorAll("p");
-    expect(paragraphs).toHaveLength(2);
+    expect(paragraphs).toHaveLength(3);
     expect(paragraphs[0].textContent).toBe("ID: asdf");
     expect(paragraphs[1].textContent).toBe("Test Param: qwer");
+  });
+
+  it("Ambiguous Route/Params Link Works 1", async () => {
+    const links = await screen.findAllByRole("link", {
+      name: "Ambiguous Route/Params 1",
+    });
+    await user.click(links[0]);
+    const allHeaders = await screen.findAllByRole("heading", {
+      name: /Ambiguous Test 1/i,
+    });
+    expect(allHeaders).toHaveLength(1);
+    await waitFor(() =>
+      expect(allHeaders[0].textContent).toBe("Ambiguous Test 1")
+    );
+
+    const paragraphs = document.querySelectorAll("p");
+    expect(paragraphs).toHaveLength(2);
+    expect(paragraphs[0].textContent).toBe("ID: 123");
+  });
+
+  it("Ambiguous Route/Params Link Works 2", async () => {
+    const links = await screen.findAllByRole("link", {
+      name: "Ambiguous Route/Params 2",
+    });
+    await user.click(links[0]);
+    const allHeaders = await screen.findAllByRole("heading", {
+      name: /Ambiguous Test 2/i,
+    });
+    expect(allHeaders).toHaveLength(1);
+    await waitFor(() =>
+      expect(allHeaders[0].textContent).toBe("Ambiguous Test 2")
+    );
+
+    const paragraphs = document.querySelectorAll("p");
+    expect(paragraphs).toHaveLength(2);
+    expect(paragraphs[0].textContent).toBe("ID: 321");
+  });
+
+  it("Nested Route Level 1", async () => {
+    const links = await screen.findAllByRole("link", {
+      name: "Nested Routes /users",
+    });
+    await user.click(links[0]);
+    await delay(200);
+    const testDiv = document.getElementById("nested-routes-test-id");
+    expect(testDiv.innerHTML).toMatchSnapshot();
+
+    router.routeRequest("/users");
+    await delay(200);
+    const testDiv2 = document.getElementById("nested-routes-test-id");
+    expect(testDiv2.innerHTML).toMatchSnapshot();
+  });
+
+  it("Nested Route Level 3", async () => {
+    const links = await screen.findAllByRole("link", {
+      name: "Nested Routes /users/:id/settings",
+    });
+    await user.click(links[0]);
+    await delay(200);
+    const testDiv = document.getElementById("nested-routes-test-id");
+    expect(testDiv.innerHTML).toMatchSnapshot();
+
+    router.routeRequest("/users/953test/settings");
+    await delay(200);
+    const testDiv2 = document.getElementById("nested-routes-test-id");
+    expect(testDiv2.innerHTML).toMatchSnapshot();
+  });
+
+  it("Nested Route Level 2", async () => {
+    const links = await screen.findAllByRole("link", {
+      name: "Nested Routes /users/:id",
+    });
+    await user.click(links[0]);
+    await delay(200);
+    const testDiv = document.getElementById("nested-routes-test-id");
+    expect(testDiv.innerHTML).toMatchSnapshot();
+
+    router.routeRequest("/users/953test");
+    await delay(200);
+    const testDiv2 = document.getElementById("nested-routes-test-id");
+    expect(testDiv2.innerHTML).toMatchSnapshot();
+  });
+
+  it("Nested Route Level 4", async () => {
+    const links = await screen.findAllByRole("link", {
+      name: "Nested Routes /users/:id/settings/all/wild/card/stuff",
+    });
+    await user.click(links[0]);
+    await delay(200);
+    const testDiv = document.getElementById("nested-routes-test-id");
+    expect(testDiv.innerHTML).toMatchSnapshot();
+
+    router.routeRequest("/users/953test/settings/all/wild/card/stuff");
+    await delay(200);
+    const testDiv2 = document.getElementById("nested-routes-test-id");
+    expect(testDiv2.innerHTML).toMatchSnapshot();
+  });
+
+  it("Nested Route Level 1 Again", async () => {
+    const links = await screen.findAllByRole("link", {
+      name: "Nested Routes /users",
+    });
+    await user.click(links[0]);
+    await delay(100);
+    const testDiv = document.getElementById("nested-routes-test-id");
+    expect(testDiv.innerHTML).toMatchSnapshot();
+
+    router.routeRequest("/users");
+    await delay(100);
+    const testDiv2 = document.getElementById("nested-routes-test-id");
+    expect(testDiv2.innerHTML).toMatchSnapshot();
   });
 
   it("Home Page Input State Persists across navigations", async () => {
@@ -251,13 +382,14 @@ describe("Router Tests Suite", () => {
     );
 
     const paragraphs = document.querySelectorAll("p");
-    expect(paragraphs).toHaveLength(2);
+    expect(paragraphs).toHaveLength(3);
     expect(paragraphs[0].textContent).toBe("ID: 5678");
     expect(paragraphs[1].textContent).toBe("Test Param: 1234");
   });
 
   it("JSX Signals", async () => {
     router.routeRequest("/jsx-signals");
+    await delay(100);
     const allHeaders = await screen.findAllByRole("heading", {
       name: /JSX Signals/i,
     });
@@ -266,6 +398,62 @@ describe("Router Tests Suite", () => {
 
     const jsxSignals = document.getElementById("jsx-signals-test-id");
     expect(jsxSignals).not.toMatchSnapshot();
+  });
+
+  it("MDX Route Click", async () => {
+    const links = await screen.findAllByRole("link", {
+      name: "MDX",
+    });
+    await user.click(links[0]);
+    await delay(100);
+    const allHeaders = await screen.findAllByRole("heading", {
+      name: /Hello World Test asdf/i,
+    });
+    expect(allHeaders).toHaveLength(1);
+    expect(document.body.innerHTML).toMatchSnapshot();
+  });
+
+  it("Data Fetching Route", async () => {
+    router.routeRequest("/data-fetching");
+
+    const allHeaders = await screen.findAllByRole("heading", {
+      name: /Data Fetching/i,
+    });
+    expect(allHeaders).toHaveLength(1);
+
+    const txt = await screen.findAllByText("Loading");
+    expect(txt).toHaveLength(1);
+
+    const loaded1 = await screen.findAllByText("test1-loaded");
+    expect(loaded1).toHaveLength(1);
+
+    const loaded2 = await screen.findAllByText("test2-loaded");
+    expect(loaded2).toHaveLength(1);
+
+    const loaded3 = await screen.findAllByText("test3-loaded");
+    expect(loaded3).toHaveLength(1);
+  });
+
+  it("MDX Route", async () => {
+    router.routeRequest("/mdx");
+    await delay(100);
+    const allHeaders = await screen.findAllByRole("heading", {
+      name: /Hello World Test asdf/i,
+    });
+    expect(allHeaders).toHaveLength(1);
+    expect(document.body.innerHTML).toMatchSnapshot();
+  });
+
+  it("Simple String List Route", async () => {
+    router.routeRequest("/simple-string-list");
+    await delay(100);
+    const allHeaders = await screen.findAllByRole("heading", {
+      name: /simple string list/i,
+    });
+    expect(allHeaders).toHaveLength(1);
+
+    const routerOutlet = document.getElementById("router-outlet-test");
+    expect(routerOutlet.innerHTML).toMatchSnapshot();
   });
 });
 

@@ -1,7 +1,0 @@
-Form Example!
-
-Test Router against semi-amibuous routes like:
-/payments/:id
-/payments/ach/:id
-
-- Need to starting writing some documentation! Get on it!

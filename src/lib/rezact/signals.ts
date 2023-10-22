@@ -198,10 +198,10 @@ export function attrEffect(func: (obj: any) => {}, deps: any[]) {
 }
 
 const textTypes = { string: true, number: true };
-function handleStateTypes(parent: any, child: any) {
+function handleStateTypes(parent: any, child: any, ...args: any[]) {
   const val = child.get();
   if (textTypes[typeof val]) {
-    handleTextNode(parent, child);
+    handleTextNode(parent, child, ...args);
   } else if (val instanceof Node && !child.computed) {
     handleArray(parent, child);
   } else if (child.computed) {
@@ -224,7 +224,7 @@ function handleStateTypes(parent: any, child: any) {
 const childStateHandler = {
   matches: (child) =>
     typeof child === "object" && (child.state || child.computer),
-  handler: (parent, child) => handleStateTypes(parent, child),
+  handler: (parent, child, ...args) => handleStateTypes(parent, child, ...args),
 };
 
 addAppendChildHook(childStateHandler);
@@ -257,7 +257,7 @@ const attributeStateHandler = {
 addAttributeHandler(attributeStateHandler);
 
 const textNodeSub = (o) => (o.txtNode.nodeValue = o.newVal.toString());
-function handleTextNode(parent: any, child: any) {
+function handleTextNode(parent: any, child: any, ...args: any[]) {
   const val = child.get();
   const txtNode = createTextNode(val.toString());
   if (typeof val === "string") child.value = txtNode;
@@ -267,7 +267,7 @@ function handleTextNode(parent: any, child: any) {
       elm: parent,
     }
   );
-  appendChild(parent, txtNode);
+  appendChild(parent, txtNode, ...args);
 }
 
 addAfterRenderHook(() => {
@@ -290,9 +290,15 @@ const addChildren = (values: any, parentNode) => {
   for (let i = 0; i < len; i++) {
     const elm = values[i].elmRef || values[i];
     if (!(nextNode.nextSibling === (elm[0] || elm))) {
+      elm.insertNodeBefore = nextNode;
       appendChild(nextNode, elm, true);
     }
-    nextNode = isArray(elm) ? elm.at(-1) : elm;
+
+    if (elm instanceof Signal) {
+      nextNode = isArray(elm.value) ? elm.value.at(-1) : elm.value;
+    } else {
+      nextNode = isArray(elm) ? elm.at(-1) : elm;
+    }
   }
 };
 
@@ -379,7 +385,8 @@ const handleArray = (parent: any, child: any) => {
 
   child.subscribe((newVal: any) => {
     if (child.previousChildLen === 0) {
-      if (parentNode.parentNode) parent.insertBefore(placeHolder, parentNode);
+      if (parentNode.parentNode)
+        parentNode.parentNode.insertBefore(placeHolder, parentNode);
 
       frac(parentNode);
       frac(endNode);
@@ -388,7 +395,7 @@ const handleArray = (parent: any, child: any) => {
     addChildren(newVal, parentNode);
     if (child.previousChildLen === 0) {
       if (placeHolder.parentNode) {
-        parent.insertBefore(frag, placeHolder);
+        placeHolder.parentNode.insertBefore(frag, placeHolder);
       } else {
         parent.appendChild(frag);
       }
@@ -399,7 +406,12 @@ const handleArray = (parent: any, child: any) => {
 
   child.previousChildLen = child.value.length;
   addChildren(child.value, parentNode);
-  parent.appendChild(frag);
+
+  if (child.insertNodeBefore) {
+    appendChild(child.insertNodeBefore, frag, true);
+  } else {
+    parent.appendChild(frag);
+  }
 };
 
 const childArrayStateHandler = {

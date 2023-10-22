@@ -426,7 +426,22 @@ const arrProps = ["push", "pop", "splice", "shift", "unshift"];
 
 function compileRezact(ast) {
   walk.ancestor(ast, {
-    VariableDeclarator(node: any, _state) {
+    VariableDeclarator(node: any, _state, ancestors) {
+      if (node.id.type === "ArrayPattern") {
+        node.id.elements.forEach((elem) => {
+          if (elem.type === "Identifier" && elem.name[0] === "$") {
+            mapDeclarationTracking[elem.name] = ancestors.at(-2);
+          }
+        });
+      }
+
+      if (node.id.type === "ObjectPattern") {
+        node.id.properties.forEach((prop) => {
+          if (prop.type === "Property" && prop.key.name[0] === "$") {
+            mapDeclarationTracking[prop.key.name] = ancestors.at(-2);
+          }
+        });
+      }
       const name = node.id.name;
       if (!name) return;
       if (name[0] === "$") {
