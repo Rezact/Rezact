@@ -163,12 +163,12 @@ describe("Router Tests Suite", () => {
       name: "Nested Routes /users",
     });
     await user.click(links[0]);
-    await delay(100);
+    await delay(200);
     const testDiv = document.getElementById("nested-routes-test-id");
     expect(testDiv.innerHTML).toMatchSnapshot();
 
     router.routeRequest("/users");
-    await delay(100);
+    await delay(200);
     const testDiv2 = document.getElementById("nested-routes-test-id");
     expect(testDiv2.innerHTML).toMatchSnapshot();
   });
@@ -183,7 +183,7 @@ describe("Router Tests Suite", () => {
     expect(testDiv.innerHTML).toMatchSnapshot();
 
     router.routeRequest("/users/953test/settings");
-    await delay(100);
+    await delay(200);
     const testDiv2 = document.getElementById("nested-routes-test-id");
     expect(testDiv2.innerHTML).toMatchSnapshot();
   });
@@ -193,12 +193,12 @@ describe("Router Tests Suite", () => {
       name: "Nested Routes /users/:id",
     });
     await user.click(links[0]);
-    await delay(100);
+    await delay(200);
     const testDiv = document.getElementById("nested-routes-test-id");
     expect(testDiv.innerHTML).toMatchSnapshot();
 
     router.routeRequest("/users/953test");
-    await delay(100);
+    await delay(200);
     const testDiv2 = document.getElementById("nested-routes-test-id");
     expect(testDiv2.innerHTML).toMatchSnapshot();
   });
@@ -208,12 +208,12 @@ describe("Router Tests Suite", () => {
       name: "Nested Routes /users/:id/settings/all/wild/card/stuff",
     });
     await user.click(links[0]);
-    await delay(100);
+    await delay(200);
     const testDiv = document.getElementById("nested-routes-test-id");
     expect(testDiv.innerHTML).toMatchSnapshot();
 
     router.routeRequest("/users/953test/settings/all/wild/card/stuff");
-    await delay(100);
+    await delay(200);
     const testDiv2 = document.getElementById("nested-routes-test-id");
     expect(testDiv2.innerHTML).toMatchSnapshot();
   });
