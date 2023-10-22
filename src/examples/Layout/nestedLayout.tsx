@@ -109,7 +109,7 @@ export function MyLayout({ router_outlet }: any) {
           <a href="/asdfasdfasdfasdf">A Route that does not exist</a>
         </li>
       </ul>
-      {router_outlet}
+      <div id="router-outlet-test">{router_outlet}</div>
       <p>End Layout</p>
     </MasterLayout>
   );

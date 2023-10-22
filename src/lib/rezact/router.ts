@@ -138,8 +138,8 @@ export function useRouter(app = null, config: any = {}) {
         status === "rejected" ? config.routeErrorComponent({ reason }) : value
       );
 
-      // loop over stack and assign router_outlet
-      for (let i = 0; i < stack.length; i++) {
+      // loop over the stack in reverse and assign router_outlet
+      for (let i = stack.length - 1; i >= 0; i--) {
         const thisItem = stack[i];
 
         thisItem.router_outlet.subs = new Map();
