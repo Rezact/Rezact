@@ -1,9 +1,5 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import {
-  screen,
-  waitFor,
-  waitForElementToBeRemoved,
-} from "@testing-library/dom";
+import { screen, waitFor } from "@testing-library/dom";
 import userEvent from "@testing-library/user-event";
 
 const currentFetch = global.fetch;
@@ -138,10 +134,9 @@ describe("Router Tests Suite", () => {
     const paragraphs = document.querySelectorAll("p");
     expect(paragraphs).toHaveLength(2);
     expect(paragraphs[0].textContent).toBe("ID: config123");
-    console.log(location);
   });
 
-  it("CONFIG BASED Ambiguous Route/Params Link Works 2", async () => {
+  it("CONFIG BASED - Ambiguous Route/Params Link Works 2", async () => {
     const links = await screen.findAllByRole("link", {
       name: "CONFIG BASED - Ambiguous Route/Params 2",
     });
@@ -566,6 +561,49 @@ describe("Router Tests Suite", () => {
 
     const routerOutlet = document.getElementById("router-outlet-test");
     expect(routerOutlet.innerHTML).toMatchSnapshot();
+  });
+
+  it("Route Guard redirects", async () => {
+    router.beforeEach((to, from) => {
+      return "/login";
+    });
+    router.routeChanged("/simple-string-list");
+    await delay(100);
+    const allHeaders = await screen.findAllByRole("heading", {
+      name: /404 - Page Not Found/i,
+    });
+    expect(allHeaders).toHaveLength(1);
+
+    expect(router.currentRoute.pathname).toBe("/login");
+    router.beforeHooks = [];
+  });
+
+  it("Route Guard Reverts - Simple String List Route", async () => {
+    router.routeChanged("/simple-string-list");
+    await delay(100);
+    const allHeaders = await screen.findAllByRole("heading", {
+      name: /simple string list/i,
+    });
+    expect(allHeaders).toHaveLength(1);
+
+    const routerOutlet = document.getElementById("router-outlet-test");
+    expect(routerOutlet.innerHTML).toMatchSnapshot();
+  });
+
+  it("Route Guard Cancels Navigation - Simple String List Route", async () => {
+    router.beforeEach((to, from) => {
+      return false;
+    });
+    router.routeChanged("/data-fetching");
+    await delay(100);
+    const allHeaders = await screen.findAllByRole("heading", {
+      name: /simple string list/i,
+    });
+    expect(allHeaders).toHaveLength(1);
+
+    const routerOutlet = document.getElementById("router-outlet-test");
+    expect(routerOutlet.innerHTML).toMatchSnapshot();
+    router.beforeHooks = [];
   });
 });
 

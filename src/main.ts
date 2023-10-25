@@ -1,3 +1,8 @@
 import { router } from "./components/appRouter";
 
-router.routeRequest(window.location.pathname);
+// router.beforeEach((to, from) => {
+//   console.log("beforeEach", { to, from });
+//   return "/login";
+// });
+
+router.routeChanged();

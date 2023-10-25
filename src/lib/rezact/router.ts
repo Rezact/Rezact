@@ -1,6 +1,22 @@
 import { render } from "rezact";
 import { Signal } from "./signals";
 
+function isPromise(value) {
+  return Boolean(value && typeof value.then === "function");
+}
+
+function copyNextRoute(nextRoute) {
+  const pathObj = typeof nextRoute === "object";
+  const newURLObj = (pathObj
+    ? new URL(nextRoute)
+    : new URL(nextRoute, window.location.origin)) as unknown as routeIF;
+
+  newURLObj.params = nextRoute.params;
+  newURLObj.stack = nextRoute.stack;
+  newURLObj.currentNode = nextRoute.currentNode;
+  return newURLObj;
+}
+
 class RouteNode {
   handlers: any;
   children: Map<any, any>;
@@ -18,11 +34,43 @@ class RouteNode {
   }
 }
 
+interface routeIF {
+  hash: string;
+  host: string;
+  hostname: string;
+  href: string;
+  origin: string;
+  pathname: string;
+  port: string;
+  protocol: string;
+  search: string;
+  params: any;
+  stack: any;
+  currentNode: any;
+}
+
+const defaultRouteObj: routeIF = {
+  hash: "",
+  host: "",
+  hostname: "",
+  href: "",
+  origin: "",
+  pathname: "",
+  port: "",
+  protocol: "",
+  search: "",
+  params: {},
+  stack: [],
+  currentNode: null,
+};
+
 export class TrieRouter {
   root: RouteNode;
+  beforeHooks: any = [];
+  currentRoute: routeIF = { ...defaultRouteObj };
   renderFunc: any = null;
   noRoute: any = (router) => {
-    router.routeRequest("/404");
+    return router.getNextRoute("/404").currentNode;
   };
   constructor(options) {
     if (!options.render) throw new Error("render function is required");
@@ -36,17 +84,42 @@ export class TrieRouter {
         const locationHost = window.location.hostname; // Current page's hostname
         if (url.hostname !== locationHost) return;
         ev.preventDefault();
-        history.pushState({}, "", url.pathname);
-        this.routeRequest(url.pathname);
+        this.routeChanged(url.pathname);
       }
     });
     this.root = new RouteNode();
     window.onpopstate = this.routeChanged.bind(this);
   }
 
-  routeChanged() {
-    const url = window.location.pathname;
-    this.routeRequest(url);
+  runBeforeHooks(pathObj) {
+    if (!pathObj) return;
+    for (let hook of this.beforeHooks) {
+      const result = hook(pathObj, this.currentRoute);
+      if (isPromise(result)) {
+        result.then((res) => {
+          if (res === false) return;
+          if (res) return this.routeRequest(res);
+          this.routeRequest(pathObj);
+        });
+      } else {
+        if (result === false) return;
+        if (result) return this.routeRequest(result);
+        this.routeRequest(pathObj);
+      }
+    }
+  }
+
+  routeChanged(path = null) {
+    const url = path || window.location.pathname;
+
+    if (this.beforeHooks.length === 0) return this.routeRequest(url);
+
+    let pathObj = this.getNextRoute(url);
+    this.runBeforeHooks(pathObj);
+  }
+
+  beforeEach(callback) {
+    this.beforeHooks.push(callback);
   }
 
   addRoutesFromConfig(config, parentPath = "") {
@@ -72,8 +145,9 @@ export class TrieRouter {
           currentNode.dynamicChild.isDynamic = part.slice(1);
         }
         currentNode = currentNode.dynamicChild;
-      } else if (part === "*") {
+      } else if (part.startsWith("*")) {
         currentNode.wildcardHandler = new RouteNode();
+        currentNode.wildcardHandler.isDynamic = part.slice(1);
         currentNode.wildcardHandler.handlers.GET = callback;
         currentNode.wildcardHandler.nestedRoot = nestedRoot;
         return; // wildcard matches the rest of the route, so return
@@ -91,12 +165,13 @@ export class TrieRouter {
     currentNode.nestedRoot = currentNode.nestedRoot || nestedRoot;
   }
 
-  routeRequest(path) {
+  getNextRoute(path): routeIF {
     const parts = path.split("/").filter(Boolean);
     let currentNode = this.root;
 
     let params = {};
     let stack = [];
+    let partIdx = 0;
 
     for (let part of parts) {
       if (currentNode.nestedRoot) stack = [];
@@ -108,12 +183,36 @@ export class TrieRouter {
         params[currentNode.dynamicChild.isDynamic] = part;
         currentNode = currentNode.dynamicChild;
       } else if (currentNode.wildcardHandler) {
+        params[currentNode.wildcardHandler.isDynamic || "rest"] = parts
+          .slice(partIdx)
+          .join("/");
         currentNode = currentNode.wildcardHandler;
         break; // wildcard matches the rest of the route, so return
       } else {
-        return this.noRoute(this);
+        currentNode = this.noRoute(this);
+        break;
       }
+      partIdx++;
     }
+
+    const newURLObj = new URL(
+      path,
+      window.location.origin
+    ) as unknown as routeIF;
+
+    newURLObj.params = params;
+    newURLObj.stack = stack;
+    newURLObj.currentNode = currentNode;
+    return newURLObj;
+  }
+
+  routeRequest(path) {
+    const pathObj = typeof path === "object";
+    let nextRouteObj = pathObj ? path : this.getNextRoute(path);
+
+    let { stack, params, currentNode } = nextRouteObj;
+    this.currentRoute = copyNextRoute(nextRouteObj);
+    history.pushState({}, "", nextRouteObj.pathname);
 
     const handler = currentNode.handlers.GET;
     if (handler) {
