@@ -122,6 +122,118 @@ describe("Router Tests Suite", () => {
     expect(paragraphs[1].textContent).toBe("Test Param: qwer");
   });
 
+  it("CONFIG BASED - Ambiguous Route/Params Link Works 1", async () => {
+    const links = await screen.findAllByRole("link", {
+      name: "CONFIG BASED - Ambiguous Route/Params 1",
+    });
+    await user.click(links[0]);
+    const allHeaders = await screen.findAllByRole("heading", {
+      name: /Ambiguous Test 1/i,
+    });
+    expect(allHeaders).toHaveLength(1);
+    await waitFor(() =>
+      expect(allHeaders[0].textContent).toBe("Ambiguous Test 1")
+    );
+
+    const paragraphs = document.querySelectorAll("p");
+    expect(paragraphs).toHaveLength(2);
+    expect(paragraphs[0].textContent).toBe("ID: config123");
+    console.log(location);
+  });
+
+  it("CONFIG BASED Ambiguous Route/Params Link Works 2", async () => {
+    const links = await screen.findAllByRole("link", {
+      name: "CONFIG BASED - Ambiguous Route/Params 2",
+    });
+    await user.click(links[0]);
+    const allHeaders = await screen.findAllByRole("heading", {
+      name: /Ambiguous Test 2/i,
+    });
+    expect(allHeaders).toHaveLength(1);
+    await waitFor(() =>
+      expect(allHeaders[0].textContent).toBe("Ambiguous Test 2")
+    );
+
+    const paragraphs = document.querySelectorAll("p");
+    expect(paragraphs).toHaveLength(2);
+    expect(paragraphs[0].textContent).toBe("ID: config321");
+  });
+
+  it("CONFIG BASED - Nested Route Level 1", async () => {
+    const links = await screen.findAllByRole("link", {
+      name: "CONFIG BASED - Nested Routes /users",
+    });
+    await user.click(links[0]);
+    await delay(200);
+    const testDiv = document.getElementById("nested-routes-test-id");
+    expect(testDiv.innerHTML).toMatchSnapshot();
+
+    router.routeRequest("/users");
+    await delay(200);
+    const testDiv2 = document.getElementById("nested-routes-test-id");
+    expect(testDiv2.innerHTML).toMatchSnapshot();
+  });
+
+  it("CONFIG BASED - Nested Route Level 3", async () => {
+    const links = await screen.findAllByRole("link", {
+      name: "CONFIG BASED - Nested Routes /users/:id/settings",
+    });
+    await user.click(links[0]);
+    await delay(200);
+    const testDiv = document.getElementById("nested-routes-test-id");
+    expect(testDiv.innerHTML).toMatchSnapshot();
+
+    router.routeRequest("/users/953test/settings");
+    await delay(200);
+    const testDiv2 = document.getElementById("nested-routes-test-id");
+    expect(testDiv2.innerHTML).toMatchSnapshot();
+  });
+
+  it("CONFIG BASED - Nested Route Level 2", async () => {
+    const links = await screen.findAllByRole("link", {
+      name: "CONFIG BASED - Nested Routes /users/:id",
+    });
+    await user.click(links[0]);
+    await delay(200);
+    const testDiv = document.getElementById("nested-routes-test-id");
+    expect(testDiv.innerHTML).toMatchSnapshot();
+
+    router.routeRequest("/users/953test");
+    await delay(200);
+    const testDiv2 = document.getElementById("nested-routes-test-id");
+    expect(testDiv2.innerHTML).toMatchSnapshot();
+  });
+
+  it("CONFIG BASED - Nested Route Level 4", async () => {
+    const links = await screen.findAllByRole("link", {
+      name: "Nested Routes /users/:id/settings/all/wild/card/stuff",
+    });
+    await user.click(links[0]);
+    await delay(200);
+    const testDiv = document.getElementById("nested-routes-test-id");
+    expect(testDiv.innerHTML).toMatchSnapshot();
+
+    router.routeRequest("/users/953test/settings/all/wild/card/stuff");
+    await delay(200);
+    const testDiv2 = document.getElementById("nested-routes-test-id");
+    expect(testDiv2.innerHTML).toMatchSnapshot();
+  });
+
+  it("CONFIG BASED - Nested Route Level 1 Again", async () => {
+    const links = await screen.findAllByRole("link", {
+      name: "CONFIG BASED - Nested Routes /users",
+    });
+    await user.click(links[0]);
+    await delay(100);
+    const testDiv = document.getElementById("nested-routes-test-id");
+    expect(testDiv.innerHTML).toMatchSnapshot();
+
+    router.routeRequest("/users");
+    await delay(100);
+    const testDiv2 = document.getElementById("nested-routes-test-id");
+    expect(testDiv2.innerHTML).toMatchSnapshot();
+  });
+
   it("Ambiguous Route/Params Link Works 1", async () => {
     const links = await screen.findAllByRole("link", {
       name: "Ambiguous Route/Params 1",
