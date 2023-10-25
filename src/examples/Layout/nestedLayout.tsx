@@ -38,6 +38,7 @@ export function MyLayout({ router_outlet }: any) {
         <li>
           <a href="/post/asdf/something/qwer">Route Params</a>
         </li>
+        <hr />
         <li>
           <a href="/payments/123">Ambiguous Route/Params 1</a>
         </li>
@@ -54,10 +55,41 @@ export function MyLayout({ router_outlet }: any) {
           <a href="/users/123/settings">Nested Routes /users/:id/settings</a>
         </li>
         <li>
-          <a href="/users/123/settings/all/wild/card/stuff">
+          <a href="/users2/123/settings/all/wild/card/stuff">
             Nested Routes /users/:id/settings/all/wild/card/stuff
           </a>
         </li>
+        <hr />
+        <li>
+          <a href="/payments2/config123">
+            CONFIG BASED - Ambiguous Route/Params 1
+          </a>
+        </li>
+        <li>
+          <a href="/payments2/ach/config321">
+            CONFIG BASED - Ambiguous Route/Params 2
+          </a>
+        </li>
+        <li>
+          <a href="/users2">CONFIG BASED - Nested Routes /users</a>
+        </li>
+        <li>
+          <a href="/users2/config123">
+            CONFIG BASED - Nested Routes /users/:id
+          </a>
+        </li>
+        <li>
+          <a href="/users2/config1234/settings">
+            CONFIG BASED - Nested Routes /users/:id/settings
+          </a>
+        </li>
+        <li>
+          <a href="/users2/config1235/settings/all/wild/card/stuff">
+            CONFIG BASED - Nested Routes /users/:id/settings/all/wild/card/stuff
+          </a>
+        </li>
+        <hr />
+
         <li>
           <a href="/mdx">MDX</a>
         </li>

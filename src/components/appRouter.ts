@@ -126,4 +126,43 @@ router.addRoute(
   () => import("src/examples/NestedRoutes/UsersIdSettingsWildCard")
 );
 
+const routes = [
+  {
+    path: "/users2",
+    component: () => import("src/examples/NestedRoutes/Users"),
+  },
+  {
+    path: "/users2/:id",
+    component: () => import("src/examples/NestedRoutes/UsersId"),
+    children: [
+      {
+        path: "/settings",
+        component: () => import("src/examples/NestedRoutes/UsersIdSettings"),
+      },
+      {
+        path: "/settings/*",
+        component: () =>
+          import("src/examples/NestedRoutes/UsersIdSettingsWildCard"),
+      },
+    ],
+  },
+  {
+    path: "/payments2",
+    children: [
+      {
+        path: "/:id",
+        component: () =>
+          import("src/examples/RouteWithPathParams/AmbiguousTest1"),
+      },
+      {
+        path: "/ach/:id",
+        component: () =>
+          import("src/examples/RouteWithPathParams/AmbiguousTest2"),
+      },
+    ],
+  },
+];
+
+router.addRoutesFromConfig(routes);
+
 export { router };

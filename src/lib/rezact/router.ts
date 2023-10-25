@@ -49,6 +49,17 @@ export class TrieRouter {
     this.routeRequest(url);
   }
 
+  addRoutesFromConfig(config, parentPath = "") {
+    config.forEach((route) => {
+      const currentPath = `${parentPath}${route.path}`;
+      if (route.component) this.addRoute(currentPath, route.component);
+
+      if (route.children && route.children.length > 0) {
+        this.addRoutesFromConfig(route.children, currentPath);
+      }
+    });
+  }
+
   addRoute(path, callback, nestedRoot = false) {
     const parts = path.split("/").filter(Boolean);
     let firstPartRootSet = false;
