@@ -47,6 +47,13 @@ describe("Router Tests Suite", () => {
     expect(allHeaders[0].textContent).toBe("Hello World TEST");
   });
 
+  it("PopState Event Works", async () => {
+    const state = { someData: "data" }; // The state object you want to pass
+    const popstateEvent = new PopStateEvent("popstate", { state });
+
+    window.dispatchEvent(popstateEvent);
+  });
+
   it("Loads the counter route", async () => {
     const links = await screen.findAllByRole("link", { name: /Counter/i });
     await user.click(links[0]);
@@ -565,6 +572,8 @@ describe("Router Tests Suite", () => {
 
   it("Route Guard redirects", async () => {
     router.beforeEach((to, from) => {
+      expect(from.pathname).toBe("/simple-string-list");
+      expect(to.pathname).toBe("/simple-string-list");
       return "/login";
     });
     router.routeChanged("/simple-string-list");
@@ -592,6 +601,8 @@ describe("Router Tests Suite", () => {
 
   it("Route Guard Cancels Navigation - Simple String List Route", async () => {
     router.beforeEach((to, from) => {
+      expect(to.pathname).toBe("/data-fetching");
+      expect(from.pathname).toBe("/simple-string-list");
       return false;
     });
     router.routeChanged("/data-fetching");
