@@ -69,6 +69,7 @@ export class TrieRouter {
   beforeHooks: any = [];
   currentRoute: routeIF = { ...defaultRouteObj };
   renderFunc: any = null;
+  popState: boolean = false;
   noRoute: any = (router) => {
     return router.getNextRoute("/404").currentNode;
   };
@@ -88,7 +89,11 @@ export class TrieRouter {
       }
     });
     this.root = new RouteNode();
-    window.onpopstate = this.routeChanged.bind(this);
+    const that = this;
+    window.addEventListener("popstate", function (event) {
+      that.routeChanged(event);
+    });
+    // window.onpopstate = this.routeChanged.bind(this);
   }
 
   runBeforeHooks(pathObj) {
@@ -110,6 +115,8 @@ export class TrieRouter {
   }
 
   routeChanged(path = null) {
+    console.log(path);
+    if (path instanceof PopStateEvent) this.popState = true;
     const url = path || window.location.pathname;
 
     if (this.beforeHooks.length === 0) return this.routeRequest(url);
@@ -166,6 +173,7 @@ export class TrieRouter {
   }
 
   getNextRoute(path): routeIF {
+    path = this.popState ? window.location.pathname : path;
     const parts = path.split("/").filter(Boolean);
     let currentNode = this.root;
 
@@ -207,13 +215,15 @@ export class TrieRouter {
   }
 
   routeRequest(path) {
+    path = this.popState ? window.location.pathname : path;
     const pathObj = typeof path === "object";
     let nextRouteObj = pathObj ? path : this.getNextRoute(path);
 
     let { stack, params, currentNode } = nextRouteObj;
     this.currentRoute = copyNextRoute(nextRouteObj);
-    history.pushState({}, "", nextRouteObj.pathname);
+    !this.popState && history.pushState({}, "", nextRouteObj.pathname);
 
+    this.popState = false;
     const handler = currentNode.handlers.GET;
     if (handler) {
       if (currentNode.nestedRoot) stack = [];
