@@ -5,4 +5,6 @@ import { router } from "./components/appRouter";
 //   return "/login";
 // });
 
+(window as any).testValues = {};
+
 router.routeChanged();

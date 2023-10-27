@@ -166,21 +166,25 @@ const routes = [
     path: "/users3",
     component: Users,
     title: "Users Test 3",
+    meta: { metaProp: "Users Meta Test 3" },
   },
   {
     path: "/users3/:id",
     component: UsersId,
     title: "Users ID Test 3",
+    meta: { metaProp: "Users ID Meta Test 3" },
     children: [
       {
         path: "/settings",
         component: UsersIdSettings,
         title: "Users Settings Test 3",
+        meta: { metaProp: "Users Settings Meta Test 3" },
       },
       {
         path: "/settings/*",
-        component: () => UsersIdSettingsWildCard,
+        component: UsersIdSettingsWildCard,
         title: "Users Catch AllTest 3",
+        meta: { metaProp: "Users Catch All Meta Test 3" },
       },
     ],
   },

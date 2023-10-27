@@ -45,6 +45,7 @@ class RouteNode {
   nestedRoot: boolean;
   partName: string;
   title: string;
+  meta: any;
   constructor() {
     this.handlers = {};
     this.children = new Map();
@@ -77,6 +78,7 @@ interface routeIF {
   stack: any;
   currentNode: any;
   outlet?: Signal<Element>;
+  meta?: any;
   go?: (delta: number) => void;
   back?: () => void;
   forward?: () => void;
@@ -174,6 +176,7 @@ export class TrieRouter {
       if (route.component)
         this.addRoute(currentPath, route.component, false, {
           title: route.title,
+          meta: route.meta,
         });
 
       if (route.children && route.children.length > 0) {
@@ -186,13 +189,17 @@ export class TrieRouter {
     const parts = path.split("/").filter(Boolean);
     let firstPartRootSet = false;
     let currentNode = this.root;
-    if (path === "/") this.root.title = opts.title;
+    if (path === "/") {
+      this.root.title = opts.title;
+      this.root.meta = opts.meta;
+    }
 
     for (let part of parts) {
       if (part.startsWith(":")) {
         if (!currentNode.dynamicChild) {
           currentNode.dynamicChild = new RouteNode();
           currentNode.dynamicChild.title = opts.title;
+          currentNode.dynamicChild.meta = opts.meta;
           currentNode.dynamicChild.partName = `/${part}`;
           currentNode.dynamicChild.isDynamic = part.slice(1);
         }
@@ -200,6 +207,7 @@ export class TrieRouter {
       } else if (part.startsWith("*")) {
         currentNode.wildcardHandler = new RouteNode();
         currentNode.wildcardHandler.title = opts.title;
+        currentNode.wildcardHandler.meta = opts.meta;
         currentNode.wildcardHandler.partName = `/${part}`;
         currentNode.wildcardHandler.isDynamic = part.slice(1);
         currentNode.wildcardHandler.handlers.GET = callback;
@@ -209,6 +217,7 @@ export class TrieRouter {
         if (!currentNode.children.has(part)) {
           currentNode.children.set(part, new RouteNode());
           currentNode.children.get(part).title = opts.title;
+          currentNode.children.get(part).meta = opts.meta;
           currentNode.children.get(part).partName = `/${part}`;
         }
         currentNode = currentNode.children.get(part);
@@ -355,6 +364,7 @@ export function useRouter(app = null, config: any = {}) {
           const component = mod.Page || mod.default || mod;
 
           router.outlet = nextItem.router_outlet;
+          router.meta = nextItem.meta;
           render(thisItem.router_outlet, component, { router });
         }
       }
@@ -365,14 +375,17 @@ export function useRouter(app = null, config: any = {}) {
       if (layout) {
         if (currentLayout === layout) {
           router.outlet = stack[0].router_outlet;
+          router.meta = stack[0].meta;
           render(router_outlet, component, { router });
         } else {
           currentLayout = layout;
 
           router.outlet = stack[0].router_outlet;
+          router.meta = stack[0].meta;
           render(router_outlet, component, { router });
 
           router.outlet = router_outlet;
+          router.meta = stack[0].meta;
           render(app, (props) => layout(props), { router });
         }
       } else {
@@ -381,6 +394,7 @@ export function useRouter(app = null, config: any = {}) {
         const mod = pages[0];
         const component = mod.Page || mod.default || mod;
         router.outlet = stack[0].router_outlet;
+        router.meta = stack[0].meta;
         render(app, component, { router });
       }
     },

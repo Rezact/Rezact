@@ -2,6 +2,8 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { screen, waitFor } from "@testing-library/dom";
 import userEvent from "@testing-library/user-event";
 
+window.testValues = {};
+
 const currentFetch = global.fetch;
 const currentHistory = global.history;
 const historyState = [];
@@ -225,7 +227,7 @@ describe("Router Tests Suite", () => {
     const testDiv = document.getElementById("nested-routes-test-id");
     expect(testDiv.innerHTML).toMatchSnapshot();
 
-    router.routeRequest("/users");
+    router.routeRequest("/users2");
     await delay(200);
     const testDiv2 = document.getElementById("nested-routes-test-id");
     expect(testDiv2.innerHTML).toMatchSnapshot();
@@ -241,7 +243,7 @@ describe("Router Tests Suite", () => {
     const testDiv = document.getElementById("nested-routes-test-id");
     expect(testDiv.innerHTML).toMatchSnapshot();
 
-    router.routeRequest("/users/953test/settings");
+    router.routeRequest("/users2/953test/settings");
     await delay(200);
     const testDiv2 = document.getElementById("nested-routes-test-id");
     expect(testDiv2.innerHTML).toMatchSnapshot();
@@ -257,7 +259,7 @@ describe("Router Tests Suite", () => {
     const testDiv = document.getElementById("nested-routes-test-id");
     expect(testDiv.innerHTML).toMatchSnapshot();
 
-    router.routeRequest("/users/953test");
+    router.routeRequest("/users2/953test");
     await delay(200);
     const testDiv2 = document.getElementById("nested-routes-test-id");
     expect(testDiv2.innerHTML).toMatchSnapshot();
@@ -273,11 +275,16 @@ describe("Router Tests Suite", () => {
     const testDiv = document.getElementById("nested-routes-test-id");
     expect(testDiv.innerHTML).toMatchSnapshot();
 
-    router.routeRequest("/users/953test/settings/all/wild/card/stuff");
+    router.routeRequest("/users2/953test/settings/all/wild/card/stuff");
     await delay(200);
     const testDiv2 = document.getElementById("nested-routes-test-id");
     expect(testDiv2.innerHTML).toMatchSnapshot();
     expect(document.title).toBe("Users Catch AllTest 2");
+
+    expect(window.testValues.Users).toBe(undefined);
+    expect(window.testValues.UsersID).toBe(undefined);
+    expect(window.testValues.UsersSettings).toBe(undefined);
+    expect(window.testValues.UsersCatchAll).toBe(undefined);
   });
 
   it("CONFIG BASED - Nested Route Level 1 Again", async () => {
@@ -289,7 +296,7 @@ describe("Router Tests Suite", () => {
     const testDiv = document.getElementById("nested-routes-test-id");
     expect(testDiv.innerHTML).toMatchSnapshot();
 
-    router.routeRequest("/users");
+    router.routeRequest("/users2");
     await delay(100);
     const testDiv2 = document.getElementById("nested-routes-test-id");
     expect(testDiv2.innerHTML).toMatchSnapshot();
@@ -305,7 +312,7 @@ describe("Router Tests Suite", () => {
     const testDiv = document.getElementById("nested-routes-test-id");
     expect(testDiv.innerHTML).toMatchSnapshot();
 
-    router.routeRequest("/users");
+    router.routeRequest("/users3");
     await delay(200);
     const testDiv2 = document.getElementById("nested-routes-test-id");
     expect(testDiv2.innerHTML).toMatchSnapshot();
@@ -321,7 +328,7 @@ describe("Router Tests Suite", () => {
     const testDiv = document.getElementById("nested-routes-test-id");
     expect(testDiv.innerHTML).toMatchSnapshot();
 
-    router.routeRequest("/users/direct953test/settings");
+    router.routeRequest("/users3/direct953test/settings");
     await delay(200);
     const testDiv2 = document.getElementById("nested-routes-test-id");
     expect(testDiv2.innerHTML).toMatchSnapshot();
@@ -337,7 +344,7 @@ describe("Router Tests Suite", () => {
     const testDiv = document.getElementById("nested-routes-test-id");
     expect(testDiv.innerHTML).toMatchSnapshot();
 
-    router.routeRequest("/users/direct333test");
+    router.routeRequest("/users3/direct333test");
     await delay(200);
     const testDiv2 = document.getElementById("nested-routes-test-id");
     expect(testDiv2.innerHTML).toMatchSnapshot();
@@ -353,11 +360,21 @@ describe("Router Tests Suite", () => {
     const testDiv = document.getElementById("nested-routes-test-id");
     expect(testDiv.innerHTML).toMatchSnapshot();
 
-    router.routeRequest("/users/directXXXtest/settings/all/wild/card/stuff");
+    router.routeRequest("/users3/directXXXtest/settings/all/wild/card/stuff");
     await delay(200);
     const testDiv2 = document.getElementById("nested-routes-test-id");
     expect(testDiv2.innerHTML).toMatchSnapshot();
     expect(document.title).toBe("Users Catch AllTest 3");
+
+    console.log(window.testValues);
+    expect(window.testValues.Users.metaProp).toBe("Users Meta Test 3");
+    expect(window.testValues.UsersID.metaProp).toBe("Users ID Meta Test 3");
+    expect(window.testValues.UsersSettings.metaProp).toBe(
+      "Users Settings Meta Test 3"
+    );
+    expect(window.testValues.UsersCatchAll.metaProp).toBe(
+      "Users Catch All Meta Test 3"
+    );
   });
 
   it("DIRECT COMPONENT - Nested Route Level 1 Again", async () => {
