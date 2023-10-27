@@ -47,6 +47,7 @@ describe("Router Tests Suite", () => {
     expect(allHeaders[0].textContent).toBe("Hello World TEST");
     const routerOutlet = document.getElementById("router-outlet-test");
     expect(routerOutlet.innerHTML).toMatchSnapshot();
+    expect(document.title).toBe("Testing Root Title");
   });
 
   it("Bleeds from previous test state", async () => {
@@ -462,6 +463,8 @@ describe("Router Tests Suite", () => {
         "0. apple On"
       )
     );
+
+    expect(document.title).toBe("Testing Root Title");
   });
 
   it("Navigates to the multiple counter link", async () => {

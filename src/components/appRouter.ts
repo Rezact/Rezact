@@ -3,7 +3,7 @@ import { nestedRoot, useRouter } from "rezact/router";
 const router = useRouter();
 
 router.addRoute("/404", () => import("./404"));
-router.addRoute("/", () => import("src/components/HomePage"));
+
 router.addRoute(
   "/array-state-persistent-across-route-changes",
   () => import("src/components/HomePageStatePersistsAcrossRouteChanges")
@@ -127,6 +127,11 @@ router.addRoute(
 );
 
 const routes = [
+  {
+    path: "/",
+    component: () => import("src/components/HomePage"),
+    title: "Testing Root Title",
+  },
   {
     path: "/users2",
     component: () => import("src/examples/NestedRoutes/Users"),
