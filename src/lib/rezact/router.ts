@@ -332,8 +332,12 @@ export function useRouter(app = null, config: any = {}) {
     render: async (router: routeIF) => {
       if (router.currentNode.title) document.title = router.currentNode.title;
       const { stack } = router;
-      const routePromises = stack.map((node) => node.handlers.GET());
+      const routePromises = stack.map((node) => {
+        const test = node.handlers.GET({ router });
+        return isPromise(test) ? test : node.handlers.GET;
+      });
       const routes = await Promise.allSettled(routePromises);
+
       const pages = routes.map(({ status, reason, value }: any) =>
         status === "rejected" ? config.routeErrorComponent({ reason }) : value
       );
@@ -348,7 +352,7 @@ export function useRouter(app = null, config: any = {}) {
         const nextItem = stack[i + 1];
         if (nextItem) {
           const mod = pages[i + 1];
-          const component = mod.Page || mod.default;
+          const component = mod.Page || mod.default || mod;
 
           router.outlet = nextItem.router_outlet;
           render(thisItem.router_outlet, component, { router });
@@ -356,25 +360,26 @@ export function useRouter(app = null, config: any = {}) {
       }
 
       const mod = pages[0];
-      const component = mod.Page || mod.default;
-      if (mod.Layout) {
-        if (currentLayout === mod.Layout) {
+      const component = mod.Page || mod.default || mod;
+      const layout = mod.Layout || component.Layout;
+      if (layout) {
+        if (currentLayout === layout) {
           router.outlet = stack[0].router_outlet;
           render(router_outlet, component, { router });
         } else {
-          currentLayout = mod.Layout;
+          currentLayout = layout;
 
           router.outlet = stack[0].router_outlet;
           render(router_outlet, component, { router });
 
           router.outlet = router_outlet;
-          render(app, (props) => mod.Layout(props), { router });
+          render(app, (props) => layout(props), { router });
         }
       } else {
         currentLayout = null;
 
         const mod = pages[0];
-        const component = mod.Page || mod.default;
+        const component = mod.Page || mod.default || mod;
         router.outlet = stack[0].router_outlet;
         render(app, component, { router });
       }
