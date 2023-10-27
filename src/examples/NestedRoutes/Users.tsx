@@ -1,7 +1,7 @@
 import { MyLayout } from "../Layout/nestedLayout";
 import { Page } from "../DataFetching/DataFetching";
 
-export default function ({ router }) {
+export default function Users({ router }) {
   return (
     <div id="nested-routes-test-id">
       <h1>1. Users START</h1>
@@ -13,5 +13,7 @@ export default function ({ router }) {
     </div>
   );
 }
+
+Users.Layout = MyLayout;
 
 export const Layout = MyLayout;

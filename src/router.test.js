@@ -296,6 +296,86 @@ describe("Router Tests Suite", () => {
     expect(document.title).toBe("Users Test 2");
   });
 
+  it("DIRECT COMPONENT - Nested Route Level 1", async () => {
+    const links = await screen.findAllByRole("link", {
+      name: "DIRECT COMPONENT - Nested Routes /users",
+    });
+    await user.click(links[0]);
+    await delay(200);
+    const testDiv = document.getElementById("nested-routes-test-id");
+    expect(testDiv.innerHTML).toMatchSnapshot();
+
+    router.routeRequest("/users");
+    await delay(200);
+    const testDiv2 = document.getElementById("nested-routes-test-id");
+    expect(testDiv2.innerHTML).toMatchSnapshot();
+    expect(document.title).toBe("Users Test 3");
+  });
+
+  it("DIRECT COMPONENT - Nested Route Level 3", async () => {
+    const links = await screen.findAllByRole("link", {
+      name: "DIRECT COMPONENT - Nested Routes /users/:id/settings",
+    });
+    await user.click(links[0]);
+    await delay(200);
+    const testDiv = document.getElementById("nested-routes-test-id");
+    expect(testDiv.innerHTML).toMatchSnapshot();
+
+    router.routeRequest("/users/direct953test/settings");
+    await delay(200);
+    const testDiv2 = document.getElementById("nested-routes-test-id");
+    expect(testDiv2.innerHTML).toMatchSnapshot();
+    expect(document.title).toBe("Users Settings Test 3");
+  });
+
+  it("DIRECT COMPONENT - Nested Route Level 2", async () => {
+    const links = await screen.findAllByRole("link", {
+      name: "DIRECT COMPONENT - Nested Routes /users/:id",
+    });
+    await user.click(links[0]);
+    await delay(200);
+    const testDiv = document.getElementById("nested-routes-test-id");
+    expect(testDiv.innerHTML).toMatchSnapshot();
+
+    router.routeRequest("/users/direct333test");
+    await delay(200);
+    const testDiv2 = document.getElementById("nested-routes-test-id");
+    expect(testDiv2.innerHTML).toMatchSnapshot();
+    expect(document.title).toBe("Users ID Test 3");
+  });
+
+  it("DIRECT COMPONENT - Nested Route Level 4", async () => {
+    const links = await screen.findAllByRole("link", {
+      name: "DIRECT COMPONENT - Nested Routes /users/:id/settings/all/wild/card/stuff",
+    });
+    await user.click(links[0]);
+    await delay(200);
+    const testDiv = document.getElementById("nested-routes-test-id");
+    expect(testDiv.innerHTML).toMatchSnapshot();
+
+    router.routeRequest("/users/directXXXtest/settings/all/wild/card/stuff");
+    await delay(200);
+    const testDiv2 = document.getElementById("nested-routes-test-id");
+    expect(testDiv2.innerHTML).toMatchSnapshot();
+    expect(document.title).toBe("Users Catch AllTest 3");
+  });
+
+  it("DIRECT COMPONENT - Nested Route Level 1 Again", async () => {
+    const links = await screen.findAllByRole("link", {
+      name: "DIRECT COMPONENT - Nested Routes /users",
+    });
+    await user.click(links[0]);
+    await delay(100);
+    const testDiv = document.getElementById("nested-routes-test-id");
+    expect(testDiv.innerHTML).toMatchSnapshot();
+
+    router.routeRequest("/users");
+    await delay(100);
+    const testDiv2 = document.getElementById("nested-routes-test-id");
+    expect(testDiv2.innerHTML).toMatchSnapshot();
+    expect(document.title).toBe("Users Test 3");
+  });
+
   it("Ambiguous Route/Params Link Works 1", async () => {
     const links = await screen.findAllByRole("link", {
       name: "Ambiguous Route/Params 1",

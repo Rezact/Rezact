@@ -1,8 +1,15 @@
 import { nestedRoot, useRouter } from "rezact/router";
+import { Page as FourOhFour } from "./404";
+import Users from "src/examples/NestedRoutes/Users";
+import UsersId from "src/examples/NestedRoutes/UsersId";
+import UsersIdSettings from "src/examples/NestedRoutes/UsersIdSettings";
+import UsersIdSettingsWildCard from "src/examples/NestedRoutes/UsersIdSettingsWildCard";
 
 const router = useRouter();
 
-router.addRoute("/404", () => import("./404"));
+// router.addRoute("/404", () => import("./404"));
+
+router.addRoute("/404", FourOhFour);
 
 router.addRoute(
   "/array-state-persistent-across-route-changes",
@@ -152,6 +159,28 @@ const routes = [
         component: () =>
           import("src/examples/NestedRoutes/UsersIdSettingsWildCard"),
         title: "Users Catch AllTest 2",
+      },
+    ],
+  },
+  {
+    path: "/users3",
+    component: Users,
+    title: "Users Test 3",
+  },
+  {
+    path: "/users3/:id",
+    component: UsersId,
+    title: "Users ID Test 3",
+    children: [
+      {
+        path: "/settings",
+        component: UsersIdSettings,
+        title: "Users Settings Test 3",
+      },
+      {
+        path: "/settings/*",
+        component: () => UsersIdSettingsWildCard,
+        title: "Users Catch AllTest 3",
       },
     ],
   },

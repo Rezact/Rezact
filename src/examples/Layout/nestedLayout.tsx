@@ -98,6 +98,27 @@ export function MyLayout({ router }: routerProp) {
         <hr />
 
         <li>
+          <a href="/users3">DIRECT COMPONENT - Nested Routes /users</a>
+        </li>
+        <li>
+          <a href="/users3/direct123">
+            DIRECT COMPONENT - Nested Routes /users/:id
+          </a>
+        </li>
+        <li>
+          <a href="/users3/direct1234/settings">
+            DIRECT COMPONENT - Nested Routes /users/:id/settings
+          </a>
+        </li>
+        <li>
+          <a href="/users3/direct1235/settings/all/wild/card/stuff">
+            DIRECT COMPONENT - Nested Routes
+            /users/:id/settings/all/wild/card/stuff
+          </a>
+        </li>
+        <hr />
+
+        <li>
           <a href="/mdx">MDX</a>
         </li>
         <li>
