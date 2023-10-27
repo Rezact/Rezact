@@ -1,6 +1,7 @@
+import { routerProp } from "src/lib/rezact/router";
 import { MasterLayout } from "./masterLayout";
 
-export function MyLayout({ router }: any) {
+export function MyLayout({ router }: routerProp) {
   const { $route } = router;
   return (
     <MasterLayout>
@@ -147,6 +148,17 @@ export function MyLayout({ router }: any) {
           <a href="/asdfasdfasdfasdf">A Route that does not exist</a>
         </li>
       </ul>
+      <button onClick={() => router.back()}>Back</button>
+      <button onClick={() => router.forward()}>Forward</button>
+      <button onClick={() => router.go(-1)}>Go -1</button>
+      <button onClick={() => router.go(1)}>Go 1</button>
+      <button onClick={() => router.push({}, "", "/testing-push")}>
+        Push State
+      </button>
+      <button onClick={() => router.replace({}, "", "/testing-replace")}>
+        Replace State
+      </button>
+
       <div id="router-outlet-test">{router.outlet}</div>
       <p>End Layout</p>
     </MasterLayout>
