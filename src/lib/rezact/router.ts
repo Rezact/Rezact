@@ -239,11 +239,12 @@ export class TrieRouter {
         const paramName = currentNode.wildcardHandler.isDynamic || "rest";
         const partOverride = paramID === paramName ? paramVal : null;
         if (!paramID) {
-          params[paramName] = parts.slice(partIdx).join("/");
-          params[`$${paramName}`] = new Signal(parts.slice(partIdx).join("/"));
+          const rest = parts.slice(partIdx).join("/");
+          params[paramName] = rest;
+          params[`$${paramName}`] = new Signal(rest);
           params[`$${paramName}`].subscribe((val) => {
             const newURL = this.getNextRoute(location.pathname, paramName, val);
-            val !== part && history.pushState({}, "", newURL.builtPath);
+            val !== rest && history.pushState({}, "", newURL.builtPath);
           });
         }
         currentNode = currentNode.wildcardHandler;
