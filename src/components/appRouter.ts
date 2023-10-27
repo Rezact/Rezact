@@ -130,19 +130,23 @@ const routes = [
   {
     path: "/users2",
     component: () => import("src/examples/NestedRoutes/Users"),
+    title: "Users Test 2",
   },
   {
     path: "/users2/:id",
     component: () => import("src/examples/NestedRoutes/UsersId"),
+    title: "Users ID Test 2",
     children: [
       {
         path: "/settings",
         component: () => import("src/examples/NestedRoutes/UsersIdSettings"),
+        title: "Users Settings Test 2",
       },
       {
         path: "/settings/*",
         component: () =>
           import("src/examples/NestedRoutes/UsersIdSettingsWildCard"),
+        title: "Users Catch AllTest 2",
       },
     ],
   },
@@ -153,11 +157,13 @@ const routes = [
         path: "/:id",
         component: () =>
           import("src/examples/RouteWithPathParams/AmbiguousTest1"),
+        title: "Payments Test 2",
       },
       {
         path: "/ach/:id",
         component: () =>
           import("src/examples/RouteWithPathParams/AmbiguousTest2"),
+        title: "ACH Test 2",
       },
     ],
   },

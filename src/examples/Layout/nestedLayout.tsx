@@ -1,15 +1,21 @@
-// import { xCreateElement } from "src/lib/rezact";
 import { MasterLayout } from "./masterLayout";
 
-export function MyLayout({ router_outlet }: any) {
+export function MyLayout({ router }: any) {
+  const { $route } = router;
   return (
     <MasterLayout>
       <h1>Layout</h1>
       <ul>
-        <li>
+        <li class={$route === "/" ? "active" : ""}>
           <a href="/">Home</a>
         </li>
-        <li>
+        <li
+          class={
+            $route === "/array-state-persistent-across-route-changes"
+              ? "active"
+              : ""
+          }
+        >
           <a href="/array-state-persistent-across-route-changes">
             Home (Persistent Toggle States)
           </a>
@@ -17,7 +23,7 @@ export function MyLayout({ router_outlet }: any) {
         <li>
           <a href="/benchmark">Benchmark</a>
         </li>
-        <li>
+        <li class={$route === "/hello-world" ? "active" : ""}>
           <a href="/hello-world">Hello World</a>
         </li>
         <li>
@@ -26,7 +32,7 @@ export function MyLayout({ router_outlet }: any) {
         <li>
           <a href="/nested">Nested Children</a>
         </li>
-        <li>
+        <li class={$route === "/counter" ? "active" : ""}>
           <a href="/counter">Counter</a>
         </li>
         <li>
@@ -35,7 +41,7 @@ export function MyLayout({ router_outlet }: any) {
         <li>
           <a href="/list">List</a>
         </li>
-        <li>
+        <li class={$route === "/post/:id/something/:test" ? "active" : ""}>
           <a href="/post/asdf/something/qwer">Route Params</a>
         </li>
         <hr />
@@ -141,7 +147,7 @@ export function MyLayout({ router_outlet }: any) {
           <a href="/asdfasdfasdfasdf">A Route that does not exist</a>
         </li>
       </ul>
-      <div id="router-outlet-test">{router_outlet}</div>
+      <div id="router-outlet-test">{router.outlet}</div>
       <p>End Layout</p>
     </MasterLayout>
   );

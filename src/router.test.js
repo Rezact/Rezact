@@ -3,6 +3,9 @@ import { screen, waitFor } from "@testing-library/dom";
 import userEvent from "@testing-library/user-event";
 
 const currentFetch = global.fetch;
+const currentHistory = global.history;
+const historyState = [];
+
 beforeAll(() => {
   global.fetch = async () => {
     return {
@@ -15,10 +18,17 @@ beforeAll(() => {
       },
     };
   };
+  global.history = {
+    pushState: (...args) => {
+      location.pathname = args[2];
+      historyState.push(args);
+    },
+  };
 });
 
 afterAll(() => {
   global.fetch = currentFetch;
+  global.history = currentHistory;
 });
 const user = userEvent.setup();
 let router = null;
@@ -27,7 +37,7 @@ describe("Router Tests Suite", () => {
   it("First Render Home Page", async () => {
     document.body.innerHTML = `<div id="app"></div>`;
     const { router: _router } = await import("./components/appRouter");
-    _router.routeRequest(window.location.pathname);
+    _router.routeRequest("/");
     router = _router;
 
     const allHeaders = await screen.findAllByRole("heading", {
@@ -65,6 +75,8 @@ describe("Router Tests Suite", () => {
     await waitFor(() =>
       expect(counterBtns[0].textContent).toBe("Clicked 1 time")
     );
+
+    expect(links[0].parentElement.classList.toString()).toBe("active");
   });
 
   it("Loads the Home Page", async () => {
@@ -123,6 +135,38 @@ describe("Router Tests Suite", () => {
     expect(paragraphs).toHaveLength(3);
     expect(paragraphs[0].textContent).toBe("ID: asdf");
     expect(paragraphs[1].textContent).toBe("Test Param: qwer");
+
+    expect(location.pathname).toBe("/post/asdf/something/qwer");
+    let testButtons = screen.getAllByRole("button");
+    expect(testButtons).toHaveLength(4);
+
+    testButtons[0].click();
+    expect(paragraphs[0].textContent).toBe("ID: test1id");
+    expect(paragraphs[1].textContent).toBe("Test Param: qwer");
+    expect(location.pathname).toBe("/post/test1id/something/qwer");
+
+    testButtons[1].click();
+    expect(paragraphs[0].textContent).toBe("ID: test1id");
+    expect(paragraphs[1].textContent).toBe("Test Param: test2test");
+    expect(location.pathname).toBe("/post/test1id/something/test2test");
+
+    testButtons[2].click();
+    expect(paragraphs[0].textContent).toBe("ID: test3id");
+    expect(paragraphs[1].textContent).toBe("Test Param: test2test");
+    expect(location.pathname).toBe("/post/test3id/something/test2test");
+
+    expect(links[0].parentElement.classList.toString()).toBe("active");
+
+    testButtons[3].click();
+    expect(paragraphs[0].textContent).toBe("ID: test3id");
+    expect(paragraphs[1].textContent).toBe("Test Param: test4test");
+    expect(location.pathname).toBe("/post/test3id/something/test4test");
+
+    await user.click(links[0]);
+    const paragraphs2 = document.querySelectorAll("p");
+    expect(paragraphs2[0].textContent).toBe("ID: asdf");
+    expect(paragraphs2[1].textContent).toBe("Test Param: qwer");
+    expect(location.pathname).toBe("/post/asdf/something/qwer");
   });
 
   it("CONFIG BASED - Ambiguous Route/Params Link Works 1", async () => {
@@ -141,6 +185,14 @@ describe("Router Tests Suite", () => {
     const paragraphs = document.querySelectorAll("p");
     expect(paragraphs).toHaveLength(2);
     expect(paragraphs[0].textContent).toBe("ID: config123");
+    expect(document.title).toBe("Payments Test 2");
+
+    expect(location.pathname).toBe("/payments2/config123");
+    let testButton = screen.getAllByRole("button", { name: /test/i });
+    expect(testButton).toHaveLength(1);
+    testButton[0].click();
+    await waitFor(() => expect(paragraphs[0].textContent).toBe("ID: test"));
+    expect(location.pathname).toBe("/payments2/test");
   });
 
   it("CONFIG BASED - Ambiguous Route/Params Link Works 2", async () => {
@@ -159,6 +211,7 @@ describe("Router Tests Suite", () => {
     const paragraphs = document.querySelectorAll("p");
     expect(paragraphs).toHaveLength(2);
     expect(paragraphs[0].textContent).toBe("ID: config321");
+    expect(document.title).toBe("ACH Test 2");
   });
 
   it("CONFIG BASED - Nested Route Level 1", async () => {
@@ -174,6 +227,7 @@ describe("Router Tests Suite", () => {
     await delay(200);
     const testDiv2 = document.getElementById("nested-routes-test-id");
     expect(testDiv2.innerHTML).toMatchSnapshot();
+    expect(document.title).toBe("Users Test 2");
   });
 
   it("CONFIG BASED - Nested Route Level 3", async () => {
@@ -189,6 +243,7 @@ describe("Router Tests Suite", () => {
     await delay(200);
     const testDiv2 = document.getElementById("nested-routes-test-id");
     expect(testDiv2.innerHTML).toMatchSnapshot();
+    expect(document.title).toBe("Users Settings Test 2");
   });
 
   it("CONFIG BASED - Nested Route Level 2", async () => {
@@ -204,6 +259,7 @@ describe("Router Tests Suite", () => {
     await delay(200);
     const testDiv2 = document.getElementById("nested-routes-test-id");
     expect(testDiv2.innerHTML).toMatchSnapshot();
+    expect(document.title).toBe("Users ID Test 2");
   });
 
   it("CONFIG BASED - Nested Route Level 4", async () => {
@@ -219,6 +275,7 @@ describe("Router Tests Suite", () => {
     await delay(200);
     const testDiv2 = document.getElementById("nested-routes-test-id");
     expect(testDiv2.innerHTML).toMatchSnapshot();
+    expect(document.title).toBe("Users Catch AllTest 2");
   });
 
   it("CONFIG BASED - Nested Route Level 1 Again", async () => {
@@ -234,6 +291,7 @@ describe("Router Tests Suite", () => {
     await delay(100);
     const testDiv2 = document.getElementById("nested-routes-test-id");
     expect(testDiv2.innerHTML).toMatchSnapshot();
+    expect(document.title).toBe("Users Test 2");
   });
 
   it("Ambiguous Route/Params Link Works 1", async () => {
@@ -252,6 +310,12 @@ describe("Router Tests Suite", () => {
     const paragraphs = document.querySelectorAll("p");
     expect(paragraphs).toHaveLength(2);
     expect(paragraphs[0].textContent).toBe("ID: 123");
+    expect(location.pathname).toBe("/payments/123");
+    let testButton = screen.getAllByRole("button", { name: /test/i });
+    expect(testButton).toHaveLength(1);
+    testButton[0].click();
+    await waitFor(() => expect(paragraphs[0].textContent).toBe("ID: test"));
+    expect(location.pathname).toBe("/payments/test");
   });
 
   it("Ambiguous Route/Params Link Works 2", async () => {
@@ -379,7 +443,7 @@ describe("Router Tests Suite", () => {
   });
 
   it("Router Back Home (Toggle Button State is lost)", async () => {
-    router.routeRequest(window.location.pathname);
+    router.routeRequest("/");
 
     const allHeaders = await screen.findAllByRole("heading", {
       name: /hello world testhello/i,
