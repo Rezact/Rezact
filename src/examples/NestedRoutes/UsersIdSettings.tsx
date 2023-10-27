@@ -2,6 +2,7 @@ import { MyLayout } from "../Layout/nestedLayout";
 import { Page } from "../DataFetching/DataFetching";
 
 export default function ({ router }) {
+  (window as any).testValues.UsersSettings = router.meta;
   return (
     <div>
       <h1>3. Users ID Settings START</h1>

@@ -2,6 +2,7 @@ import { MyLayout } from "../Layout/nestedLayout";
 import { Page } from "../DataFetching/DataFetching";
 
 export default function Users({ router }) {
+  (window as any).testValues.Users = router.meta;
   return (
     <div id="nested-routes-test-id">
       <h1>1. Users START</h1>

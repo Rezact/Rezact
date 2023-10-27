@@ -2,6 +2,7 @@ import { MyLayout } from "../Layout/nestedLayout";
 import { Page } from "../SimpleStringListState/SimpleStringList";
 
 export default function ({ router }) {
+  (window as any).testValues.UsersCatchAll = router.meta;
   let { $rest } = router.params;
   return (
     <>

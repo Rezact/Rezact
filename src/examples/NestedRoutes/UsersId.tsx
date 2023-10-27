@@ -2,6 +2,7 @@ import { MyLayout } from "../Layout/nestedLayout";
 import { Page } from "../SimpleStringListState/SimpleStringList";
 
 export default function ({ router }) {
+  (window as any).testValues.UsersID = router.meta;
   return (
     <>
       <h1>2. Users ID START</h1>
