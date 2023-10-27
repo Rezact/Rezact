@@ -366,7 +366,6 @@ describe("Router Tests Suite", () => {
     expect(testDiv2.innerHTML).toMatchSnapshot();
     expect(document.title).toBe("Users Catch AllTest 3");
 
-    console.log(window.testValues);
     expect(window.testValues.Users.metaProp).toBe("Users Meta Test 3");
     expect(window.testValues.UsersID.metaProp).toBe("Users ID Meta Test 3");
     expect(window.testValues.UsersSettings.metaProp).toBe(
