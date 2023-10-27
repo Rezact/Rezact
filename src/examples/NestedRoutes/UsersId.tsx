@@ -1,13 +1,13 @@
 import { MyLayout } from "../Layout/nestedLayout";
 import { Page } from "../SimpleStringListState/SimpleStringList";
 
-export default function ({ routeParams, router_outlet }) {
+export default function ({ router }) {
   return (
     <>
       <h1>2. Users ID START</h1>
-      <p>ID: {routeParams.id}</p>
+      <p>ID: {router.params.id}</p>
       <Page />
-      {router_outlet}
+      {router.outlet}
       <Page />
       <p>2. Users ID END</p>
     </>

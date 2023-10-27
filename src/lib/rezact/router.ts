@@ -1,6 +1,9 @@
 import { render } from "rezact";
 import { Signal } from "./signals";
 
+export const $currentRoute = new Signal("") as unknown as string;
+export const $currentPath = new Signal("") as unknown as string;
+
 function isPromise(value) {
   return Boolean(value && typeof value.then === "function");
 }
@@ -10,6 +13,13 @@ function copyNextRoute(nextRoute) {
   const newURLObj = (pathObj
     ? new URL(nextRoute)
     : new URL(nextRoute, window.location.origin)) as unknown as routeIF;
+
+  ($currentRoute as any).set(nextRoute.route || "/");
+  ($currentPath as any).set(newURLObj.pathname);
+
+  newURLObj.route = nextRoute.route || "/";
+  newURLObj.$route = $currentRoute;
+  newURLObj.$pathname = $currentPath;
 
   newURLObj.params = nextRoute.params;
   newURLObj.stack = nextRoute.stack;
@@ -24,6 +34,8 @@ class RouteNode {
   wildcardHandler: any = null;
   router_outlet: Signal<Element>;
   nestedRoot: boolean;
+  partName: string;
+  title: string;
   constructor() {
     this.handlers = {};
     this.children = new Map();
@@ -41,9 +53,13 @@ interface routeIF {
   href: string;
   origin: string;
   pathname: string;
+  $pathname: any;
   port: string;
   protocol: string;
   search: string;
+  builtPath: string;
+  route: string;
+  $route: any;
   params: any;
   stack: any;
   currentNode: any;
@@ -56,9 +72,13 @@ const defaultRouteObj: routeIF = {
   href: "",
   origin: "",
   pathname: "",
+  $pathname: new Signal(""),
   port: "",
   protocol: "",
   search: "",
+  builtPath: "",
+  route: "",
+  $route: new Signal(""),
   params: {},
   stack: [],
   currentNode: null,
@@ -115,7 +135,6 @@ export class TrieRouter {
   }
 
   routeChanged(path = null) {
-    console.log(path);
     if (path instanceof PopStateEvent) this.popState = true;
     const url = path || window.location.pathname;
 
@@ -132,7 +151,10 @@ export class TrieRouter {
   addRoutesFromConfig(config, parentPath = "") {
     config.forEach((route) => {
       const currentPath = `${parentPath}${route.path}`;
-      if (route.component) this.addRoute(currentPath, route.component);
+      if (route.component)
+        this.addRoute(currentPath, route.component, false, {
+          title: route.title,
+        });
 
       if (route.children && route.children.length > 0) {
         this.addRoutesFromConfig(route.children, currentPath);
@@ -140,7 +162,7 @@ export class TrieRouter {
     });
   }
 
-  addRoute(path, callback, nestedRoot = false) {
+  addRoute(path, callback, nestedRoot = false, opts: any = {}) {
     const parts = path.split("/").filter(Boolean);
     let firstPartRootSet = false;
     let currentNode = this.root;
@@ -149,11 +171,15 @@ export class TrieRouter {
       if (part.startsWith(":")) {
         if (!currentNode.dynamicChild) {
           currentNode.dynamicChild = new RouteNode();
+          currentNode.dynamicChild.title = opts.title;
+          currentNode.dynamicChild.partName = `/${part}`;
           currentNode.dynamicChild.isDynamic = part.slice(1);
         }
         currentNode = currentNode.dynamicChild;
       } else if (part.startsWith("*")) {
         currentNode.wildcardHandler = new RouteNode();
+        currentNode.wildcardHandler.title = opts.title;
+        currentNode.wildcardHandler.partName = `/${part}`;
         currentNode.wildcardHandler.isDynamic = part.slice(1);
         currentNode.wildcardHandler.handlers.GET = callback;
         currentNode.wildcardHandler.nestedRoot = nestedRoot;
@@ -161,6 +187,8 @@ export class TrieRouter {
       } else {
         if (!currentNode.children.has(part)) {
           currentNode.children.set(part, new RouteNode());
+          currentNode.children.get(part).title = opts.title;
+          currentNode.children.get(part).partName = `/${part}`;
         }
         currentNode = currentNode.children.get(part);
       }
@@ -172,11 +200,13 @@ export class TrieRouter {
     currentNode.nestedRoot = currentNode.nestedRoot || nestedRoot;
   }
 
-  getNextRoute(path): routeIF {
+  getNextRoute(path, paramID = null, paramVal = null): routeIF {
     path = this.popState ? window.location.pathname : path;
     const parts = path.split("/").filter(Boolean);
     let currentNode = this.root;
 
+    let route = "";
+    let builtPath = "";
     let params = {};
     let stack = [];
     let partIdx = 0;
@@ -187,19 +217,43 @@ export class TrieRouter {
 
       if (currentNode.children.has(part)) {
         currentNode = currentNode.children.get(part);
+        route += currentNode.partName;
+        builtPath += `/${part}`;
       } else if (currentNode.dynamicChild) {
-        params[currentNode.dynamicChild.isDynamic] = part;
+        const paramName = currentNode.dynamicChild.isDynamic;
+        const partOverride = paramID === paramName ? paramVal : null;
+        if (!paramID) {
+          params[paramName] = part;
+          params[`$${paramName}`] = new Signal(part);
+          params[`$${paramName}`].subscribe((val) => {
+            const newURL = this.getNextRoute(location.pathname, paramName, val);
+            val !== part && history.pushState({}, "", newURL.builtPath);
+          });
+        }
+
         currentNode = currentNode.dynamicChild;
+        route += currentNode.partName;
+        builtPath += `/${partOverride || part}`;
       } else if (currentNode.wildcardHandler) {
-        params[currentNode.wildcardHandler.isDynamic || "rest"] = parts
-          .slice(partIdx)
-          .join("/");
+        const paramName = currentNode.wildcardHandler.isDynamic || "rest";
+        const partOverride = paramID === paramName ? paramVal : null;
+        if (!paramID) {
+          params[paramName] = parts.slice(partIdx).join("/");
+          params[`$${paramName}`] = new Signal(parts.slice(partIdx).join("/"));
+          params[`$${paramName}`].subscribe((val) => {
+            const newURL = this.getNextRoute(location.pathname, paramName, val);
+            val !== part && history.pushState({}, "", newURL.builtPath);
+          });
+        }
         currentNode = currentNode.wildcardHandler;
+        route += currentNode.partName;
+        builtPath += `/${partOverride || part}`;
         break; // wildcard matches the rest of the route, so return
       } else {
         currentNode = this.noRoute(this);
         break;
       }
+
       partIdx++;
     }
 
@@ -208,6 +262,8 @@ export class TrieRouter {
       window.location.origin
     ) as unknown as routeIF;
 
+    newURLObj.route = route;
+    newURLObj.builtPath = builtPath;
     newURLObj.params = params;
     newURLObj.stack = stack;
     newURLObj.currentNode = currentNode;
@@ -219,16 +275,16 @@ export class TrieRouter {
     const pathObj = typeof path === "object";
     let nextRouteObj = pathObj ? path : this.getNextRoute(path);
 
-    let { stack, params, currentNode } = nextRouteObj;
+    let { currentNode } = nextRouteObj;
     this.currentRoute = copyNextRoute(nextRouteObj);
     !this.popState && history.pushState({}, "", nextRouteObj.pathname);
 
     this.popState = false;
     const handler = currentNode.handlers.GET;
     if (handler) {
-      if (currentNode.nestedRoot) stack = [];
-      stack.push(currentNode);
-      this.renderFunc(stack, params);
+      if (currentNode.nestedRoot) this.currentRoute.stack = [];
+      this.currentRoute.stack.push(currentNode);
+      this.renderFunc(this.currentRoute);
     } else {
       return this.noRoute(this);
     }
@@ -251,7 +307,9 @@ export function useRouter(app = null, config: any = {}) {
   let router_outlet = new Signal(document.createElement("span"));
 
   return new TrieRouter({
-    render: async (stack, params) => {
+    render: async (router) => {
+      if (router.currentNode.title) document.title = router.currentNode.title;
+      const { stack } = router;
       const routePromises = stack.map((node) => node.handlers.GET());
       const routes = await Promise.allSettled(routePromises);
       const pages = routes.map(({ status, reason, value }: any) =>
@@ -269,10 +327,9 @@ export function useRouter(app = null, config: any = {}) {
         if (nextItem) {
           const mod = pages[i + 1];
           const component = mod.Page || mod.default;
-          render(thisItem.router_outlet, component, {
-            routeParams: params,
-            router_outlet: nextItem.router_outlet,
-          });
+
+          router.outlet = nextItem.router_outlet;
+          render(thisItem.router_outlet, component, { router });
         }
       }
 
@@ -280,32 +337,24 @@ export function useRouter(app = null, config: any = {}) {
       const component = mod.Page || mod.default;
       if (mod.Layout) {
         if (currentLayout === mod.Layout) {
-          render(router_outlet, component, {
-            routeParams: params,
-            router_outlet: stack[0].router_outlet,
-          });
+          router.outlet = stack[0].router_outlet;
+          render(router_outlet, component, { router });
         } else {
           currentLayout = mod.Layout;
 
-          render(router_outlet, component, {
-            routeParams: params,
-            router_outlet: stack[0].router_outlet,
-          });
+          router.outlet = stack[0].router_outlet;
+          render(router_outlet, component, { router });
 
-          render(app, (props) => mod.Layout(props), {
-            router_outlet,
-            routeParams: params,
-          });
+          router.outlet = router_outlet;
+          render(app, (props) => mod.Layout(props), { router });
         }
       } else {
         currentLayout = null;
 
         const mod = pages[0];
         const component = mod.Page || mod.default;
-        render(app, component, {
-          routeParams: params,
-          router_outlet: stack[0].router_outlet,
-        });
+        router.outlet = stack[0].router_outlet;
+        render(app, component, { router });
       }
     },
   });
