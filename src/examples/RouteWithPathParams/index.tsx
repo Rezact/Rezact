@@ -5,8 +5,8 @@ export default function (props) {
   return (
     <>
       <h1>Path Params Test</h1>
-      <p>ID: {props.routeParams.id}</p>
-      <p>Test Param: {props.routeParams.test}</p>
+      <p>ID: {props.router.params.id}</p>
+      <p>Test Param: {props.router.params.test}</p>
     </>
   );
 }
