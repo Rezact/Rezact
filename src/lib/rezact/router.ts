@@ -166,6 +166,7 @@ export class TrieRouter {
     const parts = path.split("/").filter(Boolean);
     let firstPartRootSet = false;
     let currentNode = this.root;
+    if (path === "/") this.root.title = opts.title;
 
     for (let part of parts) {
       if (part.startsWith(":")) {
