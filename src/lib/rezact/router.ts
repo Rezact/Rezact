@@ -63,6 +63,12 @@ interface routeIF {
   params: any;
   stack: any;
   currentNode: any;
+  go: (delta: number) => void;
+  back: () => void;
+  forward: () => void;
+  reload: () => void;
+  push: (...args: [any, string, (string | URL | null)?]) => void;
+  replace: (...args: [any, string, (string | URL | null)?]) => void;
 }
 
 const defaultRouteObj: routeIF = {
@@ -82,6 +88,14 @@ const defaultRouteObj: routeIF = {
   params: {},
   stack: [],
   currentNode: null,
+  go: (delta: number) => history.go(delta),
+  back: () => history.back(),
+  forward: () => history.forward(),
+  reload: () => location.reload(),
+  push: (...args: [any, string, (string | URL | null)?]) =>
+    history.pushState(...args),
+  replace: (...args: [any, string, (string | URL | null)?]) =>
+    history.replaceState(...args),
 };
 
 export class TrieRouter {
