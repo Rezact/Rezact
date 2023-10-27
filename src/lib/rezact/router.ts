@@ -21,6 +21,15 @@ function copyNextRoute(nextRoute) {
   newURLObj.$route = $currentRoute;
   newURLObj.$pathname = $currentPath;
 
+  newURLObj.go = (delta: number) => history.go(delta);
+  newURLObj.back = () => history.back();
+  newURLObj.forward = () => history.forward();
+  newURLObj.reload = () => location.reload();
+  newURLObj.push = (...args: [any, string, (string | URL | null)?]) =>
+    history.pushState(...args);
+  newURLObj.replace = (...args: [any, string, (string | URL | null)?]) =>
+    history.replaceState(...args);
+
   newURLObj.params = nextRoute.params;
   newURLObj.stack = nextRoute.stack;
   newURLObj.currentNode = nextRoute.currentNode;
@@ -46,6 +55,10 @@ class RouteNode {
   }
 }
 
+export interface routerProp {
+  router: routeIF;
+}
+
 interface routeIF {
   hash: string;
   host: string;
@@ -63,6 +76,13 @@ interface routeIF {
   params: any;
   stack: any;
   currentNode: any;
+  outlet?: Signal<Element>;
+  go?: (delta: number) => void;
+  back?: () => void;
+  forward?: () => void;
+  reload?: () => void;
+  push?: (...args: [data: any, unused: string, url?: string | URL]) => void;
+  replace?: (...args: [data: any, unused: string, url?: string | URL]) => void;
 }
 
 const defaultRouteObj: routeIF = {
@@ -202,7 +222,7 @@ export class TrieRouter {
   }
 
   getNextRoute(path, paramID = null, paramVal = null): routeIF {
-    path = this.popState ? window.location.pathname : path;
+    if (path !== "/404") path = this.popState ? window.location.pathname : path;
     const parts = path.split("/").filter(Boolean);
     let currentNode = this.root;
 
@@ -239,11 +259,12 @@ export class TrieRouter {
         const paramName = currentNode.wildcardHandler.isDynamic || "rest";
         const partOverride = paramID === paramName ? paramVal : null;
         if (!paramID) {
-          params[paramName] = parts.slice(partIdx).join("/");
-          params[`$${paramName}`] = new Signal(parts.slice(partIdx).join("/"));
+          const rest = parts.slice(partIdx).join("/");
+          params[paramName] = rest;
+          params[`$${paramName}`] = new Signal(rest);
           params[`$${paramName}`].subscribe((val) => {
             const newURL = this.getNextRoute(location.pathname, paramName, val);
-            val !== part && history.pushState({}, "", newURL.builtPath);
+            val !== rest && history.pushState({}, "", newURL.builtPath);
           });
         }
         currentNode = currentNode.wildcardHandler;
@@ -308,7 +329,7 @@ export function useRouter(app = null, config: any = {}) {
   let router_outlet = new Signal(document.createElement("span"));
 
   return new TrieRouter({
-    render: async (router) => {
+    render: async (router: routeIF) => {
       if (router.currentNode.title) document.title = router.currentNode.title;
       const { stack } = router;
       const routePromises = stack.map((node) => node.handlers.GET());

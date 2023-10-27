@@ -138,7 +138,8 @@ describe("Router Tests Suite", () => {
     expect(paragraphs[1].textContent).toBe("Test Param: qwer");
 
     expect(location.pathname).toBe("/post/asdf/something/qwer");
-    let testButtons = screen.getAllByRole("button");
+    const routerOutlet = document.getElementById("router-outlet-test");
+    let testButtons = routerOutlet.querySelectorAll("button");
     expect(testButtons).toHaveLength(4);
 
     testButtons[0].click();
