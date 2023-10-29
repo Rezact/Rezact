@@ -8,7 +8,7 @@ function isPromise(value) {
   return Boolean(value && typeof value.then === "function");
 }
 
-function copyNextRoute(nextRoute) {
+function copyNextRoute(nextRoute, router) {
   const pathObj = typeof nextRoute === "object";
   const newURLObj = (pathObj
     ? new URL(nextRoute)
@@ -25,10 +25,8 @@ function copyNextRoute(nextRoute) {
   newURLObj.back = () => history.back();
   newURLObj.forward = () => history.forward();
   newURLObj.reload = () => location.reload();
-  newURLObj.push = (...args: [any, string, (string | URL | null)?]) =>
-    history.pushState(...args);
-  newURLObj.replace = (...args: [any, string, (string | URL | null)?]) =>
-    history.replaceState(...args);
+  newURLObj.push = (url) => router.routeChanged(url);
+  newURLObj.replace = (url) => router.routeChanged(url, true);
 
   newURLObj.params = nextRoute.params;
   newURLObj.stack = nextRoute.stack;
@@ -83,8 +81,8 @@ interface routeIF {
   back?: () => void;
   forward?: () => void;
   reload?: () => void;
-  push?: (...args: [data: any, unused: string, url?: string | URL]) => void;
-  replace?: (...args: [data: any, unused: string, url?: string | URL]) => void;
+  push?: (url: string) => void;
+  replace?: (url: string) => void;
 }
 
 const defaultRouteObj: routeIF = {
@@ -112,6 +110,7 @@ export class TrieRouter {
   currentRoute: routeIF = { ...defaultRouteObj };
   renderFunc: any = null;
   popState: boolean = false;
+  replaceState: boolean = false;
   noRoute: any = (router) => {
     return router.getNextRoute("/404").currentNode;
   };
@@ -156,7 +155,8 @@ export class TrieRouter {
     }
   }
 
-  routeChanged(path = null) {
+  routeChanged(path = null, replace = false) {
+    this.replaceState = replace;
     if (path instanceof PopStateEvent) this.popState = true;
     const url = path || window.location.pathname;
 
@@ -307,8 +307,11 @@ export class TrieRouter {
     let nextRouteObj = pathObj ? path : this.getNextRoute(path);
 
     let { currentNode } = nextRouteObj;
-    this.currentRoute = copyNextRoute(nextRouteObj);
-    !this.popState && history.pushState({}, "", nextRouteObj.pathname);
+    this.currentRoute = copyNextRoute(nextRouteObj, this);
+    !this.popState &&
+      !this.replaceState &&
+      history.pushState({}, "", nextRouteObj.pathname);
+    this.replaceState && history.replaceState({}, "", nextRouteObj.pathname);
 
     this.popState = false;
     const handler = currentNode.handlers.GET;

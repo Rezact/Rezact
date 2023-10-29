@@ -8,4 +8,5 @@ export function Page() {
   );
 }
 
+Page.Layout = MyLayout;
 export const Layout = MyLayout;

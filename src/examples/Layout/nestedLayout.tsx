@@ -173,10 +173,8 @@ export function MyLayout({ router }: routerProp) {
       <button onClick={() => router.forward()}>Forward</button>
       <button onClick={() => router.go(-1)}>Go -1</button>
       <button onClick={() => router.go(1)}>Go 1</button>
-      <button onClick={() => router.push({}, "", "/testing-push")}>
-        Push State
-      </button>
-      <button onClick={() => router.replace({}, "", "/testing-replace")}>
+      <button onClick={() => router.push("/testing-push")}>Push State</button>
+      <button onClick={() => router.replace("/testing-replace")}>
         Replace State
       </button>
 
