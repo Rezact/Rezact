@@ -140,6 +140,11 @@ const routes = [
     title: "Testing Root Title",
   },
   {
+    path: "/onBeforeLeave",
+    component: () => import("src/examples/OnBeforeLeave/OnBeforeLeave"),
+    title: "Testing On Before Leave Title",
+  },
+  {
     path: "/users2",
     component: () => import("src/examples/NestedRoutes/Users"),
     title: "Users Test 2",

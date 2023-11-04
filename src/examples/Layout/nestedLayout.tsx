@@ -166,6 +166,9 @@ export function MyLayout({ router }: routerProp) {
           <a href="/jsx-signals">JSX Signals</a>
         </li>
         <li>
+          <a href="/onBeforeLeave">On Before Leave Test</a>
+        </li>
+        <li>
           <a href="/asdfasdfasdfasdf">A Route that does not exist</a>
         </li>
       </ul>
