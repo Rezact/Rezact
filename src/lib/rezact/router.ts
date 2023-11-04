@@ -107,6 +107,8 @@ const defaultRouteObj: routeIF = {
 export class TrieRouter {
   root: RouteNode;
   beforeHooks: any = [];
+  afterHooks: any = [];
+  previousRoute: routeIF = { ...defaultRouteObj };
   currentRoute: routeIF = { ...defaultRouteObj };
   renderFunc: any = null;
   popState: boolean = false;
@@ -123,8 +125,11 @@ export class TrieRouter {
         if (!ev.target.href) return;
         if (ev.target.target) return;
         const url = new URL(ev.target.href);
-        const locationHost = window.location.hostname; // Current page's hostname
+
+        // allow external links to bypass the router
+        const locationHost = window.location.hostname;
         if (url.hostname !== locationHost) return;
+
         ev.preventDefault();
         this.routeChanged(url.pathname);
       }
@@ -134,24 +139,28 @@ export class TrieRouter {
     window.addEventListener("popstate", function (event) {
       that.routeChanged(event);
     });
-    // window.onpopstate = this.routeChanged.bind(this);
   }
 
-  runBeforeHooks(pathObj) {
+  async runBeforeHooks(pathObj) {
     if (!pathObj) return;
     for (let hook of this.beforeHooks) {
       const result = hook(pathObj, this.currentRoute);
       if (isPromise(result)) {
-        result.then((res) => {
-          if (res === false) return;
-          if (res) return this.routeRequest(res);
-          this.routeRequest(pathObj);
-        });
+        const res = await result;
+        if (res === false) return;
+        if (res) return this.routeRequest(res);
       } else {
         if (result === false) return;
         if (result) return this.routeRequest(result);
-        this.routeRequest(pathObj);
       }
+    }
+    this.routeRequest(pathObj);
+  }
+
+  runAfterHooks(pathObj) {
+    if (!pathObj) return;
+    for (let hook of this.afterHooks) {
+      hook(pathObj, this.previousRoute);
     }
   }
 
@@ -168,6 +177,10 @@ export class TrieRouter {
 
   beforeEach(callback) {
     this.beforeHooks.push(callback);
+  }
+
+  afterEach(callback) {
+    this.afterHooks.push(callback);
   }
 
   addRoutesFromConfig(config, parentPath = "") {
@@ -194,31 +207,32 @@ export class TrieRouter {
       this.root.meta = opts.meta;
     }
 
+    const setupNode = (node, opts, part) => {
+      node.title = opts.title;
+      node.meta = opts.meta;
+      node.partName = `/${part}`;
+    };
+
     for (let part of parts) {
       if (part.startsWith(":")) {
         if (!currentNode.dynamicChild) {
           currentNode.dynamicChild = new RouteNode();
-          currentNode.dynamicChild.title = opts.title;
-          currentNode.dynamicChild.meta = opts.meta;
-          currentNode.dynamicChild.partName = `/${part}`;
+          setupNode(currentNode.dynamicChild, opts, part);
           currentNode.dynamicChild.isDynamic = part.slice(1);
         }
         currentNode = currentNode.dynamicChild;
       } else if (part.startsWith("*")) {
         currentNode.wildcardHandler = new RouteNode();
-        currentNode.wildcardHandler.title = opts.title;
-        currentNode.wildcardHandler.meta = opts.meta;
-        currentNode.wildcardHandler.partName = `/${part}`;
+        setupNode(currentNode.wildcardHandler, opts, part);
         currentNode.wildcardHandler.isDynamic = part.slice(1);
+
         currentNode.wildcardHandler.handlers.GET = callback;
         currentNode.wildcardHandler.nestedRoot = nestedRoot;
         return; // wildcard matches the rest of the route, so return
       } else {
         if (!currentNode.children.has(part)) {
           currentNode.children.set(part, new RouteNode());
-          currentNode.children.get(part).title = opts.title;
-          currentNode.children.get(part).meta = opts.meta;
-          currentNode.children.get(part).partName = `/${part}`;
+          setupNode(currentNode.children.get(part), opts, part);
         }
         currentNode = currentNode.children.get(part);
       }
@@ -301,12 +315,13 @@ export class TrieRouter {
     return newURLObj;
   }
 
-  routeRequest(path) {
+  async routeRequest(path) {
     path = this.popState ? window.location.pathname : path;
     const pathObj = typeof path === "object";
     let nextRouteObj = pathObj ? path : this.getNextRoute(path);
 
     let { currentNode } = nextRouteObj;
+    this.previousRoute = this.currentRoute;
     this.currentRoute = copyNextRoute(nextRouteObj, this);
     !this.popState &&
       !this.replaceState &&
@@ -318,7 +333,8 @@ export class TrieRouter {
     if (handler) {
       if (currentNode.nestedRoot) this.currentRoute.stack = [];
       this.currentRoute.stack.push(currentNode);
-      this.renderFunc(this.currentRoute);
+      await this.renderFunc(this.currentRoute);
+      this.runAfterHooks(nextRouteObj);
     } else {
       return this.noRoute(this);
     }
