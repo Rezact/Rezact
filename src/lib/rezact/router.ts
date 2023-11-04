@@ -27,6 +27,7 @@ function copyNextRoute(nextRoute, router) {
   newURLObj.reload = () => location.reload();
   newURLObj.push = (url) => router.routeChanged(url);
   newURLObj.replace = (url) => router.routeChanged(url, true);
+  newURLObj.onBeforeLeave = (callback) => (router.onBeforeLeaveFunc = callback);
 
   newURLObj.params = nextRoute.params;
   newURLObj.stack = nextRoute.stack;
@@ -83,6 +84,7 @@ interface routeIF {
   reload?: () => void;
   push?: (url: string) => void;
   replace?: (url: string) => void;
+  onBeforeLeave?: (callback: () => void) => void;
 }
 
 const defaultRouteObj: routeIF = {
@@ -106,6 +108,7 @@ const defaultRouteObj: routeIF = {
 
 export class TrieRouter {
   root: RouteNode;
+  onBeforeLeaveFunc: any = null;
   beforeHooks: any = [];
   afterHooks: any = [];
   previousRoute: routeIF = { ...defaultRouteObj };
@@ -139,10 +142,28 @@ export class TrieRouter {
     window.addEventListener("popstate", function (event) {
       that.routeChanged(event);
     });
+
+    window.addEventListener("beforeunload", function (e) {
+      if (that.onBeforeLeaveFunc) {
+        const result = that.onBeforeLeaveFunc({}, that.currentRoute);
+        if (result === false) {
+          e.preventDefault();
+          e.returnValue = "You will lose any unsaved changes.";
+          return "You will lose any unsaved changes.";
+        }
+      }
+    });
   }
 
   async runBeforeHooks(pathObj) {
     if (!pathObj) return;
+
+    if (this.onBeforeLeaveFunc) {
+      const result = this.onBeforeLeaveFunc(pathObj, this.currentRoute);
+      if (result === false) return;
+      if (result) return this.routeRequest(result);
+    }
+
     for (let hook of this.beforeHooks) {
       const result = hook(pathObj, this.currentRoute);
       if (isPromise(result)) {
@@ -168,8 +189,6 @@ export class TrieRouter {
     this.replaceState = replace;
     if (path instanceof PopStateEvent) this.popState = true;
     const url = path || window.location.pathname;
-
-    if (this.beforeHooks.length === 0) return this.routeRequest(url);
 
     let pathObj = this.getNextRoute(url);
     this.runBeforeHooks(pathObj);
@@ -316,6 +335,7 @@ export class TrieRouter {
   }
 
   async routeRequest(path) {
+    this.onBeforeLeaveFunc = null;
     path = this.popState ? window.location.pathname : path;
     const pathObj = typeof path === "object";
     let nextRouteObj = pathObj ? path : this.getNextRoute(path);

@@ -678,6 +678,34 @@ describe("Router Tests Suite", () => {
     expect(jsxSignals).not.toMatchSnapshot();
   });
 
+  it("On Before Leave Route Click", async () => {
+    const links = await screen.findAllByRole("link", {
+      name: "On Before Leave Test",
+    });
+    await user.click(links[0]);
+    await delay(100);
+    const allHeaders = await screen.findAllByRole("heading", {
+      name: /On Before Leave/i,
+    });
+    expect(allHeaders).toHaveLength(1);
+  });
+
+  it("MDX Route Click Cannot Navigate because onBeforeLeave Hook stops it", async () => {
+    const links = await screen.findAllByRole("link", {
+      name: "MDX",
+    });
+    await user.click(links[0]);
+    await delay(100);
+    const allHeaders = await screen.queryAllByRole("heading", {
+      name: /Hello World Test asdf/i,
+    });
+    expect(allHeaders).toHaveLength(0);
+
+    const checkBox = screen.getByLabelText("Allow Leaving This Route");
+    expect(checkBox).toBeDefined();
+    await user.click(checkBox);
+  });
+
   it("MDX Route Click", async () => {
     const links = await screen.findAllByRole("link", {
       name: "MDX",
