@@ -734,11 +734,23 @@ describe("Router Tests Suite", () => {
     expect(routerOutlet.innerHTML).toMatchSnapshot();
   });
 
+  const beforeEachGuardTest = {
+    guard1: false,
+    guard2: false,
+  };
+
   it("Route Guard redirects", async () => {
-    router.beforeEach((to, from) => {
+    router.beforeEach(async (to, from) => {
+      beforeEachGuardTest.guard1 = true;
       expect(from.pathname).toBe("/simple-string-list");
       expect(to.pathname).toBe("/simple-string-list");
       return "/login";
+    });
+    router.beforeEach(async (to, from) => {
+      beforeEachGuardTest.guard2 = true;
+      expect(from.pathname).toBe("/simple-string-list");
+      expect(to.pathname).toBe("/simple-string-list");
+      return "/this-guard-should-not-run";
     });
     router.routeChanged("/simple-string-list");
     await delay(100);
@@ -749,6 +761,9 @@ describe("Router Tests Suite", () => {
 
     expect(router.currentRoute.pathname).toBe("/login");
     router.beforeHooks = [];
+
+    expect(beforeEachGuardTest.guard1).toBe(true);
+    expect(beforeEachGuardTest.guard2).toBe(false);
   });
 
   it("Route Guard Reverts - Simple String List Route", async () => {
@@ -779,6 +794,22 @@ describe("Router Tests Suite", () => {
     const routerOutlet = document.getElementById("router-outlet-test");
     expect(routerOutlet.innerHTML).toMatchSnapshot();
     router.beforeHooks = [];
+  });
+
+  it("Router afterEach Hook", async () => {
+    router.afterEach((to, from) => {
+      expect(from.pathname).toBe("/simple-string-list");
+      expect(to.pathname).toBe("/data-fetching");
+    });
+    router.routeChanged("/data-fetching");
+    await delay(100);
+    const allHeaders = await screen.findAllByRole("heading", {
+      name: /data fetching/i,
+    });
+    expect(allHeaders).toHaveLength(1);
+
+    expect(router.currentRoute.pathname).toBe("/data-fetching");
+    router.afterHooks = [];
   });
 });
 
