@@ -189,9 +189,18 @@ export function effect(func: (obj: any) => {}, deps: any[]) {
   const newState: any = new deps[0].constructor(func(deps));
   newState.computed = true;
   const depsLen = deps.length;
+  const unSubs = [];
   for (let i = 0; i < depsLen; i++) {
-    deps[i].subscribe({ funcRef: computeSub, obj: { newState, func, deps } });
+    const unsub = deps[i].subscribe({
+      funcRef: computeSub,
+      obj: { newState, func, deps },
+    });
+    unSubs.push(unsub);
   }
+
+  newState.unsubscribe = () => {
+    unSubs.forEach((f) => f());
+  };
   return newState;
 }
 
