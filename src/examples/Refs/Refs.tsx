@@ -1,10 +1,18 @@
-function Canvas({ ref }) {
-  ref.clear = () => console.log("clearing this canvas");
+import { MyLayout } from "../Layout/nestedLayout";
 
-  return <canvas></canvas>;
+function Canvas({ ref: incomingRef }) {
+  incomingRef.clear = () => console.log("clearing this canvas");
+  const ref = {};
+
+  return (
+    <canvas
+      ref={ref}
+      onClick={() => console.log("testing ref attribute", ref)}
+    ></canvas>
+  );
 }
 
-function App() {
+export function Page() {
   const canvasRef: any = {};
 
   return (
@@ -14,3 +22,5 @@ function App() {
     </>
   );
 }
+
+export const Layout = MyLayout;
