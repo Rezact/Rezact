@@ -160,9 +160,11 @@ export class Signal<T> {
       attachSubs(opts.elm, func);
     } else {
       subscFunctionsArr.push(func);
+      return () => {
+        const idx = subscFunctionsArr.findIndex((f) => f === func);
+        subscFunctionsArr.slice(idx, 1);
+      };
     }
-
-    return;
   }
 
   toJSON() {
@@ -187,9 +189,18 @@ export function effect(func: (obj: any) => {}, deps: any[]) {
   const newState: any = new deps[0].constructor(func(deps));
   newState.computed = true;
   const depsLen = deps.length;
+  const unSubs = [];
   for (let i = 0; i < depsLen; i++) {
-    deps[i].subscribe({ funcRef: computeSub, obj: { newState, func, deps } });
+    const unsub = deps[i].subscribe({
+      funcRef: computeSub,
+      obj: { newState, func, deps },
+    });
+    unSubs.push(unsub);
   }
+
+  newState.unsubscribe = () => {
+    unSubs.forEach((f) => f());
+  };
   return newState;
 }
 
@@ -244,7 +255,7 @@ const attributeStateHandler = {
       for (let i = 0; i < depsLen; i++) {
         deps[i].subscribe(
           { funcRef: compAttrSub, obj: { elm, key, computer, deps } },
-          { elm }
+          { elm },
         );
       }
     } else {
@@ -265,7 +276,7 @@ function handleTextNode(parent: any, child: any, ...args: any[]) {
     { funcRef: textNodeSub, obj: { txtNode, newVal: val.toString() } },
     {
       elm: parent,
-    }
+    },
   );
   appendChild(parent, txtNode, ...args);
 }
