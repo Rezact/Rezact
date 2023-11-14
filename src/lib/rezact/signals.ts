@@ -160,9 +160,11 @@ export class Signal<T> {
       attachSubs(opts.elm, func);
     } else {
       subscFunctionsArr.push(func);
+      return () => {
+        const idx = subscFunctionsArr.findIndex((f) => f === func);
+        subscFunctionsArr.slice(idx, 1);
+      };
     }
-
-    return;
   }
 
   toJSON() {
@@ -244,7 +246,7 @@ const attributeStateHandler = {
       for (let i = 0; i < depsLen; i++) {
         deps[i].subscribe(
           { funcRef: compAttrSub, obj: { elm, key, computer, deps } },
-          { elm }
+          { elm },
         );
       }
     } else {
@@ -265,7 +267,7 @@ function handleTextNode(parent: any, child: any, ...args: any[]) {
     { funcRef: textNodeSub, obj: { txtNode, newVal: val.toString() } },
     {
       elm: parent,
-    }
+    },
   );
   appendChild(parent, txtNode, ...args);
 }
