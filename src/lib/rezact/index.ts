@@ -57,7 +57,7 @@ export const addAttributeHandler = (item) => attributeHandlers.unshift(item);
 const attributeInputValueHandler = {
   matches: (_attrs, key, attrVal) =>
     key === "ref" && typeof attrVal === "object",
-  handler: (elm, _key, attrVal, attrs) => handleRef(elm, attrVal, attrs),
+  handler: (elm, _key, attrVal) => handleRef(elm, attrVal),
 };
 
 addAttributeHandler(attributeInputValueHandler);
