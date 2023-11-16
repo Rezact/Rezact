@@ -169,6 +169,9 @@ export function MyLayout({ router }: routerProp) {
           <a href="/onBeforeLeave">On Before Leave Test</a>
         </li>
         <li>
+          <a href="/portals">Portals</a>
+        </li>
+        <li>
           <a href="/asdfasdfasdfasdf">A Route that does not exist</a>
         </li>
       </ul>
@@ -183,6 +186,7 @@ export function MyLayout({ router }: routerProp) {
 
       <div id="router-outlet-test">{router.outlet}</div>
       <p>End Layout</p>
+      <div id="portal-out"></div>
     </MasterLayout>
   );
 }

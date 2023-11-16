@@ -1,0 +1,3 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Portal Test Suite > Portal Test 1`] = `"<h1>Portals</h1><span data-portal=\\"in\\"></span><div id=\\"portal-out\\" data-portal=\\"out\\"><p>child1</p><p>child2</p><p>child3</p></div>"`;
