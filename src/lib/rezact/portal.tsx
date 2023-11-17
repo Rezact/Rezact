@@ -11,20 +11,33 @@ import {
 //   console.log({ newComp, tagName, attributes, hookContext });
 // });
 
-export function createPortal(elm) {
-  return function Portal(props: any) {
-    const { children } = props;
-    const portalMount = () => {
-      if (typeof elm === "string") elm = document.querySelector(elm);
-      elm.dataset.portal = "out";
-      elm.innerHTML = "";
+export function Portal(props: any) {
+  const { children } = props;
+  let { target } = props;
+  const tempDiv = document.createElement("div");
+  let elmRefs = [];
 
-      render(elm, () => children);
-      portalIn.rzPortalOut = elm;
-      elm.rzPortalIn = portalIn;
-    };
+  const portalMount = () => {
+    if (!target) target = document.body;
+    if (typeof target === "string") target = document.querySelector(target);
 
-    const portalIn = <span data-portal="in" onMount={portalMount} />;
-    return portalIn;
+    render(tempDiv, () => children);
+    while (tempDiv.firstChild) {
+      elmRefs.push(tempDiv.firstChild);
+      target.appendChild(tempDiv.firstChild);
+    }
   };
+
+  const portalUnmount = () => {
+    const elmLen = elmRefs.length;
+    for (let i = 0; i < elmLen; i++) {
+      const elm = elmRefs.pop();
+      elm.remove();
+    }
+  };
+
+  const portalIn = (
+    <span data-portal="in" onMount={portalMount} onUnmount={portalUnmount} />
+  );
+  return portalIn;
 }
