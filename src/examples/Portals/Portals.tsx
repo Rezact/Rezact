@@ -19,6 +19,9 @@ export function Page() {
             <p>child2</p>
           </>
           <p>child3</p>
+          <button onClick={() => ($showPortal = false)}>
+            Close Portal/Modal
+          </button>
         </Portal>
       )}
     </>

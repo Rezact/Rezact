@@ -1,15 +1,4 @@
-import {
-  // addPostCreateComponentHook,
-  // addPreCreateComponentHook,
-  render,
-} from ".";
-
-// addPreCreateComponentHook((tagName, attributes, hookContext) => {
-//   console.log({ tagName, attributes, hookContext });
-// });
-// addPostCreateComponentHook((newComp, tagName, attributes, hookContext) => {
-//   console.log({ newComp, tagName, attributes, hookContext });
-// });
+import { render } from ".";
 
 export function Portal(props: any) {
   const { children } = props;
