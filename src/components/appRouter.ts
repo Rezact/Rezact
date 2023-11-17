@@ -13,6 +13,8 @@ router.addRoute("/404", FourOhFour);
 
 router.addRoute("/refs", () => import("src/examples/Refs/Refs"));
 
+router.addRoute("/portals", () => import("src/examples/Portals/Portals"));
+
 router.addRoute(
   "/array-state-persistent-across-route-changes",
   () => import("src/components/HomePageStatePersistsAcrossRouteChanges"),

@@ -44,6 +44,7 @@ export default defineConfig(({ command, mode, ssrBuild }) => {
           resolve(__dirname, "src/lib/rezact/signals.ts"),
           resolve(__dirname, "src/lib/rezact/validator.ts"),
           resolve(__dirname, "src/lib/rezact/formHelper.ts"),
+          resolve(__dirname, "src/lib/rezact/portal.tsx"),
         ],
         name: "Rezact",
         // the proper extensions will be added
