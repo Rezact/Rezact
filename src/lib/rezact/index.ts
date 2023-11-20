@@ -30,13 +30,20 @@ export function xCreateElement(tagName, attributes, ...children) {
     attributes = attributes || {};
     attributes.children = attributes.children || children;
 
-    const hookContext = {};
+    const hookContext = { errors };
     preCreateComponentHooks.forEach((func) =>
-      func(tagName, attributes, hookContext),
+      func(tagName, attributes, hookContext)
     );
-    const newComp = createComponent(tagName, attributes);
+
+    let newComp = null;
+    try {
+      newComp = createComponent(tagName, attributes);
+    } catch (e) {
+      errors.push(e);
+    }
+
     postCreateComponentHooks.forEach((func) =>
-      func(newComp, tagName, attributes, hookContext),
+      func(newComp, tagName, attributes, hookContext)
     );
 
     return newComp;
@@ -126,7 +133,7 @@ function appendChildNode(
   parentNode: any,
   childNode: any,
   insertAfter: boolean = false,
-  removeElm: boolean = false,
+  removeElm: boolean = false
 ) {
   if (removeElm) return childNode.remove();
   if (parentNode instanceof Comment) insertAfter = true;
@@ -172,7 +179,18 @@ export let appendChild = (parent, child, ...args) => {
 const afterRenderHooks = [];
 export const addAfterRenderHook = (item) => afterRenderHooks.push(item);
 
+export const errors = [];
 export function render(root, tagName, attributes: any = {}) {
+  let err = null;
+  try {
+    _render(root, tagName, attributes);
+  } catch (e) {
+    errors.push(e);
+    err = e;
+  }
+  return err;
+}
+function _render(root, tagName, attributes: any = {}) {
   const elm = createComponent(tagName, attributes);
   if (root.state) {
     const frag = document.createDocumentFragment();
@@ -224,7 +242,7 @@ export function useContext() {
     (newComp, _tagName, _attributes, hookContext) => {
       hookContext.contextRoot = newComp[0] || newComp;
       hookContext.contextRoot.rezactContext = hookContext.componentContext;
-    },
+    }
   );
 }
 
@@ -258,7 +276,7 @@ export function useInputs() {
         if (element.value === newVal) return;
         setInputVal(element, newVal);
       },
-      { elm: element },
+      { elm: element }
     );
 
     if (
