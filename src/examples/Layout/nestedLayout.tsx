@@ -1,5 +1,6 @@
 import { routerProp } from "src/lib/rezact/router";
 import { MasterLayout } from "./masterLayout";
+import { ErrorBoundary } from "src/lib/rezact/ErrorBoundary";
 
 export function MyLayout({ router }: routerProp) {
   const { $route } = router;
@@ -66,6 +67,12 @@ export function MyLayout({ router }: routerProp) {
             Nested Routes /users/:id/settings/all/wild/card/stuff
           </a>
         </li>
+        <li>
+          <a href="/users2/123/settings/all/wild/card/error-test">
+            Nested Routes ERROR /users/:id/settings/all/wild/card/error-test
+          </a>
+        </li>
+
         <hr />
         <li>
           <a href="/payments2/config123">
@@ -184,7 +191,9 @@ export function MyLayout({ router }: routerProp) {
         Replace State
       </button>
 
-      <div id="router-outlet-test">{router.outlet}</div>
+      <ErrorBoundary>
+        <div id="router-outlet-test">{router.outlet}</div>
+      </ErrorBoundary>
       <p>End Layout</p>
       <div id="portal-out"></div>
     </MasterLayout>
