@@ -1,4 +1,4 @@
-import { Portal } from "src/lib/rezact/portal";
+import { Portal } from "src/lib/rezact/Portal";
 import { MyLayout } from "../Layout/nestedLayout";
 
 export function Page() {

@@ -323,7 +323,7 @@ export class TrieRouter {
 
     const newURLObj = new URL(
       path,
-      window.location.origin
+      window.location.origin,
     ) as unknown as routeIF;
 
     newURLObj.route = route;
@@ -374,10 +374,13 @@ export function useRouter(app = null, config: any = {}) {
   if (!app) app = document.getElementById("app");
 
   let currentLayout = null;
-  let router_outlet = new Signal(document.createElement("span"));
+  const routerOutDefault = document.createElement("span");
+  routerOutDefault.innerText = "Loading Route...";
+  let router_outlet = new Signal(routerOutDefault);
 
   return new TrieRouter({
     render: async (router: routeIF) => {
+      if (currentLayout) router_outlet.set(routerOutDefault);
       if (router.currentNode.title) document.title = router.currentNode.title;
       const { stack } = router;
       const routePromises = stack.map((node) => {
@@ -387,7 +390,7 @@ export function useRouter(app = null, config: any = {}) {
       const routes = await Promise.allSettled(routePromises);
 
       const pages = routes.map(({ status, reason, value }: any) =>
-        status === "rejected" ? config.routeErrorComponent({ reason }) : value
+        status === "rejected" ? config.routeErrorComponent({ reason }) : value,
       );
 
       // loop over the stack in reverse and assign router_outlet
