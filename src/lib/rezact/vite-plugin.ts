@@ -1,10 +1,11 @@
 import { PluginOption } from "vite";
 import { Parser } from "acorn";
 import jsx from "acorn-jsx";
+import importAssertions from "acorn-import-assertions";
 import * as walk from "acorn-walk";
 import MagicString from "magic-string";
 
-const acorn = Parser.extend(jsx());
+const acorn = Parser.extend(jsx(), importAssertions());
 
 let src = "";
 let itemsAlreadyImported = [];
