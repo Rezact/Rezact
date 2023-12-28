@@ -2,23 +2,23 @@
 
 exports[`Controlled Forms suite > clears the form when the reset button is clicked 1`] = `
 "{
-  \\"firstName\\": \\"\\",
-  \\"lastName\\": \\"\\",
-  \\"age\\": \\"\\",
-  \\"children\\": [
-    \\"\\",
-    \\"\\",
-    \\"\\"
+  "firstName": "",
+  "lastName": "",
+  "age": "",
+  "children": [
+    "",
+    "",
+    ""
   ],
-  \\"checkbox\\": {
-    \\"scales\\": false,
-    \\"horns\\": false
+  "checkbox": {
+    "scales": false,
+    "horns": false
   },
-  \\"radio\\": {
-    \\"drone\\": \\"\\"
+  "radio": {
+    "drone": ""
   },
-  \\"lineItems\\": [],
-  \\"selectItem\\": \\"\\"
+  "lineItems": [],
+  "selectItem": ""
 }"
 `;
 
@@ -219,136 +219,136 @@ exports[`Controlled Forms suite > renders a form 1`] = `
 
 exports[`Controlled Forms suite > renders a form 2`] = `
 "{
-  \\"firstName\\": \\"John\\",
-  \\"lastName\\": \\"Smith\\",
-  \\"age\\": \\"30\\",
-  \\"children\\": [
-    \\"Bob\\",
-    \\"Sara\\",
-    \\"Joe\\"
+  "firstName": "John",
+  "lastName": "Smith",
+  "age": "30",
+  "children": [
+    "Bob",
+    "Sara",
+    "Joe"
   ],
-  \\"checkbox\\": {
-    \\"scales\\": true,
-    \\"horns\\": false
+  "checkbox": {
+    "scales": true,
+    "horns": false
   },
-  \\"radio\\": {
-    \\"drone\\": \\"dewey\\"
+  "radio": {
+    "drone": "dewey"
   },
-  \\"lineItems\\": [
+  "lineItems": [
     {
-      \\"$item\\": \\"Apple\\",
-      \\"$price\\": \\"1.00\\",
-      \\"$qty\\": \\"4\\"
+      "$item": "Apple",
+      "$price": "1.00",
+      "$qty": "4"
     },
     {
-      \\"$item\\": \\"Orange\\",
-      \\"$price\\": \\"2.00\\",
-      \\"$qty\\": \\"5\\"
+      "$item": "Orange",
+      "$price": "2.00",
+      "$qty": "5"
     },
     {
-      \\"$item\\": \\"Lemon\\",
-      \\"$price\\": \\"3.00\\",
-      \\"$qty\\": \\"6\\"
+      "$item": "Lemon",
+      "$price": "3.00",
+      "$qty": "6"
     }
   ],
-  \\"selectItem\\": \\"Opt 2\\"
+  "selectItem": "Opt 2"
 }"
 `;
 
 exports[`Controlled Forms suite > updates the form when the update button is clicked 1`] = `
 "{
-  \\"firstName\\": \\"Jane\\",
-  \\"lastName\\": \\"Doe\\",
-  \\"age\\": \\"40\\",
-  \\"children\\": [
-    \\"Billy\\",
-    \\"Sally\\",
-    \\"Joey\\"
+  "firstName": "Jane",
+  "lastName": "Doe",
+  "age": "40",
+  "children": [
+    "Billy",
+    "Sally",
+    "Joey"
   ],
-  \\"checkbox\\": {
-    \\"scales\\": false,
-    \\"horns\\": true
+  "checkbox": {
+    "scales": false,
+    "horns": true
   },
-  \\"radio\\": {
-    \\"drone\\": \\"huey\\"
+  "radio": {
+    "drone": "huey"
   },
-  \\"lineItems\\": [
+  "lineItems": [
     {
-      \\"$item\\": \\"Apple0\\",
-      \\"$price\\": \\"10.00\\",
-      \\"$qty\\": \\"40\\"
+      "$item": "Apple0",
+      "$price": "10.00",
+      "$qty": "40"
     },
     {
-      \\"$item\\": \\"Orange0\\",
-      \\"$price\\": \\"20.00\\",
-      \\"$qty\\": \\"50\\"
+      "$item": "Orange0",
+      "$price": "20.00",
+      "$qty": "50"
     },
     {
-      \\"$item\\": \\"Lemon0\\",
-      \\"$price\\": \\"30.00\\",
-      \\"$qty\\": \\"60\\"
+      "$item": "Lemon0",
+      "$price": "30.00",
+      "$qty": "60"
     }
   ],
-  \\"selectItem\\": \\"Opt 4\\"
+  "selectItem": "Opt 4"
 }"
 `;
 
 exports[`Controlled Forms suite > updates the text area when the form changes 1`] = `
 "{
-  \\"firstName\\": \\"Jane\\",
-  \\"lastName\\": \\"Doe\\",
-  \\"age\\": \\"40\\",
-  \\"children\\": [
-    \\"Sally\\",
-    \\"Bob\\",
-    \\"Joe\\"
+  "firstName": "Jane",
+  "lastName": "Doe",
+  "age": "40",
+  "children": [
+    "Sally",
+    "Bob",
+    "Joe"
   ],
-  \\"checkbox\\": {
-    \\"scales\\": true,
-    \\"horns\\": true
+  "checkbox": {
+    "scales": true,
+    "horns": true
   },
-  \\"radio\\": {
-    \\"drone\\": \\"louie\\"
+  "radio": {
+    "drone": "louie"
   },
-  \\"lineItems\\": [],
-  \\"selectItem\\": \\"\\"
+  "lineItems": [],
+  "selectItem": ""
 }"
 `;
 
 exports[`Uncontrolled Forms suite > clears the form when the reset button is clicked 1`] = `
 "{
-  \\"name\\": {
-    \\"first\\": \\"\\",
-    \\"last\\": \\"\\"
+  "name": {
+    "first": "",
+    "last": ""
   },
-  \\"age\\": \\"\\",
-  \\"children\\": [
-    \\"\\",
-    \\"\\",
-    \\"\\"
+  "age": "",
+  "children": [
+    "",
+    "",
+    ""
   ],
-  \\"checkbox\\": {
-    \\"scales\\": false,
-    \\"horns\\": false
+  "checkbox": {
+    "scales": false,
+    "horns": false
   },
-  \\"lineItems\\": [
+  "lineItems": [
     {
-      \\"item\\": \\"\\",
-      \\"price\\": \\"\\",
-      \\"qty\\": \\"\\"
+      "item": "",
+      "price": "",
+      "qty": ""
     },
     {
-      \\"item\\": \\"\\",
-      \\"price\\": \\"\\",
-      \\"qty\\": \\"\\"
+      "item": "",
+      "price": "",
+      "qty": ""
     },
     {
-      \\"item\\": \\"\\",
-      \\"price\\": \\"\\",
-      \\"qty\\": \\"\\"
+      "item": "",
+      "price": "",
+      "qty": ""
     }
   ],
-  \\"selectItem\\": \\"\\"
+  "selectItem": ""
 }"
 `;
 
@@ -588,120 +588,120 @@ exports[`Uncontrolled Forms suite > renders a form 1`] = `
 
 exports[`Uncontrolled Forms suite > renders a form 2`] = `
 "{
-  \\"name\\": {
-    \\"first\\": \\"John\\",
-    \\"last\\": \\"Smith\\"
+  "name": {
+    "first": "John",
+    "last": "Smith"
   },
-  \\"age\\": \\"30\\",
-  \\"children\\": [
-    \\"Bob\\",
-    \\"Sara\\",
-    \\"Joe\\"
+  "age": "30",
+  "children": [
+    "Bob",
+    "Sara",
+    "Joe"
   ],
-  \\"checkbox\\": {
-    \\"scales\\": true,
-    \\"horns\\": false
+  "checkbox": {
+    "scales": true,
+    "horns": false
   },
-  \\"radio\\": {
-    \\"drone\\": \\"huey\\"
+  "radio": {
+    "drone": "huey"
   },
-  \\"lineItems\\": [
+  "lineItems": [
     {
-      \\"item\\": \\"Apple\\",
-      \\"price\\": \\"1.00\\",
-      \\"qty\\": \\"4\\"
+      "item": "Apple",
+      "price": "1.00",
+      "qty": "4"
     },
     {
-      \\"item\\": \\"Orange\\",
-      \\"price\\": \\"2.00\\",
-      \\"qty\\": \\"5\\"
+      "item": "Orange",
+      "price": "2.00",
+      "qty": "5"
     },
     {
-      \\"item\\": \\"Lemon\\",
-      \\"price\\": \\"3.00\\",
-      \\"qty\\": \\"6\\"
+      "item": "Lemon",
+      "price": "3.00",
+      "qty": "6"
     }
   ],
-  \\"selectItem\\": \\"Opt 1\\"
+  "selectItem": "Opt 1"
 }"
 `;
 
 exports[`Uncontrolled Forms suite > updates the form when the update button is clicked 1`] = `
 "{
-  \\"name\\": {
-    \\"first\\": \\"dude\\",
-    \\"last\\": \\"hell yes\\"
+  "name": {
+    "first": "dude",
+    "last": "hell yes"
   },
-  \\"age\\": \\"300\\",
-  \\"children\\": [
-    \\"asdf\\",
-    \\"qwer\\",
-    \\"1234\\"
+  "age": "300",
+  "children": [
+    "asdf",
+    "qwer",
+    "1234"
   ],
-  \\"checkbox\\": {
-    \\"scales\\": false,
-    \\"horns\\": true
+  "checkbox": {
+    "scales": false,
+    "horns": true
   },
-  \\"radio\\": {
-    \\"drone\\": \\"dewey\\"
+  "radio": {
+    "drone": "dewey"
   },
-  \\"lineItems\\": [
+  "lineItems": [
     {
-      \\"item\\": \\"Apple0\\",
-      \\"price\\": \\"10.00\\",
-      \\"qty\\": \\"40\\"
+      "item": "Apple0",
+      "price": "10.00",
+      "qty": "40"
     },
     {
-      \\"item\\": \\"Orange0\\",
-      \\"price\\": \\"20.00\\",
-      \\"qty\\": \\"50\\"
+      "item": "Orange0",
+      "price": "20.00",
+      "qty": "50"
     },
     {
-      \\"item\\": \\"Lemon0\\",
-      \\"price\\": \\"30.00\\",
-      \\"qty\\": \\"60\\"
+      "item": "Lemon0",
+      "price": "30.00",
+      "qty": "60"
     }
   ],
-  \\"selectItem\\": \\"Opt 3\\"
+  "selectItem": "Opt 3"
 }"
 `;
 
 exports[`Uncontrolled Forms suite > updates the text area when the form changes 1`] = `
 "{
-  \\"name\\": {
-    \\"first\\": \\"Jane\\",
-    \\"last\\": \\"Doe\\"
+  "name": {
+    "first": "Jane",
+    "last": "Doe"
   },
-  \\"age\\": \\"40\\",
-  \\"children\\": [
-    \\"Sally\\",
-    \\"Bob\\",
-    \\"Joe\\"
+  "age": "40",
+  "children": [
+    "Sally",
+    "Bob",
+    "Joe"
   ],
-  \\"checkbox\\": {
-    \\"scales\\": true,
-    \\"horns\\": true
+  "checkbox": {
+    "scales": true,
+    "horns": true
   },
-  \\"radio\\": {
-    \\"drone\\": \\"louie\\"
+  "radio": {
+    "drone": "louie"
   },
-  \\"lineItems\\": [
+  "lineItems": [
     {
-      \\"item\\": \\"Item 1\\",
-      \\"price\\": \\"14.00\\",
-      \\"qty\\": \\"\\"
+      "item": "Item 1",
+      "price": "14.00",
+      "qty": ""
     },
     {
-      \\"item\\": \\"Item 2\\",
-      \\"price\\": \\"15.00\\",
-      \\"qty\\": \\"\\"
+      "item": "Item 2",
+      "price": "15.00",
+      "qty": ""
     },
     {
-      \\"item\\": \\"Item 3\\",
-      \\"price\\": \\"16.00\\",
-      \\"qty\\": \\"\\"
+      "item": "Item 3",
+      "price": "16.00",
+      "qty": ""
     }
   ],
-  \\"selectItem\\": \\"Opt 2\\"
+  "selectItem": "Opt 2"
 }"
 `;

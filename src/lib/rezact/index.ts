@@ -32,11 +32,11 @@ export function xCreateElement(tagName, attributes, ...children) {
 
     const hookContext = {};
     preCreateComponentHooks.forEach((func) =>
-      func(tagName, attributes, hookContext),
+      func(tagName, attributes, hookContext)
     );
     const newComp = createComponent(tagName, attributes);
     postCreateComponentHooks.forEach((func) =>
-      func(newComp, tagName, attributes, hookContext),
+      func(newComp, tagName, attributes, hookContext)
     );
 
     return newComp;
@@ -47,6 +47,7 @@ export function xCreateElement(tagName, attributes, ...children) {
   for (let i = 0; i < childLen; i++) {
     appendChild(elm, children[i]);
   }
+  if (elm.nodeName === "SVG") elm.outerHTML = elm.outerHTML;
   return elm;
 }
 
@@ -126,7 +127,7 @@ function appendChildNode(
   parentNode: any,
   childNode: any,
   insertAfter: boolean = false,
-  removeElm: boolean = false,
+  removeElm: boolean = false
 ) {
   if (removeElm) return childNode.remove();
   if (parentNode instanceof Comment) insertAfter = true;
@@ -224,7 +225,7 @@ export function useContext() {
     (newComp, _tagName, _attributes, hookContext) => {
       hookContext.contextRoot = newComp[0] || newComp;
       hookContext.contextRoot.rezactContext = hookContext.componentContext;
-    },
+    }
   );
 }
 
@@ -258,7 +259,7 @@ export function useInputs() {
         if (element.value === newVal) return;
         setInputVal(element, newVal);
       },
-      { elm: element },
+      { elm: element }
     );
 
     if (

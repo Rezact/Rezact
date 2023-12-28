@@ -1,11 +1,11 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Portal Test Suite > Portal Test 1`] = `"<h1>Portals</h1><button>Toggle Portal</button><span></span><!--signal--><div id=\\"portal-out\\"></div>"`;
+exports[`Portal Test Suite > Portal Test 1`] = `"<h1>Portals</h1><button>Toggle Portal</button><span></span><!--signal--><div id="portal-out"></div>"`;
 
-exports[`Portal Test Suite > Portal Test 2`] = `"<h1>Portals</h1><button>Toggle Portal</button><span data-portal=\\"in\\"></span><!--signal--><div id=\\"portal-out\\"></div><p>child1</p><p>child2</p><p>child3</p><button>Close Portal/Modal</button>"`;
+exports[`Portal Test Suite > Portal Test 2`] = `"<h1>Portals</h1><button>Toggle Portal</button><span data-portal="in"></span><!--signal--><div id="portal-out"></div><p>child1</p><p>child2</p><p>child3</p><button>Close Portal/Modal</button>"`;
 
-exports[`Portal Test Suite > Portal Test 3`] = `"<h1>Portals</h1><button>Toggle Portal</button><span></span><!--signal--><div id=\\"portal-out\\"></div>"`;
+exports[`Portal Test Suite > Portal Test 3`] = `"<h1>Portals</h1><button>Toggle Portal</button><span></span><!--signal--><div id="portal-out"></div>"`;
 
-exports[`Portal Test Suite > Portal Test 4`] = `"<h1>Portals</h1><button>Toggle Portal</button><span data-portal=\\"in\\"></span><!--signal--><div id=\\"portal-out\\"></div><p>child1</p><p>child2</p><p>child3</p><button>Close Portal/Modal</button>"`;
+exports[`Portal Test Suite > Portal Test 4`] = `"<h1>Portals</h1><button>Toggle Portal</button><span data-portal="in"></span><!--signal--><div id="portal-out"></div><p>child1</p><p>child2</p><p>child3</p><button>Close Portal/Modal</button>"`;
 
-exports[`Portal Test Suite > Portal Test 5`] = `"<h1>Portals</h1><button>Toggle Portal</button><span></span><!--signal--><div id=\\"portal-out\\"></div>"`;
+exports[`Portal Test Suite > Portal Test 5`] = `"<h1>Portals</h1><button>Toggle Portal</button><span></span><!--signal--><div id="portal-out"></div>"`;
