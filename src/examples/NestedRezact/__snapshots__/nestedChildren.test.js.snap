@@ -1,3 +1,0 @@
-// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
-
-exports[`Nested suite > Children are rendered in nested child component 1`] = `"<h1>Hello World</h1><ul><li>Child One</li><li>Child Two</li><li>Child Three</li></ul>"`;

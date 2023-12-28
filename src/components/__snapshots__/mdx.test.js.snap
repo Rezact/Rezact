@@ -8,9 +8,9 @@ exports[`MDX suite > renders MDX 1`] = `
 <p>Label:</p>
 <input>
 <p>Para text</p>
-<pre><code class=\\"hljs language-javascript\\"><span class=\\"hljs-comment\\">// testing highlight</span>
-<span class=\\"hljs-keyword\\">function</span> <span class=\\"hljs-title function_\\">test</span>(<span class=\\"hljs-params\\"></span>) {
-  <span class=\\"hljs-variable language_\\">console</span>.<span class=\\"hljs-title function_\\">log</span>(<span class=\\"hljs-string\\">\\"hello world!\\"</span>);
+<pre><code class="hljs language-javascript"><span class="hljs-comment">// testing highlight</span>
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">test</span>(<span class="hljs-params"></span>) {
+  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">"hello world!"</span>);
 }
 </code></pre><!--signal-->"
 `;
