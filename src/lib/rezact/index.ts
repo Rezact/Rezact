@@ -1,10 +1,17 @@
-let createElement, createTextNode, createComment, createDocumentFragment;
+let createElement,
+  createElementNS,
+  createTextNode,
+  createComment,
+  createDocumentFragment;
 if (typeof window === "object") {
   createElement = document.createElement.bind(document);
+  createElementNS = document.createElementNS.bind(document);
   createTextNode = document.createTextNode.bind(document);
   createComment = document.createComment.bind(document);
   createDocumentFragment = document.createDocumentFragment.bind(document);
 }
+
+const xlmns = "http://www.w3.org/2000/svg";
 export { createElement, createTextNode, createComment, createDocumentFragment };
 export const isArray = Array.isArray;
 
@@ -41,13 +48,17 @@ export function xCreateElement(tagName, attributes, ...children) {
 
     return newComp;
   }
-  const elm = createElement(tagName);
+  let elm = null;
+  if (["svg", "path", "g", "circle", "rect"].includes(tagName)) {
+    elm = createElementNS(xlmns, tagName);
+  } else {
+    elm = createElement(tagName);
+  }
   if (attributes) handleAttributes(elm, attributes);
   const childLen = children.length;
   for (let i = 0; i < childLen; i++) {
     appendChild(elm, children[i]);
   }
-  if (elm.nodeName === "SVG") elm.outerHTML = elm.outerHTML;
   return elm;
 }
 
