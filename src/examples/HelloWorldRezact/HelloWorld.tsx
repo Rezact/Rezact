@@ -1,9 +1,12 @@
 import { MyLayout } from "../Layout/nestedLayout";
 
 export function Page() {
+  const testingNull = null;
+  const testingUndefined = undefined;
   return (
     <>
-      <h1>Hello World</h1>
+      <h1 id={testingNull}>Hello World</h1>
+      <span id={testingUndefined}></span>
       <svg
         class="h-6 w-6 text-white"
         fill="none"
