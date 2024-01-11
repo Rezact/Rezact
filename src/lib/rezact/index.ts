@@ -97,6 +97,9 @@ function handleAttributes(elm, attrs) {
       elm.setAttribute(key, "");
       continue;
     }
+
+    if (attrVal === null || attrVal === undefined) continue;
+
     const attrHandlerLen = attributeHandlers.length;
     for (let x = 0; x < attrHandlerLen; x++) {
       const hook = attributeHandlers[x];
@@ -106,7 +109,6 @@ function handleAttributes(elm, attrs) {
       }
     }
 
-    if (attrVal === null || attrVal === undefined) continue;
     elm.setAttribute(key, attrVal);
   }
 }
