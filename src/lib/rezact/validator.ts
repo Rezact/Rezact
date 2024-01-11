@@ -241,7 +241,7 @@ function validateOptions(opts) {
 function onSubmit(ev) {
   const form = ev.target;
 
-  checkAll();
+  checkAll(ev.target);
   const isValid = form.checkValidity();
   if (!isValid) return ev.preventDefault();
   // return isValid;
@@ -291,9 +291,11 @@ function onInput(ev) {
   clearValidationError(inputElm);
 }
 
-function checkAll() {
-  const allInputs = Array.from(inputElms.keys());
+function checkAll(formElm) {
+  const allInputs = Array.from(formElm.querySelectorAll("input"));
   allInputs.forEach((inputElm) => {
+    const opts = inputElms.get(inputElm);
+    if (!opts) return;
     if (isRequired(inputElm)) return reportRequired(inputElm);
     if (inputContainsUnacceptedChars(inputElm))
       return reportPatternNotValid(inputElm);
