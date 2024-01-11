@@ -106,6 +106,7 @@ function handleAttributes(elm, attrs) {
       }
     }
 
+    if (attrVal === null || attrVal === undefined) continue;
     elm.setAttribute(key, attrVal);
   }
 }
