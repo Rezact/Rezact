@@ -5,7 +5,7 @@ export function MyLayout({ router }: routerProp) {
   const { $route } = router;
   return (
     <MasterLayout>
-      <h1>Layout</h1>
+      <h1 id="testing-hashroute">Layout</h1>
       <ul>
         <li class={$route === "/" ? "active" : ""}>
           <a href="/">Home</a>
@@ -173,6 +173,12 @@ export function MyLayout({ router }: routerProp) {
         </li>
         <li>
           <a href="/asdfasdfasdfasdf">A Route that does not exist</a>
+        </li>
+
+        <hr />
+
+        <li>
+          <a href="#testing-hashroute">Hashtag route</a>
         </li>
       </ul>
       <button onClick={() => router.back()}>Back</button>

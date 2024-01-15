@@ -765,16 +765,19 @@ describe("Router Tests Suite", () => {
   const beforeEachGuardTest = {
     guard1: false,
     guard2: false,
+    count: 0,
   };
 
   it("Route Guard redirects", async () => {
     router.beforeEach(async (to, from) => {
+      beforeEachGuardTest.count++;
       beforeEachGuardTest.guard1 = true;
       expect(from.pathname).toBe("/simple-string-list");
       expect(to.pathname).toBe("/simple-string-list");
       return "/login";
     });
     router.beforeEach(async (to, from) => {
+      beforeEachGuardTest.count++;
       beforeEachGuardTest.guard2 = true;
       expect(from.pathname).toBe("/simple-string-list");
       expect(to.pathname).toBe("/simple-string-list");
@@ -792,6 +795,7 @@ describe("Router Tests Suite", () => {
 
     expect(beforeEachGuardTest.guard1).toBe(true);
     expect(beforeEachGuardTest.guard2).toBe(false);
+    expect(beforeEachGuardTest.count).toBe(1);
   });
 
   it("Route Guard Reverts - Simple String List Route", async () => {
@@ -808,6 +812,7 @@ describe("Router Tests Suite", () => {
 
   it("Route Guard Cancels Navigation - Simple String List Route", async () => {
     router.beforeEach((to, from) => {
+      beforeEachGuardTest.count++;
       expect(to.pathname).toBe("/data-fetching");
       expect(from.pathname).toBe("/simple-string-list");
       return false;
@@ -822,6 +827,23 @@ describe("Router Tests Suite", () => {
     const routerOutlet = document.getElementById("router-outlet-test");
     expect(routerOutlet.innerHTML).toMatchSnapshot();
     router.beforeHooks = [];
+    router.beforeEach(async (to, from) => {
+      beforeEachGuardTest.count++;
+      return to.pathname;
+    });
+    expect(beforeEachGuardTest.count).toBe(2);
+  });
+
+  it("Hashtag in route bypasses router behavior (allows browser to scroll)", async () => {
+    expect(location.href).toBe("http://localhost:3000/simple-string-list");
+    const links = await screen.findAllByRole("link", {
+      name: /Hashtag route/i,
+    });
+    expect(links[0]._url.hash).toBe("#testing-hashroute");
+    await user.click(links[0]);
+    await delay(100);
+    expect(location.href).toBe("http://localhost:3000/simple-string-list");
+    expect(beforeEachGuardTest.count).toBe(2);
   });
 
   it("Router afterEach Hook", async () => {
@@ -838,6 +860,8 @@ describe("Router Tests Suite", () => {
 
     expect(router.currentRoute.pathname).toBe("/data-fetching");
     router.afterHooks = [];
+    expect(beforeEachGuardTest.count).toBe(3);
+    console.log(beforeEachGuardTest);
   });
 });
 
