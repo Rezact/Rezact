@@ -125,6 +125,7 @@ export class TrieRouter {
     if (options.noRoute) this.noRoute = options.noRoute;
     document.body.addEventListener("click", (ev: any) => {
       if (ev.target.nodeName === "A") {
+        if (ev.target.href.includes("#")) return;
         if (!ev.target.href) return;
         if (ev.target.target) return;
         const url = new URL(ev.target.href);
