@@ -189,7 +189,7 @@ export class TrieRouter {
   routeChanged(path = null, replace = false) {
     this.replaceState = replace;
     if (path instanceof PopStateEvent) this.popState = true;
-    const url = path || window.location.href;
+    const url = path || window.location.pathname;
 
     let pathObj = this.getNextRoute(url);
     this.runBeforeHooks(pathObj);

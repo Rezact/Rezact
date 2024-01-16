@@ -862,7 +862,6 @@ describe("Router Tests Suite", () => {
     expect(router.currentRoute.pathname).toBe("/data-fetching");
     router.afterHooks = [];
     expect(beforeEachGuardTest.count).toBe(3);
-    console.log(beforeEachGuardTest);
   });
 });
 
