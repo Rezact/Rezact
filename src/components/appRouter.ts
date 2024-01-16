@@ -1,4 +1,4 @@
-import { nestedRoot, useRouter } from "rezact/router";
+import { useRouter } from "rezact/router";
 import { Page as FourOhFour } from "./404";
 import Users from "src/examples/NestedRoutes/Users";
 import UsersId from "src/examples/NestedRoutes/UsersId";
