@@ -200,7 +200,7 @@ export function render(root, tagName, attributes: any = {}) {
   afterRenderHooks.forEach((func) => func());
   if (location.hash) {
     const elm = document.querySelector(location.hash);
-    if (elm)
+    if (elm && elm.scrollIntoView)
       elm.scrollIntoView({
         behavior: "smooth",
         block: "start",
