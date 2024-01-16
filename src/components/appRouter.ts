@@ -33,14 +33,20 @@ router.addRoute(
   "/nested",
   () => import("src/examples/NestedRezact/NestedChildren")
 );
-router.addRoute(
-  "/hello-world",
-  () => import("src/examples/HelloWorldRezact/HelloWorld")
-);
 
 router.addRoute(
   "/hello-world/multiple",
-  () => import("src/examples/HelloWorldMultipleRezact/HelloWorldMultiple")
+  () => import("src/examples/HelloWorldMultipleRezact/HelloWorldMultiple"),
+  {
+    title: "Hello World Multiple",
+  }
+);
+router.addRoute(
+  "/hello-world",
+  () => import("src/examples/HelloWorldRezact/HelloWorld"),
+  {
+    title: "Hello World",
+  }
 );
 
 router.addRoute(
@@ -133,6 +139,7 @@ const routes = [
   },
   {
     path: "/hello-world/multiple/again",
+    title: "Hello World Multiple Again",
     component: () =>
       import("src/examples/SimpleStringListState/SimpleStringList"),
   },
