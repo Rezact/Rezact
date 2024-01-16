@@ -219,10 +219,15 @@ export class TrieRouter {
     config.forEach((route) => {
       const currentPath = `${parentPath}${route.path}`;
       if (route.component)
-        this.addRoute(currentPath, route.component, nestedRoot, {
-          title: route.title,
-          meta: route.meta,
-        });
+        this.addRoute(
+          currentPath,
+          route.component,
+          {
+            title: route.title,
+            meta: route.meta,
+          },
+          nestedRoot
+        );
 
       if (route.children && route.children.length > 0) {
         this.addRoutesFromConfig(route.children, currentPath, false);
@@ -230,7 +235,7 @@ export class TrieRouter {
     });
   }
 
-  addRoute(path, callback, nestedRoot = true, opts: any = {}) {
+  addRoute(path, callback, opts: any = {}, nestedRoot = true) {
     const parts = path.split("/").filter(Boolean);
     let firstPartRootSet = false;
     let currentNode = this.root;
@@ -274,6 +279,8 @@ export class TrieRouter {
 
     currentNode.handlers.GET = callback;
     currentNode.nestedRoot = currentNode.nestedRoot || nestedRoot;
+    currentNode.title = opts.title;
+    currentNode.meta = opts.meta;
   }
 
   getNextRoute(path, paramID = null, paramVal = null): routeIF {

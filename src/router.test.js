@@ -922,6 +922,46 @@ describe("Router Tests Suite", () => {
     );
     expect(beforeEachGuardTest.count).toBe(6);
   });
+
+  it("1. Title bug when defining routes 'out of order'", async () => {
+    const links = await screen.findAllByRole("link", {
+      name: /Hello World/i,
+    });
+
+    expect(links[0].href).toBe("http://localhost:3000/hello-world");
+    await user.click(links[0]);
+    // await delay(100);
+    expect(location.href).toBe("http://localhost:3000/hello-world");
+    expect(document.title).toBe("Hello World");
+  });
+
+  it("2. Title bug when defining routes 'out of order'", async () => {
+    const links = await screen.findAllByRole("link", {
+      name: /Nested Router Bug Hello World Test 1/i,
+    });
+
+    expect(links[0].href).toBe("http://localhost:3000/hello-world/multiple");
+    await user.click(links[0]);
+    // await delay(100);
+    expect(location.href).toBe("http://localhost:3000/hello-world/multiple");
+    expect(document.title).toBe("Hello World Multiple");
+  });
+
+  it("3. Title bug when defining routes 'out of order'", async () => {
+    const links = await screen.findAllByRole("link", {
+      name: /Nested Router Bug Hello World Test 2/i,
+    });
+
+    expect(links[0].href).toBe(
+      "http://localhost:3000/hello-world/multiple/again"
+    );
+    await user.click(links[0]);
+    // await delay(100);
+    expect(location.href).toBe(
+      "http://localhost:3000/hello-world/multiple/again"
+    );
+    expect(document.title).toBe("Hello World Multiple Again");
+  });
 });
 
 function delay(n) {
