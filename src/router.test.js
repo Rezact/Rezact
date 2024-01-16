@@ -22,7 +22,7 @@ beforeAll(() => {
   };
   global.history = {
     pushState: (...args) => {
-      location.pathname = args[2];
+      location.pathname = new URL(args[2], location.origin).pathname;
       historyState.push(args);
     },
   };

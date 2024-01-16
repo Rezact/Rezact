@@ -189,7 +189,7 @@ export class TrieRouter {
   routeChanged(path = null, replace = false) {
     this.replaceState = replace;
     if (path instanceof PopStateEvent) this.popState = true;
-    const url = path || window.location.pathname;
+    const url = path || window.location.href;
 
     let pathObj = this.getNextRoute(url);
     this.runBeforeHooks(pathObj);
@@ -322,10 +322,7 @@ export class TrieRouter {
       partIdx++;
     }
 
-    const newURLObj = new URL(
-      path,
-      window.location.origin
-    ) as unknown as routeIF;
+    const newURLObj = new URL(path, window.location.href) as unknown as routeIF;
 
     newURLObj.route = route;
     newURLObj.builtPath = builtPath;
@@ -346,8 +343,8 @@ export class TrieRouter {
     this.currentRoute = copyNextRoute(nextRouteObj, this);
     !this.popState &&
       !this.replaceState &&
-      history.pushState({}, "", nextRouteObj.pathname);
-    this.replaceState && history.replaceState({}, "", nextRouteObj.pathname);
+      history.pushState({}, "", nextRouteObj.href);
+    this.replaceState && history.replaceState({}, "", nextRouteObj.href);
 
     this.popState = false;
     const handler = currentNode.handlers.GET;
