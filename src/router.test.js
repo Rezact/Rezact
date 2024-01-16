@@ -72,6 +72,26 @@ describe("Router Tests Suite", () => {
     window.dispatchEvent(popstateEvent);
   });
 
+  it("Loads the /hello-world/multiple (addRoute) nested router bug test", async () => {
+    const links = await screen.findAllByRole("link", {
+      name: /Nested Router Bug Hello World Test 1/i,
+    });
+    await user.click(links[0]);
+    await delay(100);
+    const routerOutlet = document.getElementById("router-outlet-test");
+    expect(routerOutlet.innerHTML).toMatchSnapshot();
+  });
+
+  it("Loads the /hello-world/multiple/again (addRouteFromConfig) nested router bug test", async () => {
+    const links = await screen.findAllByRole("link", {
+      name: /Nested Router Bug Hello World Test 2/i,
+    });
+    await user.click(links[0]);
+    await delay(100);
+    const routerOutlet = document.getElementById("router-outlet-test");
+    expect(routerOutlet.innerHTML).toMatchSnapshot();
+  });
+
   it("Loads the counter route", async () => {
     const links = await screen.findAllByRole("link", { name: /Counter/i });
     await user.click(links[0]);
