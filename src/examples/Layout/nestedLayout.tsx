@@ -180,6 +180,12 @@ export function MyLayout({ router }: routerProp) {
         <li>
           <a href="#testing-hashroute">Hashtag route</a>
         </li>
+        <li>
+          <a href="?test=123">Search route</a>
+        </li>
+        <li>
+          <a href="?test=456#testing-hashroute2">Search and Hashtag route</a>
+        </li>
       </ul>
       <button onClick={() => router.back()}>Back</button>
       <button onClick={() => router.forward()}>Forward</button>

@@ -22,7 +22,11 @@ beforeAll(() => {
   };
   global.history = {
     pushState: (...args) => {
-      location.pathname = new URL(args[2], location.origin).pathname;
+      const targetURL = new URL(args[2], location.origin);
+      location.pathname = targetURL.pathname;
+      location.search = targetURL.search;
+      location.hash = targetURL.hash;
+      location.href = targetURL.href;
       historyState.push(args);
     },
   };
@@ -835,16 +839,21 @@ describe("Router Tests Suite", () => {
     expect(beforeEachGuardTest.count).toBe(2);
   });
 
-  it("Hashtag in route bypasses router behavior (allows browser to scroll)", async () => {
+  it("Hashtag in route pushes state to location", async () => {
     expect(location.href).toBe("http://localhost:3000/simple-string-list");
     const links = await screen.findAllByRole("link", {
       name: /Hashtag route/i,
     });
-    expect(links[0]._url.hash).toBe("#testing-hashroute");
+
+    expect(links[0].href).toBe(
+      "http://localhost:3000/simple-string-list#testing-hashroute"
+    );
     await user.click(links[0]);
     await delay(100);
-    expect(location.href).toBe("http://localhost:3000/simple-string-list");
-    expect(beforeEachGuardTest.count).toBe(2);
+    expect(location.href).toBe(
+      "http://localhost:3000/simple-string-list#testing-hashroute"
+    );
+    expect(beforeEachGuardTest.count).toBe(3);
   });
 
   it("Router afterEach Hook", async () => {
@@ -852,7 +861,7 @@ describe("Router Tests Suite", () => {
       expect(from.pathname).toBe("/simple-string-list");
       expect(to.pathname).toBe("/data-fetching");
     });
-    router.routeChanged("/data-fetching");
+    router.routeChanged("/data-fetching?test=123");
     await delay(100);
     const allHeaders = await screen.findAllByRole("heading", {
       name: /data fetching/i,
@@ -860,8 +869,38 @@ describe("Router Tests Suite", () => {
     expect(allHeaders).toHaveLength(1);
 
     expect(router.currentRoute.pathname).toBe("/data-fetching");
+
     router.afterHooks = [];
-    expect(beforeEachGuardTest.count).toBe(3);
+    expect(beforeEachGuardTest.count).toBe(4);
+  });
+
+  it("Search Query in route pushes state to location", async () => {
+    expect(location.href).toBe(
+      "http://localhost:3000/data-fetching#testing-hashroute"
+    );
+    const links = await screen.findAllByRole("link", {
+      name: /Search route/i,
+    });
+
+    await user.click(links[0]);
+    await delay(100);
+    expect(location.href).toBe(
+      "http://localhost:3000/simple-string-list?test=123"
+    );
+    expect(beforeEachGuardTest.count).toBe(5);
+  });
+
+  it("Both Search Query and hashtag in route pushes state to location", async () => {
+    const links = await screen.findAllByRole("link", {
+      name: /Search and hashtag route/i,
+    });
+
+    await user.click(links[0]);
+    await delay(100);
+    expect(location.href).toBe(
+      "http://localhost:3000/simple-string-list?test=456#testing-hashroute2"
+    );
+    expect(beforeEachGuardTest.count).toBe(6);
   });
 });
 
