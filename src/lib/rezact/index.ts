@@ -4,6 +4,9 @@ let createElement,
   createComment,
   createDocumentFragment;
 if (typeof window === "object") {
+  if ("scrollRestoration" in window.history) {
+    window.history.scrollRestoration = "manual";
+  }
   createElement = document.createElement.bind(document);
   createElementNS = document.createElementNS.bind(document);
   createTextNode = document.createTextNode.bind(document);
@@ -198,15 +201,17 @@ export function render(root, tagName, attributes: any = {}) {
     appendChild(root, elm);
   }
   afterRenderHooks.forEach((func) => func());
+
   if (location.hash) {
     const elm = document.querySelector(location.hash);
     setTimeout(() => {
-      if (elm && elm.scrollIntoView)
+      if (elm && elm.scrollIntoView) {
         elm.scrollIntoView({
           behavior: "smooth",
           block: "start",
           inline: "start",
         });
+      }
     }, 100);
   }
 }
