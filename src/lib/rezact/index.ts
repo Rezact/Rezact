@@ -198,6 +198,15 @@ export function render(root, tagName, attributes: any = {}) {
     appendChild(root, elm);
   }
   afterRenderHooks.forEach((func) => func());
+  if (location.hash) {
+    const elm = document.querySelector(location.hash);
+    if (elm)
+      elm.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+        inline: "start",
+      });
+  }
 }
 export const xFragment = [];
 
