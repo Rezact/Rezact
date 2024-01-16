@@ -39,7 +39,8 @@ describe("Router Tests Suite", () => {
   it("First Render Home Page", async () => {
     document.body.innerHTML = `<div id="app"></div>`;
     const { router: _router } = await import("./components/appRouter");
-    _router.routeRequest("/");
+    // _router.routeRequest("/");
+    _router.routeChanged();
     router = _router;
 
     const allHeaders = await screen.findAllByRole("heading", {
