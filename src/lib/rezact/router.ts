@@ -215,22 +215,22 @@ export class TrieRouter {
     this.afterHooks.push(callback);
   }
 
-  addRoutesFromConfig(config, parentPath = "") {
+  addRoutesFromConfig(config, parentPath = "", nestedRoot = true) {
     config.forEach((route) => {
       const currentPath = `${parentPath}${route.path}`;
       if (route.component)
-        this.addRoute(currentPath, route.component, false, {
+        this.addRoute(currentPath, route.component, nestedRoot, {
           title: route.title,
           meta: route.meta,
         });
 
       if (route.children && route.children.length > 0) {
-        this.addRoutesFromConfig(route.children, currentPath);
+        this.addRoutesFromConfig(route.children, currentPath, false);
       }
     });
   }
 
-  addRoute(path, callback, nestedRoot = false, opts: any = {}) {
+  addRoute(path, callback, nestedRoot = true, opts: any = {}) {
     const parts = path.split("/").filter(Boolean);
     let firstPartRootSet = false;
     let currentNode = this.root;

@@ -28,6 +28,16 @@ export function MyLayout({ router }: routerProp) {
           <a href="/hello-world">Hello World</a>
         </li>
         <li>
+          <a href="/hello-world/multiple">
+            Nested Router Bug Hello World Test 1
+          </a>
+        </li>
+        <li>
+          <a href="/hello-world/multiple/again">
+            Nested Router Bug Hello World Test 2
+          </a>
+        </li>
+        <li>
           <a href="/hello-world-multiple">Hello World Multiple</a>
         </li>
         <li>
