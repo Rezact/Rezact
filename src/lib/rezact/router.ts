@@ -12,7 +12,7 @@ function copyNextRoute(nextRoute, router) {
   const pathObj = typeof nextRoute === "object";
   const newURLObj = (pathObj
     ? new URL(nextRoute)
-    : new URL(nextRoute, window.location.origin)) as unknown as routeIF;
+    : new URL(nextRoute, window.location.href)) as unknown as routeIF;
 
   ($currentRoute as any).set(nextRoute.route || "/");
   ($currentPath as any).set(newURLObj.pathname);
@@ -189,7 +189,7 @@ export class TrieRouter {
   routeChanged(path = null, replace = false) {
     this.replaceState = replace;
     if (path instanceof PopStateEvent) this.popState = true;
-    const url = path || window.location.href;
+    const url = path || window.location.pathname;
 
     let pathObj = this.getNextRoute(url);
     this.runBeforeHooks(pathObj);
@@ -291,7 +291,12 @@ export class TrieRouter {
           params[`$${paramName}`] = new Signal(part);
           params[`$${paramName}`].subscribe((val) => {
             const newURL = this.getNextRoute(location.pathname, paramName, val);
-            val !== part && history.pushState({}, "", newURL.builtPath);
+
+            history.pushState(
+              {},
+              "",
+              newURL.builtPath + newURL.search + newURL.hash
+            );
           });
         }
 
@@ -307,7 +312,12 @@ export class TrieRouter {
           params[`$${paramName}`] = new Signal(rest);
           params[`$${paramName}`].subscribe((val) => {
             const newURL = this.getNextRoute(location.pathname, paramName, val);
-            val !== rest && history.pushState({}, "", newURL.builtPath);
+
+            history.pushState(
+              {},
+              "",
+              newURL.builtPath + newURL.search + newURL.hash
+            );
           });
         }
         currentNode = currentNode.wildcardHandler;
@@ -324,6 +334,8 @@ export class TrieRouter {
 
     const newURLObj = new URL(path, window.location.href) as unknown as routeIF;
 
+    newURLObj.hash = window.location.hash;
+    newURLObj.search = window.location.search;
     newURLObj.route = route;
     newURLObj.builtPath = builtPath;
     newURLObj.params = params;
