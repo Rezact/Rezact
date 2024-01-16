@@ -200,12 +200,14 @@ export function render(root, tagName, attributes: any = {}) {
   afterRenderHooks.forEach((func) => func());
   if (location.hash) {
     const elm = document.querySelector(location.hash);
-    if (elm && elm.scrollIntoView)
-      elm.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-        inline: "start",
-      });
+    setTimeout(() => {
+      if (elm && elm.scrollIntoView)
+        elm.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+          inline: "start",
+        });
+    }, 100);
   }
 }
 export const xFragment = [];
