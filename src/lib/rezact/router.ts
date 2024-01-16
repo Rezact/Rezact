@@ -113,6 +113,8 @@ export class TrieRouter {
   afterHooks: any = [];
   previousRoute: routeIF = { ...defaultRouteObj };
   currentRoute: routeIF = { ...defaultRouteObj };
+  nextHash: string = "";
+  nextSearch: string = "";
   renderFunc: any = null;
   popState: boolean = false;
   replaceState: boolean = false;
@@ -125,7 +127,6 @@ export class TrieRouter {
     if (options.noRoute) this.noRoute = options.noRoute;
     document.body.addEventListener("click", (ev: any) => {
       if (ev.target.nodeName === "A") {
-        if (ev.target.href.includes("#")) return;
         if (!ev.target.href) return;
         if (ev.target.target) return;
         const url = new URL(ev.target.href);
@@ -135,7 +136,7 @@ export class TrieRouter {
         if (url.hostname !== locationHost) return;
 
         ev.preventDefault();
-        this.routeChanged(url.pathname);
+        this.routeChanged(url);
       }
     });
     this.root = new RouteNode();
@@ -188,8 +189,19 @@ export class TrieRouter {
 
   routeChanged(path = null, replace = false) {
     this.replaceState = replace;
+    let url = path;
     if (path instanceof PopStateEvent) this.popState = true;
-    const url = path || window.location.pathname;
+    if (path === null) {
+      url = window.location.pathname;
+      const targetURL = new URL(location.href);
+      this.nextHash = targetURL.hash;
+      this.nextSearch = targetURL.search;
+    }
+    if (path instanceof URL) {
+      url = path.pathname;
+      this.nextHash = path.hash;
+      this.nextSearch = path.search;
+    }
 
     let pathObj = this.getNextRoute(url);
     this.runBeforeHooks(pathObj);
@@ -334,8 +346,8 @@ export class TrieRouter {
 
     const newURLObj = new URL(path, window.location.href) as unknown as routeIF;
 
-    newURLObj.hash = window.location.hash;
-    newURLObj.search = window.location.search;
+    newURLObj.hash = this.nextHash;
+    newURLObj.search = this.nextSearch;
     newURLObj.route = route;
     newURLObj.builtPath = builtPath;
     newURLObj.params = params;
