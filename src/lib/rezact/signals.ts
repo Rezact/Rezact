@@ -255,7 +255,7 @@ const attributeStateHandler = {
       for (let i = 0; i < depsLen; i++) {
         deps[i].subscribe(
           { funcRef: compAttrSub, obj: { elm, key, computer, deps } },
-          { elm },
+          { elm }
         );
       }
     } else {
@@ -276,7 +276,7 @@ function handleTextNode(parent: any, child: any, ...args: any[]) {
     { funcRef: textNodeSub, obj: { txtNode, newVal: val.toString() } },
     {
       elm: parent,
-    },
+    }
   );
   appendChild(parent, txtNode, ...args);
 }
@@ -431,3 +431,7 @@ const childArrayStateHandler = {
 };
 
 addAppendChildHook(childArrayStateHandler);
+
+export function getVal<T>(signal: T): T {
+  return (signal as any).value;
+}
