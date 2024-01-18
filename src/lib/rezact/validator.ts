@@ -327,7 +327,7 @@ function isRequired(inputElm) {
   const opts = inputElms.get(inputElm);
   if (!opts.required) return false;
   const inputVal = opts.mask ? inputElm.unmaskedValue : inputElm.value;
-  if (inputVal.length === 0) return true;
+  if (inputVal.trim().length === 0) return true;
   return false;
 }
 
