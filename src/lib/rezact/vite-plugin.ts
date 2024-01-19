@@ -462,7 +462,10 @@ function compileRezact(ast) {
           !nodeWillWrapInCreateMapped(node.init)
         ) {
           const hasMapDecl =
-            mapDeclarationTracking[node.init?.callee?.object?.name];
+            mapDeclarationTracking[node.init?.callee?.object?.name] ||
+            ["filter", "map", "reduce"].includes(
+              node.init?.callee?.property?.name
+            );
           if (hasMapDecl) {
             const mapName = node.id?.name;
             if (mapName) mapDeclarationTracking[mapName] = node;

@@ -1,8 +1,14 @@
-let $todos: any = [
-  { $text: "Learn Rezact", $completed: false },
-  { $text: "Learn TypeScript", $completed: true },
-  { $text: "Build something awesome", $completed: false },
-];
+// do not change importing the $todos in this file (it is crucial to our test case scenarios)
+// importing this data into the Todos.tsx file would have caused a failure until
+// the following fix was implemented in the vite.plugin.ts
+
+// const hasMapDecl =
+// mapDeclarationTracking[node.init?.callee?.object?.name] ||
+// ["filter", "map", "reduce"].includes(
+//   node.init?.callee?.property?.name
+// );
+
+import { $todos } from "./todoData";
 
 export function Page() {
   let $filter = "all";
