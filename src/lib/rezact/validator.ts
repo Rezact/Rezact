@@ -303,6 +303,7 @@ function checkAll(formElm) {
     if (inputLengthTooLong(inputElm)) return reportLengthTooLong(inputElm);
     if (patternNotValid(inputElm)) return reportPatternNotValid(inputElm);
     if (customNotValid(inputElm)) return reportCustomNotValid(inputElm);
+    if (nativeNotValid(inputElm)) return reportNativeNotValid(inputElm);
     clearValidationError(inputElm);
   });
 }
@@ -475,6 +476,23 @@ function reportCustomNotValid(inputElm) {
   setErrorMessage(inputElm, msg);
 }
 
+function nativeNotValid(inputElm) {
+  return !inputElm.checkValidity();
+}
+
+function reportNativeNotValid(inputElm) {
+  const opts = inputElms.get(inputElm);
+  const customMsg = opts.customErrorMessages.nativeNotValid;
+  if (customMsg) return setErrorMessage(inputElm, customMsg);
+  console.log("nativeNotValid", inputElm.validationMessage);
+  if (inputElm.validationMessage)
+    return setErrorMessage(inputElm, inputElm.validationMessage, true);
+
+  const label = inputElm.labels[0]?.innerText || "This field";
+  const msg = `${label} is not valid.`;
+  setErrorMessage(inputElm, msg);
+}
+
 function openErrorElm(errorElm) {
   errorElm.style.height = errorElm.scrollHeight + "px";
 }
@@ -493,9 +511,11 @@ function clearValidationError(inputElm, skipSet = false) {
   !skipSet && setErrorMessages(errorElm);
 }
 
-function setErrorMessage(inputElm, msg) {
-  clearValidationError(inputElm, true);
-  if (inputElm.validationMessage === msg) return;
+function setErrorMessage(inputElm, msg, native = false) {
+  if (!native) {
+    clearValidationError(inputElm, true);
+    if (inputElm.validationMessage === msg) return;
+  }
 
   inputElm.classList.add("invalid");
   inputElm.setCustomValidity(msg);
