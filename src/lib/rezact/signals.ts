@@ -281,7 +281,7 @@ function handleTextNode(parent: any, child: any, ...args: any[]) {
   appendChild(parent, txtNode, ...args);
 }
 
-addAfterRenderHook(() => {
+export const afterSignalRenderHook = () => {
   subscFunctionsArr.forEach((func: any) => {
     func.stateObj.subs.set(func, true);
     if (typeof func === "object") {
@@ -291,7 +291,9 @@ addAfterRenderHook(() => {
     }
   });
   subscFunctionsArr = [];
-});
+};
+
+addAfterRenderHook(afterSignalRenderHook);
 
 const addChildren = (values: any, parentNode) => {
   if (values === undefined) return;

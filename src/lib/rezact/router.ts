@@ -397,6 +397,7 @@ export function useRouter(app = null, config: any = {}) {
     config.routeErrorComponent = ({ reason }) => {
       const div = document.createElement("div");
       div.innerText = "Route Failed to Load, Reason: " + reason;
+      console.trace("Route Failed to Load, Reason: " + reason);
       return { default: () => div };
     };
 

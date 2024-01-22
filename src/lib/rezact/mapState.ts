@@ -1,5 +1,5 @@
-import { Signal, effect } from "./signals";
-import { createComponent, isArray } from ".";
+import { Signal, afterSignalRenderHook, effect } from "./signals";
+import { inRender, createComponent, isArray } from ".";
 
 function isIgnoredInstance(obj: any): boolean {
   return (
@@ -48,7 +48,6 @@ function findNestedStates(obj, results = []) {
 }
 
 function subscribeToNestedStates(item, mapStateObj) {
-  if (!(item.elmRef instanceof HTMLElement)) return;
   const nestedStates = findNestedStates(item);
   nestedStates.forEach((state) => {
     item.nestedSubscribed = true;
@@ -86,11 +85,14 @@ export class MapSignal<T> extends Signal<T> {
       (item) => {
         this[item] = (...args) => {
           this.value[item](...args);
+          this.makeChildrenSignals();
           this.updateList(this.func);
           this.alertSubs(this.value);
+          if (!inRender) afterSignalRenderHook();
         };
       }
     );
+    this.makeChildrenSignals();
   }
 
   removeStaleElmRefCacheItems() {
@@ -157,6 +159,20 @@ export class MapSignal<T> extends Signal<T> {
       isArray(item.elmRef)
         ? item.elmRef.forEach((elm) => (elm.associatedState = item))
         : (item.elmRef.associatedState = item);
+    }
+  }
+
+  makeChildrenSignals() {
+    if (!this.value) return;
+    const len = this.value.length;
+    for (let idx = 0; idx < len; idx++) {
+      let item = this.value[idx];
+      if (!item.state) this.value[idx] = item = new Signal(item);
+      item.__private_idx = idx;
+
+      if (!item.nestedSubscribed) {
+        subscribeToNestedStates(item, this);
+      }
     }
   }
 

@@ -187,10 +187,12 @@ export let appendChild = (parent, child, ...args) => {
   parent.appendChild(createTextNode(String(child)));
 };
 
-const afterRenderHooks = [];
+export const afterRenderHooks = [];
 export const addAfterRenderHook = (item) => afterRenderHooks.push(item);
+export let inRender = false;
 
 export function render(root, tagName, attributes: any = {}) {
+  inRender = true;
   const elm = createComponent(tagName, attributes);
   if (root.state) {
     const frag = document.createDocumentFragment();
@@ -201,7 +203,7 @@ export function render(root, tagName, attributes: any = {}) {
     appendChild(root, elm);
   }
   afterRenderHooks.forEach((func) => func());
-
+  inRender = false;
   if (location.hash) {
     const elm = document.querySelector(location.hash);
     setTimeout(() => {
