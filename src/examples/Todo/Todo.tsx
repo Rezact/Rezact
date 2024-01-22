@@ -12,10 +12,10 @@ import { $todos } from "./todoData";
 
 export function Page() {
   let $filter = "all";
-  let $filteredTodos = $todos.filter((todo) => {
+  let $filteredTodos = $todos.filter(($todo) => {
     if ($filter === "all") return true;
-    if ($filter === "completed") return todo.$completed;
-    if ($filter === "todo") return !todo.$completed;
+    if ($filter === "completed") return $todo.$completed;
+    if ($filter === "todo") return !$todo.$completed;
   });
 
   let $newTodoText = "";
@@ -29,14 +29,15 @@ export function Page() {
   };
 
   const clearCompleted = () => {
-    const completed = $todos.filter((todo) => todo.$completed);
-    completed.forEach((todo) => $todos.deleteValue(todo));
+    const completed = $todos.filter(($todo) => $todo.$completed);
+    completed.forEach(($todo) => $todos.deleteValue($todo));
   };
 
   const checkAll = () => {
-    const areAllMarked = $todos.every((todo) => todo.$completed);
-    $todos.forEach((todo) => (todo.$completed = !areAllMarked));
-    $todos.refresh();
+    const areAllMarked = $todos.every(($todo) => $todo.$completed);
+    $todos.forEach(({ value }) => {
+      value.$completed = !areAllMarked;
+    });
   };
 
   return (
@@ -52,7 +53,7 @@ export function Page() {
       </fieldset>
 
       {$filteredTodos.map(($todo, $idx) => (
-        <TodoItem todo={$todo} idx={$idx} />
+        <TodoItem $todo={$todo} $idx={$idx} />
       ))}
 
       <form onSubmit={addTodo}>
@@ -73,13 +74,11 @@ function editModeClickListener(ev) {
   document.removeEventListener("click", editModeClickListener);
 }
 
-function TodoItem(props) {
-  const $todo = props.todo;
-  const $idx = props.idx;
+function TodoItem({ $todo, $idx }) {
   let $editing = false;
 
-  const deleteTodo = (todo) => {
-    $todos.deleteValue(todo.value);
+  const deleteTodo = ($todo) => {
+    $todos.deleteValue($todo);
   };
 
   const closeOnEnter = (ev) => {
@@ -99,19 +98,17 @@ function TodoItem(props) {
     editInput.focus();
   };
 
+  let $idxPlusOne = $idx + 1;
+
   return (
     <div style={`${$todo.$completed ? "text-decoration: line-through;" : ""}`}>
       {$editing && editInput}
       {!$editing && (
         <span onDblClick={setEditing}>
-          {$idx + 1} - {$todo.$text}
+          {$idxPlusOne} - {$todo.$text}
         </span>
       )}
-      <input
-        type="checkbox"
-        checked={$todo.$completed}
-        onClick={$todos.refresh}
-      />
+      <input type="checkbox" checked={$todo.$completed} />
       <button onClick={() => deleteTodo($todo)}>X</button>
     </div>
   );
