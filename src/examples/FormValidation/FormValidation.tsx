@@ -7,9 +7,10 @@ type InputProps = {
   label: string;
   placeholder?: string;
   value?: string;
+  type?: string;
 };
 
-function Input({ label, placeholder, value }: InputProps) {
+function Input({ label, placeholder, value, type }: InputProps) {
   const id = label.toLowerCase();
   return (
     <>
@@ -19,6 +20,7 @@ function Input({ label, placeholder, value }: InputProps) {
         autocomplete="off"
         name={id}
         id={id}
+        type={type || "text"}
         value={value || ""}
         placeholder={placeholder || ""}
       />
@@ -204,6 +206,12 @@ const cvvInputValidationOptions: ValidatorOptions = {
   required: true,
 };
 
+const emailInput = <Input label="Email" type="email" placeholder="Email" />;
+const emailInputValidationOptions: ValidatorOptions = {
+  inputElm: emailInput[1],
+  required: true,
+};
+
 function setupInputValidators() {
   setupValidatorInput(serialNoInputValidationOptions);
   setupValidatorInput(serialNoInputValidationOptions2);
@@ -218,6 +226,7 @@ function setupInputValidators() {
   setupValidatorInput(creditCardInputValidationOptions);
   setupValidatorInput(expirationInputValidationOptions);
   setupValidatorInput(cvvInputValidationOptions);
+  setupValidatorInput(emailInputValidationOptions);
 }
 
 const handleSubmit = (ev) => {
@@ -245,6 +254,7 @@ const Form = (
     {CreditCardInput}
     {ExpirationInput}
     {CVVInput}
+    {emailInput}
 
     <input type="submit" />
   </form>
