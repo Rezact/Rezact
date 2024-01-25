@@ -832,7 +832,7 @@ function compileRezact(ast) {
           wrapInEffect(node.body.expression);
       }
     },
-  });
+  } as any);
 }
 
 function rezact(): PluginOption {
