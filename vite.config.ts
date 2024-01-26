@@ -13,7 +13,7 @@ const __dirname = dirname(__filename);
 import dts from "vite-plugin-dts";
 
 // https://vitejs.dev/config/
-export default defineConfig(({ command, mode, ssrBuild }) => {
+export default defineConfig(({ command, mode }) => {
   // console.log({ command, mode, ssrBuild, example: process.env.example });
 
   const config: any = {
@@ -29,6 +29,7 @@ export default defineConfig(({ command, mode, ssrBuild }) => {
       alias: {
         src: "/src",
         rezact: "/src/lib/rezact",
+        "@rezact/rezact": "/src/lib/rezact",
       },
     },
     build: {
