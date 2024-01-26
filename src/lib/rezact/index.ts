@@ -203,7 +203,11 @@ export function render(root, tagName, attributes: any = {}) {
     appendChild(root, elm);
   }
   afterRenderHooks.forEach((func) => func());
+
   inRender = false;
+  const event = new CustomEvent("rezact-rendered");
+  document.dispatchEvent(event);
+
   if (location.hash) {
     const elm = document.querySelector(location.hash);
     setTimeout(() => {
