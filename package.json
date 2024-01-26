@@ -1,6 +1,6 @@
 {
   "name": "@rezact/rezact",
-  "version": "1.0.15-beta.51",
+  "version": "1.0.15-beta.52",
   "type": "module",
   "description": "Intuitive Reactivity, Simplified State. Embrace a modern UI framework that encourages direct data mutations, offers module-level reactivity, and simplifies component design. With Rezact, you get the power of reactivity without the boilerplate. Dive into a seamless development experience tailored for today's web.",
   "main": "index.cjs",
@@ -29,28 +29,26 @@
   },
   "homepage": "https://github.com/rezact/rezact#readme",
   "devDependencies": {
-    "@testing-library/dom": "^9.3.3",
-    "@testing-library/user-event": "^14.5.1",
-    "@vitest/coverage-v8": "^1.1.0",
-    "acorn": "^8.10.0",
-    "acorn-jsx": "^5.3.2",
-    "acorn-walk": "^8.2.0",
-    "cross-fetch": "^4.0.0",
-    "happy-dom": "12.10.3",
-    "magic-string": "^0.30.1",
-    "path": "^0.12.7",
-    "typescript": "^5.1.6",
-    "url": "^0.11.1",
+    "@testing-library/dom": "^9.3.4",
+    "@testing-library/user-event": "^14.5.2",
+    "@vitest/coverage-v8": "1.2.1",
+    "acorn": "8.11.3",
+    "acorn-jsx": "5.3.2",
+    "acorn-walk": "8.3.2",
+    "happy-dom": "npm:zachlankton-happy-dom@13.3.2",
+    "magic-string": "0.30.5",
+    "path": "0.12.7",
+    "typescript": "5.3.3",
+    "url": "0.11.3",
     "vite": "5.0.12",
-    "vite-plugin-dts": "^3.7.0",
-    "vite-plugin-inspect": "^0.8.1",
-    "vitest": "^1.1.0"
+    "vite-plugin-dts": "3.7.2",
+    "vite-plugin-inspect": "0.8.2",
+    "vitest": "1.2.1"
   },
   "dependencies": {
-    "@mdx-js/rollup": "^2.3.0",
-    "msw": "^1.3.2",
-    "rehype-highlight": "^6.0.0",
-    "remark-frontmatter": "^4.0.1",
-    "remark-mdx-frontmatter": "^3.0.0"
+    "@mdx-js/rollup": "3.0.0",
+    "rehype-highlight": "7.0.0",
+    "remark-frontmatter": "5.0.0",
+    "remark-mdx-frontmatter": "4.0.0"
   }
 }
