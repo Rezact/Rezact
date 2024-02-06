@@ -1,7 +1,9 @@
 import { dirname, resolve } from "path";
 import * as fs from "fs";
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
+// import { BrowserWindow } from "@happy-dom/global-registrator/node_modules/happy-dom/lib/window/BrowserWindow";
 import { fileURLToPath } from "url";
+import { Buffer as MyBuffer } from "buffer";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename).replace(
@@ -74,8 +76,9 @@ export function rezactBuild({ routes }) {
 
     async writeBundle(options, bundle) {
       GlobalRegistrator.register({
-        url: `http://localhost:3000/`,
+        url: `http://localhost:5500/`,
       });
+      globalThis.Buffer = MyBuffer;
       const { happyDOM } = window;
       window.scrollTo = () => {};
       document.body.innerHTML = `<div id="app"></div>`;
@@ -83,7 +86,7 @@ export function rezactBuild({ routes }) {
       let mainEntryJS = "";
       const bundleMapped = {};
       Object.keys(bundle).forEach((key) => {
-        const path = bundle[key].facadeModuleId?.replace(/\.(tsx|jsx)$/, "");
+        const path = bundle[key].moduleIds?.at(-1).replace(/\.(tsx|jsx)$/, "");
         if (path) bundleMapped[path] = bundle[key];
       });
 
@@ -103,6 +106,11 @@ export function rezactBuild({ routes }) {
         const routePathMapName = (route.path.slice(1) || "index") + ".html";
         let preloads = "";
         const dedupePreload = {};
+
+        if (!routeChunk) {
+          console.log("NO CHUNK FOR", resolvedPath);
+          continue;
+        }
         const preload = `<link rel="modulepreload" href="/${routeChunk.fileName}" />\n`;
         preloads += preload;
         routeChunk.imports.forEach((importPath) => {
