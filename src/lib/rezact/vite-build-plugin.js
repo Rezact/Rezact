@@ -82,6 +82,16 @@ export function rezactBuild({ routes }) {
       const { happyDOM } = window;
       window.scrollTo = () => {};
       document.body.innerHTML = `<div id="app"></div>`;
+      const originalAppendChild = document.head.appendChild.bind(document.head);
+      const routeSplitStyleSheets = [];
+      document.head.appendChild = (link) => {
+        if (link.rel !== "stylesheet") return originalAppendChild(link);
+        routeSplitStyleSheets.push(link.outerHTML);
+        // dispatch load event on link so that vite will continue, otherwise it will hang waiting for the load event forever
+        setTimeout(() => {
+          link.dispatchEvent(new Event("load"));
+        }, 10);
+      };
 
       let mainEntryJS = "";
       const bundleMapped = {};
@@ -122,6 +132,7 @@ export function rezactBuild({ routes }) {
           preloads += preload;
         });
 
+        preloads += "<!-- LATE PRELOAD HERE -->";
         const _modifiedSource = bundle[routePathMapName].source.replace(
           "<!-- PRELOAD HERE -->",
           preloads
@@ -140,8 +151,14 @@ export function rezactBuild({ routes }) {
           await delay(100);
         }
 
+        preloads = routeSplitStyleSheets.join("\n");
+        const _lateModifiedPreload = _modifiedSource.replace(
+          "<!-- LATE PRELOAD HERE -->",
+          preloads
+        );
+
         const app = document.getElementById("app");
-        const modifiedSource = _modifiedSource.replace(
+        const modifiedSource = _lateModifiedPreload.replace(
           "<!-- PRE RENDER HERE -->",
           app.innerHTML
         );
