@@ -83,7 +83,7 @@ export function rezactBuild({ routes }) {
       window.scrollTo = () => {};
       document.body.innerHTML = `<div id="app"></div>`;
       const originalAppendChild = document.head.appendChild.bind(document.head);
-      const routeSplitStyleSheets = [];
+      let routeSplitStyleSheets = [];
       document.head.appendChild = (link) => {
         if (link.rel !== "stylesheet") return originalAppendChild(link);
         routeSplitStyleSheets.push(link.outerHTML);
@@ -156,6 +156,7 @@ export function rezactBuild({ routes }) {
           "<!-- LATE PRELOAD HERE -->",
           preloads
         );
+        routeSplitStyleSheets = [];
 
         const app = document.getElementById("app");
         const modifiedSource = _lateModifiedPreload.replace(
