@@ -744,7 +744,10 @@ function compileRezact(ast) {
       if (node.key.value && node.key.value[0] === "$") {
         wrapInSignal(node.value);
       }
-      if (node.key.name === "value" && !importsUsed.useInputs)
+      if (
+        (node.key.name === "value" || node.key.name === "checked") &&
+        !importsUsed.useInputs
+      )
         importsUsed.useInputs = true && functionsToRun.push("useInputs()");
       if (node.key.name === "onMount" && !importsUsed.useLifeCycleAttributes)
         importsUsed.useLifeCycleAttributes =
