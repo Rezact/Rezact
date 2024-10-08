@@ -1,6 +1,6 @@
 {
   "name": "@rezact/rezact",
-  "version": "1.0.15-beta.57",
+  "version": "1.0.15-beta.58",
   "type": "module",
   "description": "Intuitive Reactivity, Simplified State. Embrace a modern UI framework that encourages direct data mutations, offers module-level reactivity, and simplifies component design. With Rezact, you get the power of reactivity without the boilerplate. Dive into a seamless development experience tailored for today's web.",
   "main": "index.cjs",
@@ -32,7 +32,6 @@
     "@testing-library/dom": "^10.4.0",
     "@testing-library/user-event": "^14.5.2",
     "@types/node": "^20.11.7",
-    "@vitest/coverage-v8": "1.2.1",
     "acorn": "8.12.1",
     "acorn-jsx": "5.3.2",
     "acorn-walk": "8.3.4",
@@ -43,7 +42,8 @@
     "vite": "5.1.7",
     "vite-plugin-dts": "4.2.3",
     "vite-plugin-inspect": "0.8.7",
-    "vitest": "1.2.1"
+    "@vitest/coverage-v8": "2.1.2",
+    "vitest": "2.1.2"
   },
   "dependencies": {
     "@happy-dom/global-registrator": "^13.3.1",

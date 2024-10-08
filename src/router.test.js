@@ -700,7 +700,7 @@ describe("Router Tests Suite", () => {
     await waitFor(() => expect(allHeaders[0].textContent).toBe("JSX Signals"));
 
     const jsxSignals = document.getElementById("jsx-signals-test-id");
-    expect(jsxSignals).not.toMatchSnapshot();
+    expect(jsxSignals).toMatchSnapshot();
   });
 
   it("On Before Leave Route Click", async () => {
